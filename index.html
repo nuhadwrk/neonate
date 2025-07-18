@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Neonate Dosage Calculator</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #2a9d8f;
+      --header: #1d3557;
+      --bg: #f0f4f8;
+      --card: #ffffff;
+      --border: #dcdcdc;
+    }
+
+    * {
+      box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
+    }
+
+    body {
+      margin: 0;
+      padding: 1.5rem;
+      background-color: var(--bg);
+      color: var(--header);
+      transition: all 0.3s ease;
+    }
+
+    h1 {
+      text-align: center;
+      font-weight: 600;
+      font-size: 1.75rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .container {
+      background: var(--card);
+      max-width: 700px;
+      margin: auto;
+      border-radius: 16px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .container:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+    }
+
+    .form-group {
+      margin-bottom: 1rem;
+      display: none;
+    }
+
+    .form-group.active {
+      display: block;
+    }
+
+    label {
+      font-weight: 500;
+      display: block;
+      margin-bottom: 0.25rem;
+    }
+
+    input[type="number"] {
+      width: 100%;
+      padding: 0.6rem;
+      font-size: 1rem;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background-color: #fff;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    input[type="number"]:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 8px rgba(42, 157, 143, 0.3);
+    }
+
+    .radio-group {
+      display: flex;
+      gap: 1rem;
+      margin-top: 0.5rem;
+    }
+
+    .radio-group label {
+      font-weight: 400;
+    }
+
+    .btn {
+      width: 100%;
+      padding: 0.75rem;
+      background-color: var(--primary);
+      color: white;
+      font-size: 1rem;
+      font-weight: 500;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      margin: 1rem 0;
+      transition: background-color 0.3s ease;
+    }
+
+    .btn:hover {
+      background-color: #21867a;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+      margin-top: 1rem;
+    }
+
+    th, td {
+      border: 1px solid var(--border);
+      padding: 0.6rem;
+      text-align: center;
+      transition: background-color 0.3s ease;
+    }
+
+    th {
+      background-color: #f7f9fb;
+      font-weight: 600;
+      color: var(--header);
+    }
+
+    tr:hover td {
+      background-color: #f0f4f8;
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+      justify-content: center;
+      position: sticky;
+      top: 0;
+      background: var(--card);
+      padding: 1rem 0;
+      z-index: 1;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .tab-button {
+      padding: 0.5rem 1rem;
+      background-color: #fff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+
+    .tab-button:hover, .tab-button.active {
+      background-color: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+
+    .section-title {
+      margin-top: 2rem;
+      font-weight: 600;
+      font-size: 1.1rem;
+      color: var(--header);
+    }
+
+    .note {
+      color: #888;
+      font-size: 0.875rem;
+      margin-top: 0.5rem;
+    }
+
+    .chart-placeholder {
+      width: 100%;
+      height: 300px;
+      background-color: #f7f9fb;
+      border: 2px dashed var(--border);
+      border-radius: 12px;
+      text-align: center;
+      padding-top: 100px;
+      color: #888;
+      font-style: italic;
+      margin-top: 1rem;
+      transition: border-color 0.3s ease;
+    }
+
+    .chart-placeholder:hover {
+      border-color: var(--primary);
+    }
+
+    .chart-image {
+      width: 100%;
+      height: auto;
+      border-radius: 12px;
+      margin-top: 1rem;
+      border: 1px solid var(--border);
+    }
+
+    .risk-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-top: 0.5rem;
+    }
+    
+    .risk-option {
+      flex: 1;
+      min-width: 100px;
+      padding: 0.5rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .risk-option:hover, .risk-option.selected {
+      background-color: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+    
+    .risk-description {
+      font-size: 0.8rem;
+      margin-top: 0.25rem;
+      color: #666;
+    }
+    
+    .age-input-group {
+      display: flex;
+      gap: 0.5rem;
+    }
+    
+    .age-input-group input {
+      flex: 1;
+    }
+    
+    .age-type-group {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+    }
+    
+    .age-type {
+      flex: 1;
+      padding: 0.5rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .age-type:hover, .age-type.selected {
+      background-color: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+    
+    @media (max-width: 600px) {
+      .radio-group {
+        flex-direction: column;
+      }
+      .tabs {
+        flex-direction: column;
+        align-items: center;
+      }
+      .tab-button {
+        width: 100%;
+        text-align: center;
+      }
+      .risk-group, .age-type-group {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>Neonate Dosage Calculator</h1>
+  <div class="container">
+    <div class="tabs">
+      <button class="tab-button active" onclick="openTab('dosage')">Dosage</button>
+      <button class="tab-button" onclick="openTab('nutrition')">Nutrition</button>
+      <button class="tab-button" onclick="openTab('fenton')">Fenton Chart</button>
+      <button class="tab-button" onclick="openTab('phototherapy')">Phototherapy</button>
+    </div>
+
+    <div id="dosage" class="tab-content active">
+      <div class="form-group active">
+        <label for="weight">Weight (kg):</label>
+        <input type="number" id="weight" placeholder="Enter weight" step="0.01" min="0.1">
+      </div>
+      <div class="form-group active">
+        <label>Postnatal Age:</label>
+        <div class="radio-group">
+          <label><input type="radio" name="age" value="≤ 7 days" checked> ≤ 7 days</label>
+          <label><input type="radio" name="age" value="> 7 days"> > 7 days</label>
+        </div>
+      </div>
+      <button class="btn" onclick="updateDosages()">Calculate</button>
+      <table>
+        <thead>
+          <tr>
+            <th>Drug</th>
+            <th>Mg/Kg/Dose</th>
+            <th>Mg/Dose</th>
+            <th>Interval (hr)</th>
+          </tr>
+        </thead>
+        <tbody id="dosage-table">
+          <tr><td colspan="4">Enter weight to calculate...</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div id="nutrition" class="tab-content">
+      <h3 class="section-title">Nutrition Guidelines</h3>
+      <ul>
+        <li>Day 1: Term: 60–80 ml/kg/day; Preterm: 80–100 ml/kg/day (D10%)</li>
+        <li>Day 2: Term: 80–100 ml/kg/day; Preterm: 100–120 ml/kg/day</li>
+        <li>Day 3: Term: 100–120 ml/kg/day (N/5 D10%); Preterm: 120–150 ml/kg/day</li>
+        <li>Day 4+: Term: 120–150 ml/kg/day; Preterm: 130–160 ml/kg/day</li>
+      </ul>
+      <div class="note">Note: Adjust based on clinical assessment.</div>
+    </div>
+
+    <div id="fenton" class="tab-content">
+      <div class="form-group active">
+        <label for="fenton-weight">Birth Weight (g):</label>
+        <input type="number" id="fenton-weight" placeholder="Enter weight in grams" step="1" min="300" max="6000">
+      </div>
+      <div class="form-group active">
+        <label>Sex:</label>
+        <div class="radio-group">
+          <label><input type="radio" name="sex" value="male" checked> Male</label>
+          <label><input type="radio" name="sex" value="female"> Female</label>
+        </div>
+      </div>
+      <div class="form-group active">
+        <label for="gestational-age">Gestational Age (weeks):</label>
+        <input type="number" id="gestational-age" placeholder="Enter gestational age" step="1" min="22" max="50">
+      </div>
+      <button class="btn" onclick="updateFenton()">Calculate</button>
+      <div id="fenton-result" class="note" style="margin-top: 1rem; padding: 1rem; background: #f7f9fb; border-radius: 8px;"></div>
+      
+      <!-- Fenton chart images -->
+      <img src="FM.jpg" alt="Fenton Chart for Boys" class="chart-image" id="fenton-male" style="display: none;">
+      <img src="FF.jpg" alt="Fenton Chart for Girls" class="chart-image" id="fenton-female" style="display: none;">
+      
+      <div class="note" style="margin-top: 1rem; text-align: center;">Fenton Growth Charts (2013)</div>
+    </div>
+
+    <div id="phototherapy" class="tab-content">
+      <h3 class="section-title">Phototherapy Guidelines</h3>
+      
+      <div class="form-group active">
+        <label for="bilirubin-level">Total Serum Bilirubin (mg/dL):</label>
+        <input type="number" id="bilirubin-level" placeholder="Enter TSB level" step="0.1" min="0">
+      </div>
+      
+      <div class="form-group active">
+        <label>Age:</label>
+        <div class="age-input-group">
+          <input type="number" id="age-value" placeholder="Enter age in hours" step="1" min="0" max="168">
+          <div class="age-type-group">
+            <div class="age-type selected" onclick="selectAgeType('hours')">Hours (HOL)</div>
+            <div class="age-type" onclick="selectAgeType('days')">Days (DOL)</div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="form-group active">
+        <label>Risk Category:</label>
+        <div class="risk-group">
+          <div class="risk-option selected" onclick="selectRisk('lower')">
+            Lower Risk
+            <div class="risk-description">≥38 wk & well</div>
+          </div>
+          <div class="risk-option" onclick="selectRisk('medium')">
+            Medium Risk
+            <div class="risk-description">≥38 wk + RF or 35–37⁶/₇ wk & well</div>
+          </div>
+          <div class="risk-option" onclick="selectRisk('higher')">
+            Higher Risk
+            <div class="risk-description">35–37⁶/₇ wk + RF</div>
+          </div>
+        </div>
+      </div>
+      
+      <button class="btn" onclick="evaluatePhototherapy()">Evaluate</button>
+      
+      <div id="phototherapy-result" class="note" style="margin-top: 1rem; padding: 1rem; background: #f7f9fb; border-radius: 8px; font-weight: 500;"></div>
+      
+      <!-- Phototherapy images -->
+      <img src="PT.jpg" alt="Phototherapy Guidelines" class="chart-image">
+      <img src="ET.jpg" alt="Exchange Transfusion Guidelines" class="chart-image" style="margin-top: 1rem;">
+    </div>
+  </div>
+
+  <script>
+    const drugData = [
+      {
+        name: "Ampicillin",
+        dose: [
+          { condition: "Standard", mgPerKg: 50, interval: { "≤ 7 days": 12, "> 7 days": 8 } },
+          { condition: "Meningitis", mgPerKg: 100, interval: { "≤ 7 days": 12, "> 7 days": 8 } }
+        ]
+      },
+      {
+        name: "Amikacin",
+        dose: [
+          { condition: "Standard", mgPerKg: 15, interval: {
+              "≤ 7 days": { "< 2 kg": 48, "> 2 kg": 24 },
+              "> 7 days": { "< 2 kg": "24–48", "> 2 kg": "12–24" }
+            }
+          }
+        ]
+      },
+      {
+        name: "Cefotaxime",
+        dose: [
+          { condition: "Standard/Meningitis", mgPerKg: 50, interval: { "≤ 7 days": 12, "> 7 days": 8 } }
+        ]
+      },
+      {
+        name: "Ceftazidime",
+        dose: [
+          { condition: "Standard/Meningitis", mgPerKg: 50, interval: { "≤ 7 days": 12, "> 7 days": 8 } }
+        ]
+      },
+      {
+        name: "Meropenem",
+        dose: [
+          { condition: "Standard", mgPerKg: 20, interval: { "≤ 7 days": 12, "> 7 days": 8 } },
+          { condition: "Meningitis", mgPerKg: 40, interval: { "≤ 7 days": 12, "> 7 days": 8 } }
+        ]
+      },
+      {
+        name: "Metronidazole",
+        dose: [
+          { condition: "Standard", mgPerKg: 7.5, interval: {
+              "≤ 7 days": { "< 1.2 kg": 48, "1.2–2 kg": 24, "> 2 kg": 12 },
+              "> 7 days": { "< 1.2 kg": 24, "1.2–2 kg": 12, "> 2 kg": 12 }
+            }
+          },
+          { condition: "Standard (> 2 kg, > 7 days)", mgPerKg: 15, interval: { "> 7 days": { "> 2 kg": 12 } } }
+        ]
+      },
+      {
+        name: "Vancomycin",
+        dose: [
+          { condition: "Standard", mgPerKg: 15, interval: { "≤ 7 days": 12, "> 7 days": 8 } }
+        ]
+      },
+      {
+        name: "Caffeine",
+        dose: [
+          { condition: "Standard", mgPerKg: 5, interval: { "≤ 7 days": 24, "> 7 days": 24 } }
+        ]
+      }
+    ];
+
+    function openTab(tabName) {
+      document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+      document.querySelectorAll('.tab-button').forEach(button => button.classList.remove('active'));
+      document.getElementById(tabName).classList.add('active');
+      document.querySelector(`.tab-button[onclick="openTab('${tabName}')"]`).classList.add('active');
+      
+      // Show form groups only in active tab
+      document.querySelectorAll('.form-group').forEach(group => group.classList.remove('active'));
+      document.querySelectorAll(`#${tabName} .form-group`).forEach(group => group.classList.add('active'));
+      
+      // Show appropriate Fenton chart
+      if (tabName === 'fenton') {
+        const sex = document.querySelector('input[name="sex"]:checked').value;
+        document.getElementById('fenton-male').style.display = sex === 'male' ? 'block' : 'none';
+        document.getElementById('fenton-female').style.display = sex === 'female' ? 'block' : 'none';
+      }
+    }
+
+    function updateDosages() {
+      const weight = parseFloat(document.getElementById('weight').value);
+      const age = document.querySelector('input[name="age"]:checked').value;
+      const table = document.getElementById('dosage-table');
+
+      if (!weight || weight <= 0) {
+        table.innerHTML = `<tr><td colspan="4">Please enter a valid weight.</td></tr>`;
+        return;
+      }
+
+      let rows = '';
+      drugData.forEach(drug => {
+        drug.dose.forEach(dose => {
+          let doseMg = (dose.mgPerKg * weight).toFixed(2);
+          let interval = dose.interval[age];
+
+          if (typeof interval === 'object') {
+            if (weight < 1.2) interval = interval["< 1.2 kg"];
+            else if (weight <= 2) interval = interval["1.2–2 kg"] || interval["< 2 kg"];
+            else interval = interval["> 2 kg"];
+            if (drug.name === "Metronidazole" && age === "> 7 days" && weight > 2 && dose.mgPerKg === 15) {
+              doseMg = (15 * weight).toFixed(2);
+            }
+          }
+
+          if (!interval) return;
+
+          rows += `
+            <tr>
+              <td>${drug.name} (${dose.condition})</td>
+              <td>${dose.mgPerKg}</td>
+              <td>${doseMg}</td>
+              <td>${interval}</td>
+            </tr>
+          `;
+        });
+      });
+
+      table.innerHTML = rows || `<tr><td colspan="4">No matching data.</td></tr>`;
+    }
+
+    function updateFenton() {
+      const weight = parseFloat(document.getElementById('fenton-weight').value) || 0;
+      const sex = document.querySelector('input[name="sex"]:checked').value;
+      const ga = parseFloat(document.getElementById('gestational-age').value) || 0;
+      const resultDiv = document.getElementById('fenton-result');
+
+      if (!weight || !ga) {
+        resultDiv.innerHTML = 'Please enter both weight and gestational age.';
+        return;
+      }
+
+      if (weight < 300 || weight > 6000 || ga < 22 || ga > 50) {
+        resultDiv.innerHTML = 'Please enter valid weight (300–6000g) and gestational age (22–50 weeks).';
+        return;
+      }
+
+      // 1. Gestational Age Classification
+      let gaClass;
+      if (ga > 42) gaClass = 'Post Term (>42 weeks)';
+      else if (ga >= 40) gaClass = 'Late Term (40 to <42 weeks)';
+      else if (ga >= 37) gaClass = 'Term (≥37 weeks)';
+      else if (ga >= 34) gaClass = 'Late Preterm (34 weeks to <37 weeks)';
+      else if (ga >= 32) gaClass = 'Moderate Preterm (32 weeks to <34 weeks)';
+      else gaClass = 'Very Preterm (<32 weeks)';
+
+      // 2. Birth Weight Classification
+      let weightClass;
+      if (weight > 4000) weightClass = 'Macrosomia (>4000g)';
+      else if (weight < 1000) weightClass = 'Extremely Low Birth Weight (ELBW) (<1000g)';
+      else if (weight < 1500) weightClass = 'Very Low Birth Weight (VLBW) (<1500g)';
+      else if (weight < 2500) weightClass = 'Low Birth Weight (LBW) (<2500g)';
+      else weightClass = 'Normal Weight';
+
+      // 3. Size Classification (SGA, AGA, LGA)
+      let sizeClass = 'AGA'; // Default to AGA
+      
+      // Simple classification based on GA
+      if (ga < 37 && weight < 2500) {
+        sizeClass = 'AGA';
+      } else if (ga >= 37 && weight < 2500) {
+        sizeClass = 'SGA';
+      } else if (ga >= 37 && weight > 4000) {
+        sizeClass = 'LGA';
+      } else if (ga < 37 && weight > 4000) {
+        sizeClass = 'LGA';
+      }
+
+      // Show appropriate Fenton chart
+      document.getElementById('fenton-male').style.display = sex === 'male' ? 'block' : 'none';
+      document.getElementById('fenton-female').style.display = sex === 'female' ? 'block' : 'none';
+
+      resultDiv.innerHTML = `
+        <strong>Gestational Age Classification:</strong> ${gaClass}<br>
+        <strong>Birth Weight Classification:</strong> ${weightClass}<br>
+        <strong>Size Classification:</strong> ${sizeClass}<br>
+        <em>(Based on clinical classification guidelines)</em>
+      `;
+    }
+
+    // Phototherapy variables
+    let selectedRisk = 'lower';
+    let ageType = 'hours';
+    
+    function selectRisk(risk) {
+      selectedRisk = risk;
+      document.querySelectorAll('.risk-option').forEach(el => el.classList.remove('selected'));
+      document.querySelector(`.risk-option[onclick="selectRisk('${risk}')"]`).classList.add('selected');
+    }
+    
+    function selectAgeType(type) {
+      ageType = type;
+      document.querySelectorAll('.age-type').forEach(el => el.classList.remove('selected'));
+      document.querySelector(`.age-type[onclick="selectAgeType('${type}')"]`).classList.add('selected');
+      
+      // Adjust input placeholder and max value
+      const input = document.getElementById('age-value');
+      input.placeholder = type === 'hours' ? 'Enter hours (0-168)' : 'Enter days (0-7)';
+      input.max = type === 'hours' ? 168 : 7;
+    }
+    
+    function evaluatePhototherapy() {
+      const bilirubin = parseFloat(document.getElementById('bilirubin-level').value);
+      const ageValue = parseFloat(document.getElementById('age-value').value);
+      const resultDiv = document.getElementById('phototherapy-result');
+      
+      if (!bilirubin || bilirubin <= 0) {
+        resultDiv.innerHTML = '<strong style="color: #e63946;">Please enter a valid bilirubin level.</strong>';
+        return;
+      }
+      
+      if (!ageValue || ageValue <= 0) {
+        resultDiv.innerHTML = '<strong style="color: #e63946;">Please enter a valid age.</strong>';
+        return;
+      }
+      
+      // Convert age to hours
+      const ageHours = ageType === 'hours' ? ageValue : ageValue * 24;
+      
+      // Phototherapy thresholds (simplified version)
+      const thresholds = {
+        lower: {
+          0: 4.5,
+          24: 8.0,
+          48: 12.0,
+          72: 15.0,
+          96: 17.0,
+          120: 18.5,
+          144: 19.0,
+          168: 19.5
+        },
+        medium: {
+          0: 4.0,
+          24: 7.0,
+          48: 10.5,
+          72: 13.0,
+          96: 14.5,
+          120: 15.5,
+          144: 16.0,
+          168: 16.5
+        },
+        higher: {
+          0: 3.5,
+          24: 6.0,
+          48: 9.0,
+          72: 11.5,
+          96: 12.5,
+          120: 13.5,
+          144: 14.0,
+          168: 14.5
+        }
+      };
+      
+      // Find the closest threshold point
+      const timePoints = Object.keys(thresholds[selectedRisk]).map(Number).sort((a, b) => a - b);
+      let closestPoint = timePoints[0];
+      
+      for (let i = 0; i < timePoints.length; i++) {
+        if (Math.abs(timePoints[i] - ageHours) < Math.abs(closestPoint - ageHours)) {
+          closestPoint = timePoints[i];
+        }
+      }
+      
+      const threshold = thresholds[selectedRisk][closestPoint];
+      
+      // Determine recommendation
+      let recommendation, color;
+      if (bilirubin >= threshold * 1.2) {
+        recommendation = "Exchange transfusion may be indicated. Consult specialist immediately.";
+        color = "#e63946";
+      } else if (bilirubin >= threshold) {
+        recommendation = "Phototherapy is indicated.";
+        color = "#e76f51";
+      } else if (bilirubin >= threshold * 0.8) {
+        recommendation = "Monitor closely. Phototherapy may be needed soon.";
+        color = "#e9c46a";
+      } else {
+        recommendation = "Phototherapy is not indicated at this time.";
+        color = "#2a9d8f";
+      }
+      
+      // Format output
+      resultDiv.innerHTML = `
+        <strong>Evaluation for ${ageValue} ${ageType} old (${ageHours} hours)</strong><br>
+        Risk: ${selectedRisk.charAt(0).toUpperCase() + selectedRisk.slice(1)} Risk<br>
+        Bilirubin: ${bilirubin.toFixed(1)} mg/dL<br>
+        Threshold: ${threshold.toFixed(1)} mg/dL<br>
+        <strong style="color: ${color}">${recommendation}</strong>
+      `;
+    }
+    
+    // Initialize functions
+    function initApp() {
+      // Initialize form groups in active tab
+      document.querySelectorAll('#dosage .form-group').forEach(group => group.classList.add('active'));
+      
+      // Initialize phototherapy options
+      selectRisk('lower');
+      selectAgeType('hours');
+      
+      // Show initial Fenton chart
+      const sex = document.querySelector('input[name="sex"]:checked').value;
+      document.getElementById('fenton-male').style.display = sex === 'male' ? 'block' : 'none';
+      document.getElementById('fenton-female').style.display = sex === 'female' ? 'block' : 'none';
+    }
+    
+    // Event listeners
+    document.getElementById('weight').addEventListener('input', updateDosages);
+    document.querySelectorAll('input[name="age"]').forEach(input => input.addEventListener('change', updateDosages));
+    document.getElementById('fenton-weight').addEventListener('input', updateFenton);
+    document.querySelectorAll('input[name="sex"]').forEach(input => {
+      input.addEventListener('change', function() {
+        updateFenton();
+        // Show appropriate Fenton chart
+        document.getElementById('fenton-male').style.display = this.value === 'male' ? 'block' : 'none';
+        document.getElementById('fenton-female').style.display = this.value === 'female' ? 'block' : 'none';
+      });
+    });
+    document.getElementById('gestational-age').addEventListener('input', updateFenton);
+    document.getElementById('bilirubin-level').addEventListener('input', function() {
+      if (this.value) {
+        evaluatePhototherapy();
+      } else {
+        document.getElementById('phototherapy-result').textContent = '';
+      }
+    });
+    document.getElementById('age-value').addEventListener('input', function() {
+      if (this.value && document.getElementById('bilirubin-level').value) {
+        evaluatePhototherapy();
+      }
+    });
+    
+    // Initialize when page loads
+    window.onload = initApp;
+  </script>
+</body>
+</html>
