@@ -769,13 +769,13 @@
       
       // Determine recommendation
       let recommendation, color;
-      if (bilirubin >= threshold * 1.2) {
-        recommendation = "! Above Phototherapy range.";
+      if (bilirubin >= threshold +7) {
+        recommendation = "! Above Phototherapy range, check ET range.";
         color = "#e63946";
       } else if (bilirubin >= threshold) {
         recommendation = "Above Phototherapy range.";
         color = "#e76f51";
-      } else if (bilirubin >= threshold * 0.9) {
+      } else if (bilirubin >= threshold -1.5) {
         recommendation = "Borderline range";
         color = "#e9c46a";
       } else {
