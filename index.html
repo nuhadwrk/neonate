@@ -770,16 +770,16 @@
       // Determine recommendation
       let recommendation, color;
       if (bilirubin >= threshold * 1.2) {
-        recommendation = "Exchange transfusion may be indicated. Consult specialist immediately.";
+        recommendation = "! Above Phototherapy range.";
         color = "#e63946";
       } else if (bilirubin >= threshold) {
-        recommendation = "Phototherapy is indicated.";
+        recommendation = "Above Phototherapy range.";
         color = "#e76f51";
-      } else if (bilirubin >= threshold * 0.8) {
-        recommendation = "Monitor closely. Phototherapy may be needed soon.";
+      } else if (bilirubin >= threshold * 0.9) {
+        recommendation = "Borderline range";
         color = "#e9c46a";
       } else {
-        recommendation = "Phototherapy is not indicated at this time.";
+        recommendation = "Below Phototherapy range.";
         color = "#2a9d8f";
       }
       
