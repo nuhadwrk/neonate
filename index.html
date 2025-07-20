@@ -374,8 +374,8 @@
         <div class="age-input-group">
           <input type="number" id="age-value" placeholder="Enter age in hours" step="1" min="0" max="168">
           <div class="age-type-group">
-            <div class="age-type selected" onclick="selectAgeType('hours')">Hours (HOL)</div>
-            <div class="age-type" onclick="selectAgeType('days')">Days (DOL)</div>
+            <div class="age-type selected" onclick="selectAgeType('hours')">Hours</div>
+            <div class="age-type" onclick="selectAgeType('days')">Days</div>
           </div>
         </div>
       </div>
@@ -409,6 +409,7 @@
   </div>
 
   <script>
+    // Drug database
     const drugData = [
       {
         name: "Ampicillin",
@@ -471,15 +472,65 @@
       }
     ];
 
+    // Fenton growth chart percentiles
+    const fentonPercentiles = {
+      male: {
+        22: { p10: 400, p90: 600 },
+        24: { p10: 500, p90: 750 },
+        26: { p10: 600, p90: 900 },
+        28: { p10: 800, p90: 1200 },
+        30: { p10: 1000, p90: 1500 },
+        32: { p10: 1300, p90: 1900 },
+        34: { p10: 1700, p90: 2500 },
+        36: { p10: 2100, p90: 3100 },
+        38: { p10: 2500, p90: 3700 },
+        40: { p10: 2800, p90: 4100 },
+        42: { p10: 3000, p90: 4400 },
+        50: { p10: 3100, p90: 4600 }
+      },
+      female: {
+        22: { p10: 380, p90: 580 },
+        24: { p10: 480, p90: 720 },
+        26: { p10: 580, p90: 870 },
+        28: { p10: 760, p90: 1140 },
+        30: { p10: 950, p90: 1420 },
+        32: { p10: 1250, p90: 1800 },
+        34: { p10: 1600, p90: 2400 },
+        36: { p10: 2000, p90: 3000 },
+        38: { p10: 2400, p90: 3500 },
+        40: { p10: 2700, p90: 3900 },
+        42: { p10: 2900, p90: 4200 },
+        50: { p10: 3000, p90: 4400 }
+      }
+    };
+
+    // Tab navigation function
     function openTab(tabName) {
-      document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
-      document.querySelectorAll('.tab-button').forEach(button => button.classList.remove('active'));
+      // Hide all tab content
+      document.querySelectorAll('.tab-content').forEach(tab => {
+        tab.classList.remove('active');
+      });
+      
+      // Remove active class from all tab buttons
+      document.querySelectorAll('.tab-button').forEach(button => {
+        button.classList.remove('active');
+      });
+      
+      // Show the selected tab content
       document.getElementById(tabName).classList.add('active');
+      
+      // Activate the selected tab button
       document.querySelector(`.tab-button[onclick="openTab('${tabName}')"]`).classList.add('active');
       
-      // Show form groups only in active tab
-      document.querySelectorAll('.form-group').forEach(group => group.classList.remove('active'));
-      document.querySelectorAll(`#${tabName} .form-group`).forEach(group => group.classList.add('active'));
+      // Hide all form groups
+      document.querySelectorAll('.form-group').forEach(group => {
+        group.classList.remove('active');
+      });
+      
+      // Show form groups in active tab
+      document.querySelectorAll(`#${tabName} .form-group`).forEach(group => {
+        group.classList.add('active');
+      });
       
       // Show appropriate Fenton chart
       if (tabName === 'fenton') {
@@ -489,11 +540,13 @@
       }
     }
 
+    // Update drug dosages based on weight and age
     function updateDosages() {
       const weight = parseFloat(document.getElementById('weight').value);
       const age = document.querySelector('input[name="age"]:checked').value;
       const table = document.getElementById('dosage-table');
 
+      // Validate input
       if (!weight || weight <= 0) {
         table.innerHTML = `<tr><td colspan="4">Please enter a valid weight.</td></tr>`;
         return;
@@ -505,10 +558,17 @@
           let doseMg = (dose.mgPerKg * weight).toFixed(2);
           let interval = dose.interval[age];
 
+          // Handle complex interval structures
           if (typeof interval === 'object') {
-            if (weight < 1.2) interval = interval["< 1.2 kg"];
-            else if (weight <= 2) interval = interval["1.2–2 kg"] || interval["< 2 kg"];
-            else interval = interval["> 2 kg"];
+            if (weight < 1.2) {
+              interval = interval["< 1.2 kg"];
+            } else if (weight <= 2) {
+              interval = interval["1.2–2 kg"] || interval["< 2 kg"];
+            } else {
+              interval = interval["> 2 kg"];
+            }
+            
+            // Special case for Metronidazole
             if (drug.name === "Metronidazole" && age === "> 7 days" && weight > 2 && dose.mgPerKg === 15) {
               doseMg = (15 * weight).toFixed(2);
             }
@@ -516,6 +576,7 @@
 
           if (!interval) return;
 
+          // Add drug row to table
           rows += `
             <tr>
               <td>${drug.name} (${dose.condition})</td>
@@ -530,12 +591,14 @@
       table.innerHTML = rows || `<tr><td colspan="4">No matching data.</td></tr>`;
     }
 
+    // Update Fenton chart classification
     function updateFenton() {
       const weight = parseFloat(document.getElementById('fenton-weight').value) || 0;
       const sex = document.querySelector('input[name="sex"]:checked').value;
       const ga = parseFloat(document.getElementById('gestational-age').value) || 0;
       const resultDiv = document.getElementById('fenton-result');
 
+      // Validate input
       if (!weight || !ga) {
         resultDiv.innerHTML = 'Please enter both weight and gestational age.';
         return;
@@ -546,7 +609,7 @@
         return;
       }
 
-      // 1. Gestational Age Classification
+      // Gestational age classification
       let gaClass;
       if (ga > 42) gaClass = 'Post Term (>42 weeks)';
       else if (ga >= 40) gaClass = 'Late Term (40 to <42 weeks)';
@@ -555,7 +618,7 @@
       else if (ga >= 32) gaClass = 'Moderate Preterm (32 weeks to <34 weeks)';
       else gaClass = 'Very Preterm (<32 weeks)';
 
-      // 2. Birth Weight Classification
+      // Birth weight classification
       let weightClass;
       if (weight > 4000) weightClass = 'Macrosomia (>4000g)';
       else if (weight < 1000) weightClass = 'Extremely Low Birth Weight (ELBW) (<1000g)';
@@ -563,29 +626,30 @@
       else if (weight < 2500) weightClass = 'Low Birth Weight (LBW) (<2500g)';
       else weightClass = 'Normal Weight';
 
-      // 3. Size Classification (SGA, AGA, LGA)
-      let sizeClass = 'AGA'; // Default to AGA
-      
-      // Simple classification based on GA
-      if (ga < 37 && weight < 2500) {
-        sizeClass = 'AGA';
-      } else if (ga >= 37 && weight < 2500) {
+      // Size classification (SGA, AGA, LGA)
+      let sizeClass;
+      const gaPoints = Object.keys(fentonPercentiles[sex]).map(Number).sort((a, b) => a - b);
+      let closestGa = gaPoints.find(point => point >= ga) || gaPoints[gaPoints.length - 1];
+      const percentiles = fentonPercentiles[sex][closestGa];
+
+      if (weight < percentiles.p10) {
         sizeClass = 'SGA';
-      } else if (ga >= 37 && weight > 4000) {
+      } else if (weight > percentiles.p90) {
         sizeClass = 'LGA';
-      } else if (ga < 37 && weight > 4000) {
-        sizeClass = 'LGA';
+      } else {
+        sizeClass = 'AGA';
       }
 
       // Show appropriate Fenton chart
       document.getElementById('fenton-male').style.display = sex === 'male' ? 'block' : 'none';
       document.getElementById('fenton-female').style.display = sex === 'female' ? 'block' : 'none';
 
+      // Display results
       resultDiv.innerHTML = `
         <strong>Gestational Age Classification:</strong> ${gaClass}<br>
         <strong>Birth Weight Classification:</strong> ${weightClass}<br>
         <strong>Size Classification:</strong> ${sizeClass}<br>
-        <em>(Based on clinical classification guidelines)</em>
+        <em>(Based on Fenton 2013 growth charts, 10th and 90th percentiles)</em>
       `;
     }
 
@@ -593,15 +657,21 @@
     let selectedRisk = 'lower';
     let ageType = 'hours';
     
+    // Select risk category
     function selectRisk(risk) {
       selectedRisk = risk;
-      document.querySelectorAll('.risk-option').forEach(el => el.classList.remove('selected'));
+      document.querySelectorAll('.risk-option').forEach(el => {
+        el.classList.remove('selected');
+      });
       document.querySelector(`.risk-option[onclick="selectRisk('${risk}')"]`).classList.add('selected');
     }
     
+    // Select age type (hours or days)
     function selectAgeType(type) {
       ageType = type;
-      document.querySelectorAll('.age-type').forEach(el => el.classList.remove('selected'));
+      document.querySelectorAll('.age-type').forEach(el => {
+        el.classList.remove('selected');
+      });
       document.querySelector(`.age-type[onclick="selectAgeType('${type}')"]`).classList.add('selected');
       
       // Adjust input placeholder and max value
@@ -610,11 +680,13 @@
       input.max = type === 'hours' ? 168 : 7;
     }
     
+    // Evaluate phototherapy needs
     function evaluatePhototherapy() {
       const bilirubin = parseFloat(document.getElementById('bilirubin-level').value);
       const ageValue = parseFloat(document.getElementById('age-value').value);
       const resultDiv = document.getElementById('phototherapy-result');
       
+      // Validate input
       if (!bilirubin || bilirubin <= 0) {
         resultDiv.innerHTML = '<strong style="color: #e63946;">Please enter a valid bilirubin level.</strong>';
         return;
@@ -628,37 +700,58 @@
       // Convert age to hours
       const ageHours = ageType === 'hours' ? ageValue : ageValue * 24;
       
-      // Phototherapy thresholds (simplified version)
+      // Phototherapy thresholds
       const thresholds = {
         lower: {
-          0: 4.5,
-          24: 8.0,
-          48: 12.0,
-          72: 15.0,
-          96: 17.0,
-          120: 18.5,
-          144: 19.0,
-          168: 19.5
+          0: 7,
+          12: 9,
+          24: 11.5,
+          36: 13.5,
+          48: 15,
+          60: 16.5,
+          72: 17.5,
+          84: 19,
+          96: 20,
+          108: 20.5,
+          120: 21,
+          132: 21,
+          144: 21,
+          156: 21,
+          168: 21
         },
         medium: {
-          0: 4.0,
-          24: 7.0,
-          48: 10.5,
-          72: 13.0,
-          96: 14.5,
-          120: 15.5,
-          144: 16.0,
-          168: 16.5
+          0: 5,
+          12: 7.5,
+          24: 9.5,
+          36: 11.5,
+          48: 13,
+          60: 14.5,
+          72: 15,
+          84: 16.5,
+          96: 17,
+          108: 18,
+          120: 18,
+          132: 18,
+          144: 18,
+          156: 18,
+          168: 18
         },
         higher: {
-          0: 3.5,
-          24: 6.0,
-          48: 9.0,
-          72: 11.5,
-          96: 12.5,
-          120: 13.5,
-          144: 14.0,
-          168: 14.5
+          0: 4,
+          12: 6,
+          24: 8,
+          36: 9.5,
+          48: 11,
+          60: 12.5,
+          72: 13.5,
+          84: 14,
+          96: 14.5,
+          108: 15,
+          120: 15,
+          132: 15,
+          144: 15,
+          156: 15,
+          168: 15
         }
       };
       
@@ -700,10 +793,12 @@
       `;
     }
     
-    // Initialize functions
+    // Initialize the application
     function initApp() {
       // Initialize form groups in active tab
-      document.querySelectorAll('#dosage .form-group').forEach(group => group.classList.add('active'));
+      document.querySelectorAll('#dosage .form-group').forEach(group => {
+        group.classList.add('active');
+      });
       
       // Initialize phototherapy options
       selectRisk('lower');
@@ -715,34 +810,41 @@
       document.getElementById('fenton-female').style.display = sex === 'female' ? 'block' : 'none';
     }
     
-    // Event listeners
-    document.getElementById('weight').addEventListener('input', updateDosages);
-    document.querySelectorAll('input[name="age"]').forEach(input => input.addEventListener('change', updateDosages));
-    document.getElementById('fenton-weight').addEventListener('input', updateFenton);
-    document.querySelectorAll('input[name="sex"]').forEach(input => {
-      input.addEventListener('change', function() {
-        updateFenton();
-        // Show appropriate Fenton chart
-        document.getElementById('fenton-male').style.display = this.value === 'male' ? 'block' : 'none';
-        document.getElementById('fenton-female').style.display = this.value === 'female' ? 'block' : 'none';
+    // Set up event listeners when the page loads
+    window.onload = function() {
+      initApp();
+      
+      // Dosage calculator events
+      document.getElementById('weight').addEventListener('input', updateDosages);
+      document.querySelectorAll('input[name="age"]').forEach(input => {
+        input.addEventListener('change', updateDosages);
       });
-    });
-    document.getElementById('gestational-age').addEventListener('input', updateFenton);
-    document.getElementById('bilirubin-level').addEventListener('input', function() {
-      if (this.value) {
-        evaluatePhototherapy();
-      } else {
-        document.getElementById('phototherapy-result').textContent = '';
-      }
-    });
-    document.getElementById('age-value').addEventListener('input', function() {
-      if (this.value && document.getElementById('bilirubin-level').value) {
-        evaluatePhototherapy();
-      }
-    });
-    
-    // Initialize when page loads
-    window.onload = initApp;
+      
+      // Fenton chart events
+      document.getElementById('fenton-weight').addEventListener('input', updateFenton);
+      document.querySelectorAll('input[name="sex"]').forEach(input => {
+        input.addEventListener('change', function() {
+          updateFenton();
+          document.getElementById('fenton-male').style.display = this.value === 'male' ? 'block' : 'none';
+          document.getElementById('fenton-female').style.display = this.value === 'female' ? 'block' : 'none';
+        });
+      });
+      document.getElementById('gestational-age').addEventListener('input', updateFenton);
+      
+      // Phototherapy events
+      document.getElementById('bilirubin-level').addEventListener('input', function() {
+        if (this.value) {
+          evaluatePhototherapy();
+        } else {
+          document.getElementById('phototherapy-result').textContent = '';
+        }
+      });
+      document.getElementById('age-value').addEventListener('input', function() {
+        if (this.value && document.getElementById('bilirubin-level').value) {
+          evaluatePhototherapy();
+        }
+      });
+    };
   </script>
 </body>
 </html>
