@@ -207,35 +207,44 @@
       border: 1px solid var(--border);
     }
 
-    .risk-group {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 1rem;
-      margin-top: 0.5rem;
-    }
-    
-    .risk-option {
-      flex: 1;
-      min-width: 100px;
-      padding: 0.5rem;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      text-align: center;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-    
-    .risk-option:hover, .risk-option.selected {
-      background-color: var(--primary);
-      color: white;
-      border-color: var(--primary);
-    }
-    
-    .risk-description {
-      font-size: 0.8rem;
-      margin-top: 0.25rem;
-      color: #666;
-    }
+.risk-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.risk-option {
+  flex: 1;
+  min-width: 100px;
+  padding: 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: #1d3557; /* default text color */
+}
+
+.risk-description {
+  font-size: 0.8rem;
+  margin-top: 0.25rem;
+  color: #666;
+  transition: color 0.3s ease;
+}
+
+.risk-option:hover,
+.risk-option.selected {
+  background-color: var(--primary);
+  color: white;
+  border-color: var(--primary);
+}
+
+.risk-option:hover .risk-description,
+.risk-option.selected .risk-description {
+  color: white;
+}
+
     
     .age-input-group {
       display: flex;
