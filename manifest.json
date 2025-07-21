@@ -1,7 +1,7 @@
 {
-  "name": "Pediatric Dosage Calculator",
-  "short_name": "DosageCalc",
-  "description": "A Progressive Web App for calculating pediatric medication dosages",
+  "name": "Neonate Dosage Calculator",
+  "short_name": "NeonateCalc",
+  "description": "A Progressive Web App for calculating neonate medication dosages",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#f0f4f8",
