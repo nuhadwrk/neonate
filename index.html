@@ -526,175 +526,230 @@ tr:last-child td {
   </div>
 
   <script>
-    // Drug database
-    const drugData = [
-      {
-        name: "Ampicillin",
-        dose: [
-          { condition: "Standard", mgPerKg: 50, interval: { "≤ 7 days": 12, "> 7 days": 8 } },
-          { condition: "Meningitis", mgPerKg: 100, interval: { "≤ 7 days": 12, "> 7 days": 8 } }
-        ]
-      },
-      {
-        name: "Amikacin",
-        dose: [
-          { condition: "Standard", mgPerKg: 15, interval: {
-              "≤ 7 days": { "< 2 kg": 48, "> 2 kg": 24 },
-              "> 7 days": { "< 2 kg": "24–48", "> 2 kg": "12–24" }
-            }
+   // Drug database
+  const drugData = [
+    {
+      name: "Ampicillin",
+      dose: [
+        { condition: "Standard", mgPerKg: 50, interval: { "≤ 7 days": 12, "> 7 days": 8 } },
+        { condition: "Meningitis", mgPerKg: 100, interval: { "≤ 7 days": 12, "> 7 days": 8 } }
+      ]
+    },
+    {
+      name: "Amikacin",
+      dose: [
+        { condition: "Standard", mgPerKg: 15, interval: {
+            "≤ 7 days": { "< 2 kg": 48, "> 2 kg": 24 },
+            "> 7 days": { "< 2 kg": "24–48", "> 2 kg": "12–24" }
           }
-        ]
-      },
-      {
-        name: "Cefotaxime",
-        dose: [
-          { condition: "Standard/Meningitis", mgPerKg: 50, interval: { "≤ 7 days": 12, "> 7 days": 8 } }
-        ]
-      },
-      {
-        name: "Ceftazidime",
-        dose: [
-          { condition: "Standard/Meningitis", mgPerKg: 50, interval: { "≤ 7 days": 12, "> 7 days": 8 } }
-        ]
-      },
-      {
-        name: "Meropenem",
-        dose: [
-          { condition: "Standard", mgPerKg: 20, interval: { "≤ 7 days": 12, "> 7 days": 8 } },
-          { condition: "Meningitis", mgPerKg: 40, interval: { "≤ 7 days": 12, "> 7 days": 8 } }
-        ]
-      },
-      {
-        name: "Metronidazole",
-        dose: [
-          { condition: "Standard", mgPerKg: 7.5, interval: {
-              "≤ 7 days": { "< 1.2 kg": 48, "1.2–2 kg": 24, "> 2 kg": 12 },
-              "> 7 days": { "< 1.2 kg": 24, "1.2–2 kg": 12, "> 2 kg": 12 }
-            }
-          },
-          { condition: "Standard (> 2 kg, > 7 days)", mgPerKg: 15, interval: { "> 7 days": { "> 2 kg": 12 } } }
-        ]
-      },
-      {
-        name: "Vancomycin",
-        dose: [
-          { condition: "Standard", mgPerKg: 15, interval: { "≤ 7 days": 12, "> 7 days": 8 } }
-        ]
-      },
-      {
-        name: "Caffeine",
-        dose: [
-          { condition: "Standard", mgPerKg: 5, interval: { "≤ 7 days": 24, "> 7 days": 24 } }
-        ]
-      }
-    ];
+        }
+      ]
+    },
+    {
+      name: "Cefotaxime",
+      dose: [
+        { condition: "Standard/Meningitis", mgPerKg: 50, interval: { "≤ 7 days": 12, "> 7 days": 8 } }
+      ]
+    },
+    {
+      name: "Ceftazidime",
+      dose: [
+        { condition: "Standard/Meningitis", mgPerKg: 50, interval: { "≤ 7 days": 12, "> 7 days": 8 } }
+      ]
+    },
+    {
+      name: "Meropenem",
+      dose: [
+        { condition: "Standard", mgPerKg: 20, interval: { "≤ 7 days": 12, "> 7 days": 8 } },
+        { condition: "Meningitis", mgPerKg: 40, interval: { "≤ 7 days": 12, "> 7 days": 8 } }
+      ]
+    },
+    {
+      name: "Metronidazole",
+      dose: [
+        { condition: "Standard", mgPerKg: 7.5, interval: {
+            "≤ 7 days": { "< 1.2 kg": 48, "1.2–2 kg": 24, "> 2 kg": 12 },
+            "> 7 days": { "< 1.2 kg": 24, "1.2–2 kg": 12, "> 2 kg": 12 }
+          }
+        },
+        { condition: "Standard (> 2 kg, > 7 days)", mgPerKg: 15, interval: { "> 7 days": { "> 2 kg": 12 } } }
+      ]
+    },
+    {
+      name: "Vancomycin",
+      dose: [
+        { condition: "Standard", mgPerKg: 15, interval: { "≤ 7 days": 12, "> 7 days": 8 } }
+      ]
+    },
+    {
+      name: "Caffeine",
+      dose: [
+        { condition: "Standard", mgPerKg: 5, interval: { "≤ 7 days": 24, "> 7 days": 24 } }
+      ]
+    }
+  ];
 
-    // Fenton growth chart percentiles
-    const fentonPercentiles = {
-      male: {
-        22: { p10: 400, p90: 600 },
-        24: { p10: 500, p90: 750 },
-        26: { p10: 600, p90: 900 },
-        28: { p10: 800, p90: 1200 },
-        30: { p10: 1000, p90: 1500 },
-        32: { p10: 1300, p90: 1900 },
-        34: { p10: 1700, p90: 2500 },
-        36: { p10: 2100, p90: 3100 },
-        38: { p10: 2500, p90: 3700 },
-        40: { p10: 2800, p90: 4100 },
-        42: { p10: 3000, p90: 4400 },
-        50: { p10: 3100, p90: 4600 }
-      },
-      female: {
-        22: { p10: 380, p90: 580 },
-        24: { p10: 480, p90: 720 },
-        26: { p10: 580, p90: 870 },
-        28: { p10: 760, p90: 1140 },
-        30: { p10: 950, p90: 1420 },
-        32: { p10: 1250, p90: 1800 },
-        34: { p10: 1600, p90: 2400 },
-        36: { p10: 2000, p90: 3000 },
-        38: { p10: 2400, p90: 3500 },
-        40: { p10: 2700, p90: 3900 },
-        42: { p10: 2900, p90: 4200 },
-        50: { p10: 3000, p90: 4400 }
-      }
-    };
+  // Fenton growth chart percentiles
+  const fentonPercentiles = {
+    male: {
+      22: { p10: 400, p90: 600 },
+      24: { p10: 500, p90: 750 },
+      26: { p10: 600, p90: 900 },
+      28: { p10: 800, p90: 1200 },
+      30: { p10: 1000, p90: 1500 },
+      32: { p10: 1300, p90: 1900 },
+      34: { p10: 1700, p90: 2500 },
+      36: { p10: 2100, p90: 3100 },
+      38: { p10: 2500, p90: 3700 },
+      40: { p10: 2800, p90: 4100 },
+      42: { p10: 3000, p90: 4400 },
+      50: { p10: 3100, p90: 4600 }
+    },
+    female: {
+      22: { p10: 380, p90: 580 },
+      24: { p10: 480, p90: 720 },
+      26: { p10: 580, p90: 870 },
+      28: { p10: 760, p90: 1140 },
+      30: { p10: 950, p90: 1420 },
+      32: { p10: 1250, p90: 1800 },
+      34: { p10: 1600, p90: 2400 },
+      36: { p10: 2000, p90: 3000 },
+      38: { p10: 2400, p90: 3500 },
+      40: { p10: 2700, p90: 3900 },
+      42: { p10: 2900, p90: 4200 },
+      50: { p10: 3000, p90: 4400 }
+    }
+  };
 
-    // Tab navigation function
-    function openTab(tabName) {
-      // Hide all tab content
-      document.querySelectorAll('.tab-content').forEach(tab => {
-        tab.classList.remove('active');
-      });
-      
-      // Remove active class from all tab buttons
-      document.querySelectorAll('.tab-button').forEach(button => {
-        button.classList.remove('active');
-      });
-      
-      // Show the selected tab content
-      document.getElementById(tabName).classList.add('active');
-      
-      // Activate the selected tab button
-      document.querySelector(`.tab-button[onclick="openTab('${tabName}')"]`).classList.add('active');
-      
-      // Hide all form groups
-      document.querySelectorAll('.form-group').forEach(group => {
-        group.classList.remove('active');
-      });
-      
-      // Show form groups in active tab
-      document.querySelectorAll(`#${tabName} .form-group`).forEach(group => {
-        group.classList.add('active');
-      });
-      
-      // Show appropriate Fenton chart
-      if (tabName === 'fenton') {
-        const sex = document.querySelector('input[name="sex"]:checked').value;
-        document.getElementById('fenton-male').style.display = sex === 'male' ? 'block' : 'none';
-        document.getElementById('fenton-female').style.display = sex === 'female' ? 'block' : 'none';
-      }
+  // Phototherapy thresholds
+  const thresholds = {
+    lower: {
+      0: 7,
+      12: 9,
+      24: 11.5,
+      36: 13.5,
+      48: 15,
+      60: 16.5,
+      72: 17.5,
+      84: 19,
+      96: 20,
+      108: 20.5,
+      120: 21,
+      132: 21,
+      144: 21,
+      156: 21,
+      168: 21
+    },
+    medium: {
+      0: 5,
+      12: 7.5,
+      24: 9.5,
+      36: 11.5,
+      48: 13,
+      60: 14.5,
+      72: 15,
+      84: 16.5,
+      96: 17,
+      108: 18,
+      120: 18,
+      132: 18,
+      144: 18,
+      156: 18,
+      168: 18
+    },
+    higher: {
+      0: 4,
+      12: 6,
+      24: 8,
+      36: 9.5,
+      48: 11,
+      60: 12.5,
+      72: 13.5,
+      84: 14,
+      96: 14.5,
+      108: 15,
+      120: 15,
+      132: 15,
+      144: 15,
+      156: 15,
+      168: 15
+    }
+  };
+
+  // Tab navigation function
+  function openTab(tabName) {
+    // Hide all tab content
+    document.querySelectorAll('.tab-content').forEach(tab => {
+      tab.classList.remove('active');
+    });
+    
+    // Remove active class from all tab buttons
+    document.querySelectorAll('.tab-button').forEach(button => {
+      button.classList.remove('active');
+    });
+    
+    // Show the selected tab content
+    document.getElementById(tabName).classList.add('active');
+    
+    // Activate the selected tab button
+    document.querySelector(`.tab-button[onclick="openTab('${tabName}')"]`).classList.add('active');
+    
+    // Hide all form groups
+    document.querySelectorAll('.form-group').forEach(group => {
+      group.classList.remove('active');
+    });
+    
+    // Show form groups in active tab
+    document.querySelectorAll(`#${tabName} .form-group`).forEach(group => {
+      group.classList.add('active');
+    });
+    
+    // Show appropriate Fenton chart
+    if (tabName === 'fenton') {
+      const sex = document.querySelector('input[name="sex"]:checked').value;
+      document.getElementById('fenton-male').style.display = sex === 'male' ? 'block' : 'none';
+      document.getElementById('fenton-female').style.display = sex === 'female' ? 'block' : 'none';
+    }
+  }
+
+  // Update drug dosages based on weight and age
+  function updateDosages() {
+    const weight = parseFloat(document.getElementById('weight').value);
+    const age = document.querySelector('input[name="age"]:checked').value;
+    const table = document.getElementById('dosage-table');
+
+    // Validate input
+    if (!weight || weight <= 0) {
+      table.innerHTML = `<tr><td colspan="4">Please enter a valid weight.</td></tr>`;
+      return;
     }
 
-    // Update drug dosages based on weight and age
-    function updateDosages() {
-      const weight = parseFloat(document.getElementById('weight').value);
-      const age = document.querySelector('input[name="age"]:checked').value;
-      const table = document.getElementById('dosage-table');
+    let rows = '';
+    drugData.forEach(drug => {
+      drug.dose.forEach(dose => {
+        let doseMg = (dose.mgPerKg * weight).toFixed(2);
+        let interval = dose.interval[age];
 
-      // Validate input
-      if (!weight || weight <= 0) {
-        table.innerHTML = `<tr><td colspan="4">Please enter a valid weight.</td></tr>`;
-        return;
-      }
-
-      let rows = '';
-      drugData.forEach(drug => {
-        drug.dose.forEach(dose => {
-          let doseMg = (dose.mgPerKg * weight).toFixed(2);
-          let interval = dose.interval[age];
-
-          // Handle complex interval structures
-          if (typeof interval === 'object') {
-            if (weight < 1.2) {
-              interval = interval["< 1.2 kg"];
-            } else if (weight <= 2) {
-              interval = interval["1.2–2 kg"] || interval["< 2 kg"];
-            } else {
-              interval = interval["> 2 kg"];
-            }
-            
-            // Special case for Metronidazole
-            if (drug.name === "Metronidazole" && age === "> 7 days" && weight > 2 && dose.mgPerKg === 15) {
-              doseMg = (15 * weight).toFixed(2);
-            }
+        // Handle complex interval structures
+        if (typeof interval === 'object') {
+          if (weight < 1.2) {
+            interval = interval["< 1.2 kg"];
+          } else if (weight <= 2) {
+            interval = interval["1.2–2 kg"] || interval["< 2 kg"];
+          } else {
+            interval = interval["> 2 kg"];
           }
+          
+          // Special case for Metronidazole
+          if (drug.name === "Metronidazole" && age === "> 7 days" && weight > 2 && dose.mgPerKg === 15) {
+            doseMg = (15 * weight).toFixed(2);
+          }
+        }
 
-          if (!interval) return;
+        if (!interval) return;
 
-          // Add drug row to table
-          rows += `
+        // Add drug row to table
+        rows += `
   <tr>
     <td><div class="cell-content">${drug.name}<div class="conc">(${dose.condition})</div></div></td>
     <td>${dose.mgPerKg}</td>
@@ -702,267 +757,295 @@ tr:last-child td {
     <td>${interval}</td>
   </tr>
 `;
-
-        });
       });
+    });
 
-      table.innerHTML = rows || `<tr><td colspan="4">No matching data.</td></tr>`;
+    table.innerHTML = rows || `<tr><td colspan="4">No matching data.</td></tr>`;
+  }
+
+  // Update Fenton chart classification
+  function updateFenton() {
+    const weight = parseFloat(document.getElementById('fenton-weight').value) || 0;
+    const sex = document.querySelector('input[name="sex"]:checked').value;
+    const ga = parseFloat(document.getElementById('gestational-age').value) || 0;
+    const resultDiv = document.getElementById('fenton-result');
+
+    // Validate input
+    if (!weight || !ga) {
+      resultDiv.innerHTML = 'Please enter both weight and gestational age.';
+      return;
     }
 
-    // Update Fenton chart classification
-    function updateFenton() {
-      const weight = parseFloat(document.getElementById('fenton-weight').value) || 0;
-      const sex = document.querySelector('input[name="sex"]:checked').value;
-      const ga = parseFloat(document.getElementById('gestational-age').value) || 0;
-      const resultDiv = document.getElementById('fenton-result');
-
-      // Validate input
-      if (!weight || !ga) {
-        resultDiv.innerHTML = 'Please enter both weight and gestational age.';
-        return;
-      }
-
-      if (weight < 300 || weight > 6000 || ga < 22 || ga > 50) {
-        resultDiv.innerHTML = 'Please enter valid weight (300–6000g) and gestational age (22–50 weeks).';
-        return;
-      }
-
-      // Gestational age classification
-      let gaClass;
-      if (ga > 42) gaClass = 'Post Term (>42 weeks)';
-      else if (ga >= 40) gaClass = 'Late Term (40 to <42 weeks)';
-      else if (ga >= 37) gaClass = 'Term (≥37 weeks)';
-      else if (ga >= 34) gaClass = 'Late Preterm (34 weeks to <37 weeks)';
-      else if (ga >= 32) gaClass = 'Moderate Preterm (32 weeks to <34 weeks)';
-      else gaClass = 'Very Preterm (<32 weeks)';
-
-      // Birth weight classification
-      let weightClass;
-      if (weight > 4000) weightClass = 'Macrosomia (>4000g)';
-      else if (weight < 1000) weightClass = 'Extremely Low Birth Weight (ELBW) (<1000g)';
-      else if (weight < 1500) weightClass = 'Very Low Birth Weight (VLBW) (<1500g)';
-      else if (weight < 2500) weightClass = 'Low Birth Weight (LBW) (<2500g)';
-      else weightClass = 'Normal Weight';
-
-      // Size classification (SGA, AGA, LGA)
-      let sizeClass;
-      const gaPoints = Object.keys(fentonPercentiles[sex]).map(Number).sort((a, b) => a - b);
-      let closestGa = gaPoints.find(point => point >= ga) || gaPoints[gaPoints.length - 1];
-      const percentiles = fentonPercentiles[sex][closestGa];
-
-      if (weight < percentiles.p10) {
-        sizeClass = 'SGA';
-      } else if (weight > percentiles.p90) {
-        sizeClass = 'LGA';
-      } else {
-        sizeClass = 'AGA';
-      }
-
-      // Show appropriate Fenton chart
-      document.getElementById('fenton-male').style.display = sex === 'male' ? 'block' : 'none';
-      document.getElementById('fenton-female').style.display = sex === 'female' ? 'block' : 'none';
-
-      // Display results
-      resultDiv.innerHTML = `
-        <strong>Gestational Age Classification:</strong> ${gaClass}<br>
-        <strong>Birth Weight Classification:</strong> ${weightClass}<br>
-        <strong>Size Classification:</strong> ${sizeClass}<br>
-        <em>(Based on Fenton 2025 growth charts, 10th and 90th percentiles)</em>
-      `;
+    if (weight < 300 || weight > 6000 || ga < 22 || ga > 50) {
+      resultDiv.innerHTML = 'Please enter valid weight (300–6000g) and gestational age (22–50 weeks).';
+      return;
     }
 
-    // Phototherapy variables
-    let selectedRisk = 'lower';
-    let ageType = 'hours';
+    // Gestational age classification
+    let gaClass;
+    if (ga > 42) gaClass = 'Post Term (>42 weeks)';
+    else if (ga >= 40) gaClass = 'Late Term (40 to <42 weeks)';
+    else if (ga >= 37) gaClass = 'Term (≥37 weeks)';
+    else if (ga >= 34) gaClass = 'Late Preterm (34 weeks to <37 weeks)';
+    else if (ga >= 32) gaClass = 'Moderate Preterm (32 weeks to <34 weeks)';
+    else gaClass = 'Very Preterm (<32 weeks)';
+
+    // Birth weight classification
+    let weightClass;
+    if (weight > 4000) weightClass = 'Macrosomia (>4000g)';
+    else if (weight < 1000) weightClass = 'Extremely Low Birth Weight (ELBW) (<1000g)';
+    else if (weight < 1500) weightClass = 'Very Low Birth Weight (VLBW) (<1500g)';
+    else if (weight < 2500) weightClass = 'Low Birth Weight (LBW) (<2500g)';
+    else weightClass = 'Normal Weight';
+
+    // Size classification (SGA, AGA, LGA)
+    let sizeClass;
+    const gaPoints = Object.keys(fentonPercentiles[sex]).map(Number).sort((a, b) => a - b);
+    let closestGa = gaPoints.find(point => point >= ga) || gaPoints[gaPoints.length - 1];
+    const percentiles = fentonPercentiles[sex][closestGa];
+
+    if (weight < percentiles.p10) {
+      sizeClass = 'SGA';
+    } else if (weight > percentiles.p90) {
+      sizeClass = 'LGA';
+    } else {
+      sizeClass = 'AGA';
+    }
+
+    // Show appropriate Fenton chart
+    document.getElementById('fenton-male').style.display = sex === 'male' ? 'block' : 'none';
+    document.getElementById('fenton-female').style.display = sex === 'female' ? 'block' : 'none';
+
+    // Display results
+    resultDiv.innerHTML = `
+      <strong>Gestational Age Classification:</strong> ${gaClass}<br>
+      <strong>Birth Weight Classification:</strong> ${weightClass}<br>
+      <strong>Size Classification:</strong> ${sizeClass}<br>
+      <em>(Based on Fenton 2025 growth charts, 10th and 90th percentiles)</em>
+    `;
+  }
+
+  // Phototherapy variables
+  let selectedRisk = 'lower';
+  let ageType = 'hours';
+  
+  // Select risk category
+  function selectRisk(risk) {
+    selectedRisk = risk;
+    document.querySelectorAll('.risk-option').forEach(el => {
+      el.classList.remove('selected');
+    });
+    document.querySelector(`.risk-option[onclick="selectRisk('${risk}')"]`).classList.add('selected');
+  }
+  
+  // Select age type (hours or days)
+  function selectAgeType(type) {
+    ageType = type;
+    document.querySelectorAll('.age-type').forEach(el => {
+      el.classList.remove('selected');
+    });
+    document.querySelector(`.age-type[onclick="selectAgeType('${type}')"]`).classList.add('selected');
     
-    // Select risk category
-    function selectRisk(risk) {
-      selectedRisk = risk;
-      document.querySelectorAll('.risk-option').forEach(el => {
-        el.classList.remove('selected');
-      });
-      document.querySelector(`.risk-option[onclick="selectRisk('${risk}')"]`).classList.add('selected');
+    // Adjust input placeholder and max value
+    const input = document.getElementById('age-value');
+    input.placeholder = type === 'hours' ? 'Enter hours (0-168)' : 'Enter days (0-7)';
+    input.max = type === 'hours' ? 168 : 7;
+  }
+  
+  // Evaluate phototherapy needs
+  function evaluatePhototherapy() {
+    const bilirubin = parseFloat(document.getElementById('bilirubin-level').value);
+    const ageValue = parseFloat(document.getElementById('age-value').value);
+    const resultDiv = document.getElementById('phototherapy-result');
+    
+    // Validate input
+    if (isNaN(bilirubin) || bilirubin <= 0) {
+      resultDiv.innerHTML = '<strong style="color: #e63946;">Please enter a valid bilirubin level (> 0 mg/dL).</strong>';
+      return;
     }
     
-    // Select age type (hours or days)
-    function selectAgeType(type) {
-      ageType = type;
-      document.querySelectorAll('.age-type').forEach(el => {
-        el.classList.remove('selected');
-      });
-      document.querySelector(`.age-type[onclick="selectAgeType('${type}')"]`).classList.add('selected');
-      
-      // Adjust input placeholder and max value
-      const input = document.getElementById('age-value');
-      input.placeholder = type === 'hours' ? 'Enter hours (0-168)' : 'Enter days (0-7)';
-      input.max = type === 'hours' ? 168 : 7;
+    if (isNaN(ageValue) || ageValue <= 0 || (ageType === 'hours' && ageValue > 168) || (ageType === 'days' && ageValue > 7)) {
+      resultDiv.innerHTML = '<strong style="color: #e63946;">Please enter a valid age (0–168 hours or 0–7 days).</strong>';
+      return;
     }
     
-    // Evaluate phototherapy needs
-    function evaluatePhototherapy() {
-      const bilirubin = parseFloat(document.getElementById('bilirubin-level').value);
-      const ageValue = parseFloat(document.getElementById('age-value').value);
-      const resultDiv = document.getElementById('phototherapy-result');
-      
-      // Validate input
-      if (!bilirubin || bilirubin <= 0) {
-        resultDiv.innerHTML = '<strong style="color: #e63946;">Please enter a valid bilirubin level.</strong>';
-        return;
+    // Convert age to hours
+    const ageHours = ageType === 'hours' ? ageValue : ageValue * 24;
+    
+    // Find the two closest time points for interpolation
+    const timePoints = Object.keys(thresholds[selectedRisk]).map(Number).sort((a, b) => a - b);
+    let x1 = timePoints[0];
+    let x2 = timePoints[timePoints.length - 1];
+    
+    // If ageHours is exactly a defined point, use that threshold
+    if (timePoints.includes(ageHours)) {
+      const threshold = thresholds[selectedRisk][ageHours];
+      evaluateAndDisplay(bilirubin, ageValue, ageHours, threshold, resultDiv);
+      if (document.getElementById('phototherapy-chart')) {
+        renderPhototherapyChart(ageHours, bilirubin, selectedRisk);
       }
-      
-      if (!ageValue || ageValue <= 0) {
-        resultDiv.innerHTML = '<strong style="color: #e63946;">Please enter a valid age.</strong>';
-        return;
+      return;
+    }
+    
+    // Find the two points to interpolate between
+    for (let i = 0; i < timePoints.length - 1; i++) {
+      if (ageHours > timePoints[i] && ageHours < timePoints[i + 1]) {
+        x1 = timePoints[i];
+        x2 = timePoints[i + 1];
+        break;
       }
-      
-      // Convert age to hours
-      const ageHours = ageType === 'hours' ? ageValue : ageValue * 24;
-      
-      // Phototherapy thresholds
-      const thresholds = {
-        lower: {
-          0: 7,
-          12: 9,
-          24: 11.5,
-          36: 13.5,
-          48: 15,
-          60: 16.5,
-          72: 17.5,
-          84: 19,
-          96: 20,
-          108: 20.5,
-          120: 21,
-          132: 21,
-          144: 21,
-          156: 21,
-          168: 21
+    }
+    
+    // Linear interpolation
+    const y1 = thresholds[selectedRisk][x1];
+    const y2 = thresholds[selectedRisk][x2];
+    const threshold = y1 + (y2 - y1) * (ageHours - x1) / (x2 - x1);
+    
+    // Evaluate and display result
+    evaluateAndDisplay(bilirubin, ageValue, ageHours, threshold, resultDiv);
+    if (document.getElementById('phototherapy-chart')) {
+      renderPhototherapyChart(ageHours, bilirubin, selectedRisk);
+    }
+  }
+
+  function evaluateAndDisplay(bilirubin, ageValue, ageHours, threshold, resultDiv) {
+    let recommendation, color;
+    if (bilirubin >= threshold + 7) {
+      recommendation = "! Above Phototherapy range, check ET range.";
+      color = "#e63946";
+    } else if (bilirubin >= threshold) {
+      recommendation = "Above Phototherapy range.";
+      color = "#e76f51";
+    } else if (bilirubin >= threshold - 1) {
+      recommendation = "Borderline range";
+      color = "#e9c46a";
+    } else {
+      recommendation = "Below Phototherapy range.";
+      color = "#2a9d8f";
+    }
+    
+    resultDiv.innerHTML = `
+      <strong>Evaluation for ${ageValue} ${ageType} old (${ageHours.toFixed(1)} hours)</strong><br>
+      Risk: ${selectedRisk.charAt(0).toUpperCase() + selectedRisk.slice(1)} Risk<br>
+      Bilirubin: ${bilirubin.toFixed(1)} mg/dL<br>
+      Threshold: ${threshold.toFixed(1)} mg/dL<br>
+      <strong style="color: ${color}">${recommendation}</strong>
+    `;
+  }
+
+  function renderPhototherapyChart(ageHours, bilirubin, riskCategory) {
+    const timePoints = Object.keys(thresholds[riskCategory]).map(Number).sort((a, b) => a - b);
+    const thresholdData = timePoints.map(point => thresholds[riskCategory][point]);
+    
+    const ctx = document.getElementById('phototherapy-chart').getContext('2d');
+    if (window.phototherapyChart) {
+      window.phototherapyChart.destroy();
+    }
+    
+    window.phototherapyChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: timePoints,
+        datasets: [
+          {
+            label: `Phototherapy Threshold (${riskCategory.charAt(0).toUpperCase() + riskCategory.slice(1)} Risk)`,
+            data: thresholdData,
+            borderColor: '#2a9d8f',
+            backgroundColor: 'rgba(42, 157, 143, 0.2)',
+            fill: false,
+            tension: 0.1
+          },
+          {
+            label: 'Neonate TSB',
+            data: [{ x: ageHours, y: bilirubin }],
+            type: 'scatter',
+            pointBackgroundColor: '#e63946',
+            pointRadius: 6,
+            pointHoverRadius: 8
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          title: {
+            display: true,
+            text: `Phototherapy Thresholds (${riskCategory.charAt(0).toUpperCase() + riskCategory.slice(1)} Risk)`
+          }
         },
-        medium: {
-          0: 5,
-          12: 7.5,
-          24: 9.5,
-          36: 11.5,
-          48: 13,
-          60: 14.5,
-          72: 15,
-          84: 16.5,
-          96: 17,
-          108: 18,
-          120: 18,
-          132: 18,
-          144: 18,
-          156: 18,
-          168: 18
-        },
-        higher: {
-          0: 4,
-          12: 6,
-          24: 8,
-          36: 9.5,
-          48: 11,
-          60: 12.5,
-          72: 13.5,
-          84: 14,
-          96: 14.5,
-          108: 15,
-          120: 15,
-          132: 15,
-          144: 15,
-          156: 15,
-          168: 15
-        }
-      };
-      
-      // Find the closest threshold point
-      const timePoints = Object.keys(thresholds[selectedRisk]).map(Number).sort((a, b) => a - b);
-      let closestPoint = timePoints[0];
-      
-      for (let i = 0; i < timePoints.length; i++) {
-        if (Math.abs(timePoints[i] - ageHours) < Math.abs(closestPoint - ageHours)) {
-          closestPoint = timePoints[i];
+        scales: {
+          x: {
+            title: {
+              display: true,
+              text: 'Age (Hours)'
+            }
+          },
+          y: {
+            title: {
+              display: true,
+              text: 'Bilirubin (mg/dL)'
+            },
+            beginAtZero: true
+          }
         }
       }
-      
-      const threshold = thresholds[selectedRisk][closestPoint];
-      
-      // Determine recommendation
-      let recommendation, color;
-      if (bilirubin >= threshold +7) {
-        recommendation = "! Above Phototherapy range, check ET range.";
-        color = "#e63946";
-      } else if (bilirubin >= threshold) {
-        recommendation = "Above Phototherapy range.";
-        color = "#e76f51";
-      } else if (bilirubin >= threshold -1) {
-        recommendation = "Borderline range";
-        color = "#e9c46a";
+    });
+  }
+  
+  // Initialize the application
+  function initApp() {
+    openTab('dosage'); // Explicitly open Dosage tab
+    document.querySelectorAll('#dosage .form-group').forEach(group => {
+      group.classList.add('active');
+    });
+    
+    // Initialize phototherapy options
+    selectRisk('lower');
+    selectAgeType('hours');
+    
+    // Show initial Fenton chart
+    const sex = document.querySelector('input[name="sex"]:checked').value;
+    document.getElementById('fenton-male').style.display = sex === 'male' ? 'block' : 'none';
+    document.getElementById('fenton-female').style.display = sex === 'female' ? 'block' : 'none';
+  }
+  
+  // Set up event listeners when the page loads
+  window.onload = function() {
+    initApp();
+    
+    // Dosage calculator events
+    document.getElementById('weight').addEventListener('input', updateDosages);
+    document.querySelectorAll('input[name="age"]').forEach(input => {
+      input.addEventListener('change', updateDosages);
+    });
+    
+    // Fenton chart events
+    document.getElementById('fenton-weight').addEventListener('input', updateFenton);
+    document.getElementById('gestational-age').addEventListener('input', updateFenton);
+    document.querySelectorAll('input[name="sex"]').forEach(input => {
+      input.addEventListener('change', function() {
+        updateFenton();
+        document.getElementById('fenton-male').style.display = this.value === 'male' ? 'block' : 'none';
+        document.getElementById('fenton-female').style.display = this.value === 'female' ? 'block' : 'none';
+      });
+    });
+    
+    // Phototherapy events
+    document.getElementById('bilirubin-level').addEventListener('input', function() {
+      if (this.value) {
+        evaluatePhototherapy();
       } else {
-        recommendation = "Below Phototherapy range.";
-        color = "#2a9d8f";
+        document.getElementById('phototherapy-result').textContent = '';
       }
-      
-      // Format output
-      resultDiv.innerHTML = `
-        <strong>Evaluation for ${ageValue} ${ageType} old (${ageHours} hours)</strong><br>
-        Risk: ${selectedRisk.charAt(0).toUpperCase() + selectedRisk.slice(1)} Risk<br>
-        Bilirubin: ${bilirubin.toFixed(1)} mg/dL<br>
-        Threshold: ${threshold.toFixed(1)} mg/dL<br>
-        <strong style="color: ${color}">${recommendation}</strong>
-      `;
-    }
-    
-    // Initialize the application
-    function initApp() {
-      // Initialize form groups in active tab
-      document.querySelectorAll('#dosage .form-group').forEach(group => {
-        group.classList.add('active');
-      });
-      
-      // Initialize phototherapy options
-      selectRisk('lower');
-      selectAgeType('hours');
-      
-      // Show initial Fenton chart
-      const sex = document.querySelector('input[name="sex"]:checked').value;
-      document.getElementById('fenton-male').style.display = sex === 'male' ? 'block' : 'none';
-      document.getElementById('fenton-female').style.display = sex === 'female' ? 'block' : 'none';
-    }
-    
-    // Set up event listeners when the page loads
-    window.onload = function() {
-      initApp();
-      
-      // Dosage calculator events
-      document.getElementById('weight').addEventListener('input', updateDosages);
-      document.querySelectorAll('input[name="age"]').forEach(input => {
-        input.addEventListener('change', updateDosages);
-      });
-      
-      // Fenton chart events
-      document.getElementById('fenton-weight').addEventListener('input', updateFenton);
-      document.querySelectorAll('input[name="sex"]').forEach(input => {
-        input.addEventListener('change', function() {
-          updateFenton();
-          document.getElementById('fenton-male').style.display = this.value === 'male' ? 'block' : 'none';
-          document.getElementById('fenton-female').style.display = this.value === 'female' ? 'block' : 'none';
-        });
-      });
-      document.getElementById('gestational-age').addEventListener('input', updateFenton);
-      
-      // Phototherapy events
-      document.getElementById('bilirubin-level').addEventListener('input', function() {
-        if (this.value) {
-          evaluatePhototherapy();
-        } else {
-          document.getElementById('phototherapy-result').textContent = '';
-        }
-      });
-      document.getElementById('age-value').addEventListener('input', function() {
-        if (this.value && document.getElementById('bilirubin-level').value) {
-          evaluatePhototherapy();
-        }
-      });
-    };
+    });
+    document.getElementById('age-value').addEventListener('input', function() {
+      if (this.value && document.getElementById('bilirubin-level').value) {
+        evaluatePhototherapy();
+      } else {
+        document.getElementById('phototherapy-result').textContent = '';
+      }
+    });
+  };
   </script>
 </body>
 </html>
