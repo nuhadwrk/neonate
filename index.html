@@ -442,6 +442,37 @@ tr:last-child td {
     </div>
 
     <div id="nutrition" class="tab-content">
+<div class="form-group active">
+  <label for="birth-weight-wl">Birth Weight (kg):</label>
+  <input type="number" id="birth-weight-wl" placeholder="Enter birth weight in kg" step="0.01" min="0.1">
+</div>
+<div class="form-group active">
+  <label for="current-weight-wl">Current Weight (kg):</label>
+  <input type="number" id="current-weight-wl" placeholder="Enter current weight in kg" step="0.01" min="0.1">
+</div>
+<button class="btn" onclick="calculateWeightLoss()">Calculate Weight Loss</button>
+<div id="weight-loss-result" class="note" style="margin-top: 1rem;"></div>
+<div class="form-group active">
+  <label for="feed-weight">Weight (kg):</label>
+  <input type="number" id="feed-weight" placeholder="Enter weight in kg" step="0.01" min="0.1">
+</div>
+
+<div class="form-group active">
+  <label for="feed-kcal">Target kcal/kg/day:</label>
+  <input type="number" id="feed-kcal" placeholder="Enter kcal/kg/day" step="1" min="50">
+</div>
+
+<div class="form-group active">
+  <label>Feed Type:</label>
+  <div class="radio-group">
+    <label><input type="radio" name="feed-type" value="0.67" checked> Breast Milk (0.67 kcal/ml)</label>
+    <label><input type="radio" name="feed-type" value="0.81"> Preterm Formula (0.81 kcal/ml)</label>
+  </div>
+</div>
+
+<button class="btn" onclick="calculateFeedVolume()">Calculate Feed Volume</button>
+<div id="feed-result" class="note" style="margin-top: 1rem;"></div>
+
       <h3 class="section-title">Nutrition Guidelines</h3>
       <ul>
         <li>Day 1: Term: 60–80 ml/kg/day; Preterm: 80–100 ml/kg/day (D10%)</li>
@@ -526,68 +557,145 @@ tr:last-child td {
   </div>
 
   <script>
+function calculateWeightLoss() {
+  const birthWeight = parseFloat(document.getElementById('birth-weight-wl').value);
+  const currentWeight = parseFloat(document.getElementById('current-weight-wl').value);
+  const result = document.getElementById('weight-loss-result');
+
+  if (!birthWeight || !currentWeight || birthWeight <= 0 || currentWeight <= 0) {
+    result.innerHTML = '<span style="color: #e63946;">Please enter valid weights.</span>';
+    return;
+  }
+
+  const lossPercent = ((birthWeight - currentWeight) / birthWeight) * 100;
+  const rounded = lossPercent.toFixed(1);
+  let message = `Weight loss: <strong>${rounded}%</strong>`;
+
+  if (lossPercent > 10) {
+    message += ` <span style="color: #e76f51;">(Exceeds 10%)</span>`;
+  }
+
+  result.innerHTML = message;
+}
+function calculateFeedVolume() {
+  const weight = parseFloat(document.getElementById('feed-weight').value);
+  const kcal = parseFloat(document.getElementById('feed-kcal').value);
+  const kcalPerMl = parseFloat(document.querySelector('input[name="feed-type"]:checked').value);
+  const result = document.getElementById('feed-result');
+
+  if (!weight || !kcal || weight <= 0 || kcal <= 0) {
+    result.innerHTML = '<span style="color: #e63946;">Please enter valid weight and kcal/kg/day.</span>';
+    return;
+  }
+
+  const totalDailyMl = (kcal * weight) / kcalPerMl;
+  const perFeedMl = totalDailyMl / 8;
+
+  result.innerHTML = `
+    <strong>Feed Volume:</strong><br>
+    Total daily: <strong>${totalDailyMl.toFixed(1)} ml</strong><br>
+    Every 3 hours (8 feeds/day): <strong>${perFeedMl.toFixed(1)} ml</strong>
+  `;
+}
+
    // Drug database
-  const drugData = [
-    {
-      name: "Ampicillin",
-      dose: [
-        { condition: "Standard", mgPerKg: 50, interval: { "≤ 7 days": 12, "> 7 days": 8 } },
-        { condition: "Meningitis", mgPerKg: 100, interval: { "≤ 7 days": 12, "> 7 days": 8 } }
-      ]
-    },
-    {
-      name: "Amikacin",
-      dose: [
-        { condition: "Standard", mgPerKg: 15, interval: {
-            "≤ 7 days": { "< 2 kg": 48, "> 2 kg": 24 },
-            "> 7 days": { "< 2 kg": "24–48", "> 2 kg": "12–24" }
+const drugData = [
+  {
+    name: "Ampicillin",
+    dose: [
+      { condition: "Standard", mgPerKg: 50, interval: { "≤ 7 days": 12, "> 7 days": 8 } },
+      { condition: "Meningitis", mgPerKg: 100, interval: { "≤ 7 days": 12, "> 7 days": 8 } }
+    ]
+  },
+  {
+    name: "Amikacin",
+    dose: [
+      { condition: "Standard", mgPerKg: 15, interval: {
+          "≤ 7 days": { "< 2 kg": 48, "> 2 kg": 24 },
+          "> 7 days": { "< 2 kg": "24–48", "> 2 kg": "12–24" }
+        }
+      }
+    ]
+  },
+  {
+    name: "Cefotaxime",
+    dose: [
+      { condition: "Standard/Meningitis", mgPerKg: 50, interval: { "≤ 7 days": 12, "> 7 days": 8 } }
+    ]
+  },
+  {
+    name: "Ceftazidime",
+    dose: [
+      { condition: "Standard/Meningitis", mgPerKg: 50, interval: { "≤ 7 days": 12, "> 7 days": 8 } }
+    ]
+  },
+  {
+    name: "Meropenem",
+    dose: [
+      { condition: "Standard", mgPerKg: 20, interval: { "≤ 7 days": 12, "> 7 days": 8 } },
+      { condition: "Meningitis", mgPerKg: 40, interval: { "≤ 7 days": 12, "> 7 days": 8 } }
+    ]
+  },
+  {
+    name: "Metronidazole",
+    dose: [
+      { condition: "Standard", mgPerKg: 7.5, interval: {
+          "≤ 7 days": { "< 1.2 kg": 48, "1.2–2 kg": 24, "> 2 kg": 12 },
+          "> 7 days": { "< 1.2 kg": 24, "1.2–2 kg": 12, "> 2 kg": 12 }
+        }
+      },
+      { condition: "Standard (> 2 kg, > 7 days)", mgPerKg: 15, interval: { "> 7 days": { "> 2 kg": 12 } } }
+    ]
+  },
+  {
+    name: "PipTaz",
+    dose: [
+      { condition: "Standard", mgPerKg: 90, interval: { "≤ 7 days": 12, "> 7 days": 8 } }
+    ]
+  },
+  {
+    name: "Vancomycin",
+    dose: [
+      {
+        condition: "Standard",
+        mgPerKg: 15,
+        interval: {
+          "≤ 7 days": {
+            "< 1.2 kg": 24,
+            "1.2–2 kg": "12–18",
+            "> 2 kg": 12
+          },
+          "> 7 days": {
+            "< 1.2 kg": 24,
+            "1.2–2 kg": 12,
+            "> 2 kg": 8
           }
         }
-      ]
-    },
-    {
-      name: "Cefotaxime",
-      dose: [
-        { condition: "Standard/Meningitis", mgPerKg: 50, interval: { "≤ 7 days": 12, "> 7 days": 8 } }
-      ]
-    },
-    {
-      name: "Ceftazidime",
-      dose: [
-        { condition: "Standard/Meningitis", mgPerKg: 50, interval: { "≤ 7 days": 12, "> 7 days": 8 } }
-      ]
-    },
-    {
-      name: "Meropenem",
-      dose: [
-        { condition: "Standard", mgPerKg: 20, interval: { "≤ 7 days": 12, "> 7 days": 8 } },
-        { condition: "Meningitis", mgPerKg: 40, interval: { "≤ 7 days": 12, "> 7 days": 8 } }
-      ]
-    },
-    {
-      name: "Metronidazole",
-      dose: [
-        { condition: "Standard", mgPerKg: 7.5, interval: {
-            "≤ 7 days": { "< 1.2 kg": 48, "1.2–2 kg": 24, "> 2 kg": 12 },
-            "> 7 days": { "< 1.2 kg": 24, "1.2–2 kg": 12, "> 2 kg": 12 }
-          }
-        },
-        { condition: "Standard (> 2 kg, > 7 days)", mgPerKg: 15, interval: { "> 7 days": { "> 2 kg": 12 } } }
-      ]
-    },
-    {
-      name: "Vancomycin",
-      dose: [
-        { condition: "Standard", mgPerKg: 15, interval: { "≤ 7 days": 12, "> 7 days": 8 } }
-      ]
-    },
-    {
-      name: "Caffeine",
-      dose: [
-        { condition: "Standard", mgPerKg: 5, interval: { "≤ 7 days": 24, "> 7 days": 24 } }
-      ]
-    }
-  ];
+      }
+    ]
+  },
+  {
+    name: "Fluconazole",
+    dose: [
+      { condition: "Loading", mgPerKg: 12, interval: "once" },
+      { condition: "Maintenance (0–14 days)", mgPerKg: 6, interval: 72 },
+      { condition: "Maintenance (>14 days)", mgPerKg: 6, interval: 48 }
+    ]
+  },
+  {
+    name: "Fluconazole (Prophylaxis)",
+    dose: [
+      { condition: "Standard (3–6 mg/kg)", mgPerKg: 3, interval: 72 }
+    ]
+  },
+  {
+    name: "Caffeine",
+    dose: [
+      { condition: "Standard", mgPerKg: 5, interval: { "≤ 7 days": 24, "> 7 days": 24 } }
+    ]
+  }
+];
+
 
   // Fenton growth chart percentiles
   const fentonPercentiles = {
@@ -730,17 +838,33 @@ tr:last-child td {
         let doseMg = (dose.mgPerKg * weight).toFixed(2);
         let interval = dose.interval[age];
 
-        // Handle complex interval structures
+                // Handle complex interval structures
         if (typeof interval === 'object') {
-          if (weight < 1.2) {
-            interval = interval["< 1.2 kg"];
-          } else if (weight <= 2) {
-            interval = interval["1.2–2 kg"] || interval["< 2 kg"];
+          // If it's age-based (with weight inside)
+          if (interval["≤ 7 days"] || interval["> 7 days"]) {
+            let ageInterval = interval[age];
+            if (typeof ageInterval === 'object') {
+              if (weight < 1.2) {
+                interval = ageInterval["< 1.2 kg"] || ageInterval["< 2 kg"];
+              } else if (weight <= 2) {
+                interval = ageInterval["1.2–2 kg"] || ageInterval["< 2 kg"];
+              } else {
+                interval = ageInterval["> 2 kg"];
+              }
+            } else {
+              interval = ageInterval;
+            }
           } else {
-            interval = interval["> 2 kg"];
+            if (weight < 1.2) {
+              interval = interval["< 1.2 kg"] || interval["< 2 kg"];
+            } else if (weight <= 2) {
+              interval = interval["1.2–2 kg"] || interval["< 2 kg"];
+            } else {
+              interval = interval["> 2 kg"];
+            }
           }
-          
-          // Special case for Metronidazole
+
+          // Special case for Metronidazole dose override
           if (drug.name === "Metronidazole" && age === "> 7 days" && weight > 2 && dose.mgPerKg === 15) {
             doseMg = (15 * weight).toFixed(2);
           }
