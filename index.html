@@ -25,13 +25,14 @@
     --bg: #f0f4f8;
     --card: #ffffff;
     --border: #dcdcdc;
-    --card-bg: #ffffff;
     --shadow: 0 4px 12px rgba(0,0,0,0.08);
   }
 
   * {
     box-sizing: border-box;
     font-family: 'Inter', sans-serif;
+    margin: 0;
+    padding: 0;
   }
 
   body {
@@ -39,7 +40,6 @@
     padding: 1.5rem;
     background-color: var(--bg);
     color: var(--header);
-    transition: all 0.3s ease;
     font-size: 1rem;
   }
 
@@ -52,7 +52,7 @@
 
   .container {
     background: var(--card);
-    max-width: 600px; /* Restored wider desktop view */
+    max-width: 600px;
     margin: auto;
     border-radius: 16px;
     padding: 1.5rem;
@@ -123,41 +123,6 @@
     background-color: #21867a;
   }
 
-  table {
-    width: 100%;
-    table-layout: auto;
-    font-size: 0.95rem;
-    margin-top: 1rem;
-    overflow-x: visible;
-    display: table;
-  }
-
-  th, td {
-    border: 1px solid var(--border);
-    padding: 0.6rem;
-    text-align: left;
-    transition: background-color 0.3s ease;
-    white-space: normal;
-  }
-
-  th {
-    background-color: #f7f9fb;
-    font-weight: 600;
-    color: var(--header);
-  }
-
-  tr:hover td {
-    background-color: #f0f4f8;
-  }
-
-  .tab-content {
-    display: none;
-  }
-
-  .tab-content.active {
-    display: block;
-  }
-
   .tabs {
     display: flex;
     gap: 0.5rem;
@@ -168,7 +133,7 @@
     top: 0;
     background: var(--card);
     padding: 1rem 0;
-    z-index: 1;
+    z-index: 10;
     border-bottom: 1px solid var(--border);
   }
 
@@ -186,6 +151,14 @@
     background-color: var(--primary);
     color: white;
     border-color: var(--primary);
+  }
+
+  .tab-content {
+    display: none;
+  }
+
+  .tab-content.active {
+    display: block;
   }
 
   .section-title {
@@ -241,29 +214,50 @@
   .crosshair-x {
     position: absolute;
     height: 1px;
-    background: red;
+    background: red !important;
     left: 0;
     right: 0;
-    display: block;
-    opacity: 1;
-    z-index: 10;
+    display: block !important;
+    opacity: 1 !important;
+    z-index: 15;
     cursor: row-resize;
-    pointer-events: auto;
     touch-action: none;
+    will-change: transform;
   }
 
   .crosshair-y {
     position: absolute;
     width: 1px;
-    background: red;
+    background: red !important;
     top: 0;
     bottom: 0;
-    display: block;
-    opacity: 1;
-    z-index: 10;
+    display: block !important;
+    opacity: 1 !important;
+    z-index: 15;
     cursor: col-resize;
-    pointer-events: auto;
     touch-action: none;
+    will-change: transform;
+  }
+
+  .crosshair-x::before,
+  .crosshair-y::before {
+    content: '';
+    position: absolute;
+    pointer-events: auto;
+  }
+
+  .crosshair-x::before {
+    width: 100%;
+    height: 20px;
+    top: -10px;
+    left: 0;
+  }
+
+  .crosshair-y::before {
+    height: 100%;
+    width: 20px;
+    left: -10px;
+    top: 0;
   }
 
   .readout {
@@ -356,11 +350,21 @@
       font-size: 0.9rem;
       padding: 6px 4px;
     }
+
+    .crosshair-x::before {
+      height: 30px;
+      top: -15px;
+    }
+
+    .crosshair-y::before {
+      width: 30px;
+      left: -15px;
+    }
   }
 
   .table-wrapper {
     overflow-x: auto;
-    background: var(--card-bg);
+    background: var(--card);
     border-radius: 8px;
     box-shadow: var(--shadow);
     padding: 0 2px;
@@ -412,13 +416,55 @@
   <h1>Neonate Dosage Calculator</h1>
   <div class="container">
     <div class="tabs">
-      <button class="tab-button active" onclick="openTab('dosage')">Dosage</button>
+      <button class="tab-button active" onclick="openTab('phototherapy')">Phototherapy</button>
+      <button class="tab-button" onclick="openTab('dosage')">Dosage</button>
       <button class="tab-button" onclick="openTab('nutrition')">Nutrition</button>
       <button class="tab-button" onclick="openTab('fenton')">Fenton Chart</button>
-      <button class="tab-button" onclick="openTab('phototherapy')">Phototherapy</button>
     </div>
 
-    <div id="dosage" class="tab-content active">
+    <div id="phototherapy" class="tab-content active">
+      <div class="inputs form-group active">
+        <label>Age (hours):</label>
+        <input type="number" id="photo-age-input" step="0.1" min="0" placeholder="Enter age" aria-label="Age in hours">
+        <label>TSB (mg/dL):</label>
+        <input type="number" id="photo-tsb-input" step="0.1" min="0" placeholder="Enter TSB" aria-label="Total Serum Bilirubin in mg/dL">
+        <button class="btn" onclick="setAllCrosshairs()">Set</button>
+      </div>
+      <div class="title">Phototherapy — No Risk Factors</div>
+      <div class="chart" data-xmin="-5.3" data-xmax="342" data-ymin="5.4" data-ymax="24" data-l="9.1" data-t="8.5" data-r="10.8" data-b="21.3">
+        <div class="canvas-wrap">
+          <img src="https://raw.githubusercontent.com/nuhadwrk/neonate/main/TSB%20levels%20for%20PT%20%26%20ET%201.png" alt="Phototherapy No Risk Factors Chart">
+          <div class="plot"><div class="crosshair-x"></div><div class="crosshair-y"></div></div>
+          <div class="readout">Age: 0 h (0 d) • TSB: 0 mg/dL (0 µmol/L)</div>
+        </div>
+      </div>
+      <div class="title">Phototherapy — With Risk Factors</div>
+      <div class="chart" data-xmin="-5.3" data-xmax="342" data-ymin="3.4" data-ymax="20" data-l="9.1" data-t="8.5" data-r="11.5" data-b="22.2">
+        <div class="canvas-wrap">
+          <img src="https://raw.githubusercontent.com/nuhadwrk/neonate/main/TSB%20levels%20for%20PT%20%26%20ET%202.png" alt="Phototherapy With Risk Factors Chart">
+          <div class="plot"><div class="crosshair-x"></div><div class="crosshair-y"></div></div>
+          <div class="readout">Age: 0 h (0 d) • TSB: 0 mg/dL (0 µmol/L)</div>
+        </div>
+      </div>
+      <div class="title">Exchange — No Risk Factors</div>
+      <div class="chart" data-xmin="-5" data-xmax="342" data-ymin="13.5" data-ymax="28" data-l="9.2" data-t="8.0" data-r="10.5" data-b="20.2">
+        <div class="canvas-wrap">
+          <img src="https://raw.githubusercontent.com/nuhadwrk/neonate/main/TSB%20levels%20for%20PT%20%26%20ET%203.png" alt="Exchange No Risk Factors Chart">
+          <div class="plot"><div class="crosshair-x"></div><div class="crosshair-y"></div></div>
+          <div class="readout">Age: 0 h (0 d) • TSB: 0 mg/dL (0 µmol/L)</div>
+        </div>
+      </div>
+      <div class="title">Exchange — With Risk Factors</div>
+      <div class="chart" data-xmin="-5" data-xmax="342" data-ymin="11.5" data-ymax="24" data-l="8.9" data-t="7.2" data-r="10.4" data-b="21.2">
+        <div class="canvas-wrap">
+          <img src="https://raw.githubusercontent.com/nuhadwrk/neonate/main/TSB%20levels%20for%20PT%20%26%20ET%204.png" alt="Exchange With Risk Factors Chart">
+          <div class="plot"><div class="crosshair-x"></div><div class="crosshair-y"></div></div>
+          <div class="readout">Age: 0 h (0 d) • TSB: 0 mg/dL (0 µmol/L)</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="dosage" class="tab-content">
       <div class="form-group active">
         <label for="weight">Weight (kg):</label>
         <input type="number" id="weight" placeholder="Enter weight" step="0.01" min="0.1">
@@ -509,48 +555,6 @@
       <img src="FM.jpg" alt="Fenton Chart for Boys" class="chart-image" id="fenton-male" style="display: none;">
       <img src="FF.jpg" alt="Fenton Chart for Girls" class="chart-image" id="fenton-female" style="display: none;">
       <div class="note" style="margin-top: 1rem; text-align: center;">Fenton Growth Charts (2025)</div>
-    </div>
-
-    <div id="phototherapy" class="tab-content">
-      <div class="inputs form-group active">
-        <label>Age (hours):</label>
-        <input type="number" id="photo-age-input" step="0.1" min="0" placeholder="Enter age" aria-label="Age in hours">
-        <label>TSB (mg/dL):</label>
-        <input type="number" id="photo-tsb-input" step="0.1" min="0" placeholder="Enter TSB" aria-label="Total Serum Bilirubin in mg/dL">
-        <button class="btn" onclick="setAllCrosshairs()">Set</button>
-      </div>
-      <div class="title">Phototherapy — No Risk Factors</div>
-      <div class="chart" data-xmin="-5.3" data-xmax="342" data-ymin="5.4" data-ymax="24" data-l="9.1" data-t="8.5" data-r="10.8" data-b="21.3">
-        <div class="canvas-wrap">
-          <img src="https://raw.githubusercontent.com/nuhadwrk/neonate/main/TSB%20levels%20for%20PT%20%26%20ET%201.png" alt="Phototherapy No Risk Factors Chart">
-          <div class="plot"><div class="crosshair-x"></div><div class="crosshair-y"></div></div>
-          <div class="readout">Age: 0 h (0 d) • TSB: 0 mg/dL (0 µmol/L)</div>
-        </div>
-      </div>
-      <div class="title">Phototherapy — With Risk Factors</div>
-      <div class="chart" data-xmin="-5.3" data-xmax="342" data-ymin="3.4" data-ymax="20" data-l="9.1" data-t="8.5" data-r="11.5" data-b="22.2">
-        <div class="canvas-wrap">
-          <img src="https://raw.githubusercontent.com/nuhadwrk/neonate/main/TSB%20levels%20for%20PT%20%26%20ET%202.png" alt="Phototherapy With Risk Factors Chart">
-          <div class="plot"><div class="crosshair-x"></div><div class="crosshair-y"></div></div>
-          <div class="readout">Age: 0 h (0 d) • TSB: 0 mg/dL (0 µmol/L)</div>
-        </div>
-      </div>
-      <div class="title">Exchange — No Risk Factors</div>
-      <div class="chart" data-xmin="-5" data-xmax="342" data-ymin="13.5" data-ymax="28" data-l="9.2" data-t="8.0" data-r="10.5" data-b="20.2">
-        <div class="canvas-wrap">
-          <img src="https://raw.githubusercontent.com/nuhadwrk/neonate/main/TSB%20levels%20for%20PT%20%26%20ET%203.png" alt="Exchange No Risk Factors Chart">
-          <div class="plot"><div class="crosshair-x"></div><div class="crosshair-y"></div></div>
-          <div class="readout">Age: 0 h (0 d) • TSB: 0 mg/dL (0 µmol/L)</div>
-        </div>
-      </div>
-      <div class="title">Exchange — With Risk Factors</div>
-      <div class="chart" data-xmin="-5" data-xmax="342" data-ymin="11.5" data-ymax="24" data-l="8.9" data-t="7.2" data-r="10.4" data-b="21.2">
-        <div class="canvas-wrap">
-          <img src="https://raw.githubusercontent.com/nuhadwrk/neonate/main/TSB%20levels%20for%20PT%20%26%20ET%204.png" alt="Exchange With Risk Factors Chart">
-          <div class="plot"><div class="crosshair-x"></div><div class="crosshair-y"></div></div>
-          <div class="readout">Age: 0 h (0 d) • TSB: 0 mg/dL (0 µmol/L)</div>
-        </div>
-      </div>
     </div>
   </div>
 
@@ -986,8 +990,8 @@
     }
 
     function initApp() {
-      openTab('dosage');
-      document.querySelectorAll('#dosage .form-group').forEach(group => {
+      openTab('phototherapy');
+      document.querySelectorAll('#phototherapy .form-group').forEach(group => {
         group.classList.add('active');
       });
 
