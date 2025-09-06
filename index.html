@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Neonate Dosage Calculator</title>
   
-    <!-- Required for iOS web app behavior -->
+  <!-- Required for iOS web app behavior -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="DosageCalc">
@@ -25,6 +25,8 @@
     --bg: #f0f4f8;
     --card: #ffffff;
     --border: #dcdcdc;
+    --card-bg: #ffffff;
+    --shadow: 0 4px 12px rgba(0,0,0,0.08);
   }
 
   * {
@@ -54,7 +56,7 @@
     margin: auto;
     border-radius: 16px;
     padding: 1.5rem;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    box-shadow: var(--shadow);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
   }
 
@@ -295,6 +297,109 @@
     border-color: var(--primary);
   }
 
+  .card {
+    background: var(--card);
+    border-radius: 14px;
+    padding: 10px;
+    box-shadow: var(--shadow);
+    margin-bottom: 1rem;
+  }
+
+  .title {
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: var(--header);
+  }
+
+  .controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 6px;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+  }
+
+  .controls.show {
+    max-height: 200px;
+  }
+
+  .canvas-wrap {
+    position: relative;
+    border-radius: 10px;
+    overflow: hidden;
+    background: #f7f9fb;
+    border: 1px solid var(--border);
+  }
+
+  .canvas-wrap img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .plot {
+    position: absolute;
+    pointer-events: none;
+    border: 1px dashed rgba(255,255,255,0.5);
+    background: transparent;
+    z-index: 5;
+  }
+
+  .crosshair-x, .crosshair-y {
+    position: absolute;
+    pointer-events: none;
+    opacity: 1;
+    background: #ff0000;
+    box-shadow: 0 0 6px rgba(255,0,0,0.45), 0 0 1px rgba(255,0,0,0.85);
+    display: block;
+    z-index: 10;
+  }
+
+  .crosshair-x {
+    left: 0;
+    right: 0;
+    height: 1px;
+  }
+
+  .crosshair-y {
+    top: 0;
+    bottom: 0;
+    width: 1px;
+  }
+
+  .readout {
+    position: absolute;
+    right: 8px;
+    top: 8px;
+    background: rgba(13,19,32,0.85);
+    border: 1px solid #243147;
+    border-radius: 10px;
+    padding: 8px 10px;
+    font-size: 12px;
+    color: white;
+    z-index: 15;
+  }
+
+  .toggle-btn {
+    width: 100%;
+    padding: 0.5rem;
+    background-color: var(--primary);
+    color: white;
+    font-size: 0.9rem;
+    font-weight: 500;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    margin-top: 0.5rem;
+    transition: background-color 0.3s ease;
+  }
+
+  .toggle-btn:hover {
+    background-color: #21867a;
+  }
+
   @media (max-width: 600px) {
     body {
       font-size: 0.95rem;
@@ -337,65 +442,66 @@
       width: 100% !important;
     }
   }
-.table-wrapper {
-  overflow-x: auto;
-  background: var(--card-bg);
-  border-radius: 8px;
-  box-shadow: var(--shadow);
-  padding: 0 2px;
-  margin: 0 auto;
-  display: block;
-  width: fit-content;
-  max-width: 100%;
-  font-size: 0.95rem;
-}
 
-table {
-  border-collapse: collapse;
-  width: 100%;
-}
-
-th, td {
-  padding: 6px 8px;
-  text-align: left;
-  font-size: 1rem;
-  border-bottom: 1px solid var(--border);
-  white-space: nowrap;
-  vertical-align: top;
-}
-
-th {
-  background: #f7f9fb;
-  font-weight: 600;
-  position: sticky;
-  top: 0;
-}
-
-tr:last-child td {
-  border-bottom: none;
-}
-
-.cell-content {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-}
-
-.conc {
-  font-size: 0.75rem;
-  color: gray;
-}
-
-@media (max-width: 480px) {
   .table-wrapper {
+    overflow-x: auto;
+    background: var(--card-bg);
+    border-radius: 8px;
+    box-shadow: var(--shadow);
     padding: 0 2px;
+    margin: 0 auto;
+    display: block;
+    width: fit-content;
+    max-width: 100%;
     font-size: 0.95rem;
   }
-  th, td {
-    font-size: 0.9rem;
-    padding: 6px 4px;
+
+  table {
+    border-collapse: collapse;
+    width: 100%;
   }
-}
+
+  th, td {
+    padding: 6px 8px;
+    text-align: left;
+    font-size: 1rem;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+    vertical-align: top;
+  }
+
+  th {
+    background: #f7f9fb;
+    font-weight: 600;
+    position: sticky;
+    top: 0;
+  }
+
+  tr:last-child td {
+    border-bottom: none;
+  }
+
+  .cell-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+  }
+
+  .conc {
+    font-size: 0.75rem;
+    color: gray;
+  }
+
+  @media (max-width: 480px) {
+    .table-wrapper {
+      padding: 0 2px;
+      font-size: 0.95rem;
+    }
+    th, td {
+      font-size: 0.9rem;
+      padding: 6px 4px;
+    }
+  }
 </style>
 </head>
 <body>
@@ -421,58 +527,53 @@ tr:last-child td {
         </div>
       </div>
       <button class="btn" onclick="updateDosages()">Calculate</button>
-<div class="table-wrapper">
-  <table>
-    <thead>
-      <tr>
-        <th>Drug</th>
-        <th>Mg/Kg/Dose</th>
-        <th>Mg/Dose</th>
-        <th>(hr)</th>
-      </tr>
-    </thead>
-    <tbody id="dosage-table">
-      <tr>
-        <td colspan="4">Enter weight to calculate...</td>
-      </tr>
-    </tbody>
-  </table>
-</div>
-
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Drug</th>
+              <th>Mg/Kg/Dose</th>
+              <th>Mg/Dose</th>
+              <th>(hr)</th>
+            </tr>
+          </thead>
+          <tbody id="dosage-table">
+            <tr>
+              <td colspan="4">Enter weight to calculate...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
 
     <div id="nutrition" class="tab-content">
-<div class="form-group active">
-  <label for="birth-weight-wl">Birth Weight (kg):</label>
-  <input type="number" id="birth-weight-wl" placeholder="Enter birth weight in kg" step="0.01" min="0.1">
-</div>
-<div class="form-group active">
-  <label for="current-weight-wl">Current Weight (kg):</label>
-  <input type="number" id="current-weight-wl" placeholder="Enter current weight in kg" step="0.01" min="0.1">
-</div>
-<button class="btn" onclick="calculateWeightLoss()">Calculate Weight Loss</button>
-<div id="weight-loss-result" class="note" style="margin-top: 1rem;"></div>
-<div class="form-group active">
-  <label for="feed-weight">Weight (kg):</label>
-  <input type="number" id="feed-weight" placeholder="Enter weight in kg" step="0.01" min="0.1">
-</div>
-
-<div class="form-group active">
-  <label for="feed-kcal">Target kcal/kg/day:</label>
-  <input type="number" id="feed-kcal" placeholder="Enter kcal/kg/day" step="1" min="50">
-</div>
-
-<div class="form-group active">
-  <label>Feed Type:</label>
-  <div class="radio-group">
-    <label><input type="radio" name="feed-type" value="0.67" checked> Breast Milk (0.67 kcal/ml)</label>
-    <label><input type="radio" name="feed-type" value="0.81"> Preterm Formula (0.81 kcal/ml)</label>
-  </div>
-</div>
-
-<button class="btn" onclick="calculateFeedVolume()">Calculate Feed Volume</button>
-<div id="feed-result" class="note" style="margin-top: 1rem;"></div>
-
+      <div class="form-group active">
+        <label for="birth-weight-wl">Birth Weight (kg):</label>
+        <input type="number" id="birth-weight-wl" placeholder="Enter birth weight in kg" step="0.01" min="0.1">
+      </div>
+      <div class="form-group active">
+        <label for="current-weight-wl">Current Weight (kg):</label>
+        <input type="number" id="current-weight-wl" placeholder="Enter current weight in kg" step="0.01" min="0.1">
+      </div>
+      <button class="btn" onclick="calculateWeightLoss()">Calculate Weight Loss</button>
+      <div id="weight-loss-result" class="note" style="margin-top: 1rem;"></div>
+      <div class="form-group active">
+        <label for="feed-weight">Weight (kg):</label>
+        <input type="number" id="feed-weight" placeholder="Enter weight in kg" step="0.01" min="0.1">
+      </div>
+      <div class="form-group active">
+        <label for="feed-kcal">Target kcal/kg/day:</label>
+        <input type="number" id="feed-kcal" placeholder="Enter kcal/kg/day" step="1" min="50">
+      </div>
+      <div class="form-group active">
+        <label>Feed Type:</label>
+        <div class="radio-group">
+          <label><input type="radio" name="feed-type" value="0.67" checked> Breast Milk (0.67 kcal/ml)</label>
+          <label><input type="radio" name="feed-type" value="0.81"> Preterm Formula (0.81 kcal/ml)</label>
+        </div>
+      </div>
+      <button class="btn" onclick="calculateFeedVolume()">Calculate Feed Volume</button>
+      <div id="feed-result" class="note" style="margin-top: 1rem;"></div>
       <h3 class="section-title">Nutrition Guidelines</h3>
       <ul>
         <li>Day 1: Term: 60–80 ml/kg/day; Preterm: 80–100 ml/kg/day (D10%)</li>
@@ -501,675 +602,547 @@ tr:last-child td {
       </div>
       <button class="btn" onclick="updateFenton()">Calculate</button>
       <div id="fenton-result" class="note" style="margin-top: 1rem; padding: 1rem; background: #f7f9fb; border-radius: 8px;"></div>
-      
-      <!-- Fenton chart images -->
       <img src="FM.jpg" alt="Fenton Chart for Boys" class="chart-image" id="fenton-male" style="display: none;">
       <img src="FF.jpg" alt="Fenton Chart for Girls" class="chart-image" id="fenton-female" style="display: none;">
-      
       <div class="note" style="margin-top: 1rem; text-align: center;">Fenton Growth Charts (2025)</div>
     </div>
 
     <div id="phototherapy" class="tab-content">
-      <h3 class="section-title">Phototherapy Guidelines</h3>
-      
-      <div class="form-group active">
-        <label for="bilirubin-level">Total Serum Bilirubin (mg/dL):</label>
-        <input type="number" id="bilirubin-level" placeholder="Enter TSB level" step="0.1" min="0">
-      </div>
-      
-      <div class="form-group active">
-        <label>Age:</label>
-        <div class="age-input-group">
-          <input type="number" id="age-value" placeholder="Enter age in hours" step="1" min="0" max="168">
-          <div class="age-type-group">
-            <div class="age-type selected" onclick="selectAgeType('hours')">Hours</div>
-            <div class="age-type" onclick="selectAgeType('days')">Days</div>
-          </div>
+      <div class="card">
+        <div class="title">Phototherapy — No RF</div>
+        <div class="controls">
+          <label><span>L%</span><input type="number" step="0.1" value="9.1" data-k="l" readonly style="width: 70px; padding: 6px 8px; border-radius: 10px; border: 1px solid var(--border); background: #fff; color: var(--header); font-size: 12px;"></label>
+          <label><span>T%</span><input type="number" step="0.1" value="8.5" data-k="t" readonly style="width: 70px; padding: 6px 8px; border-radius: 10px; border: 1px solid var(--border); background: #fff; color: var(--header); font-size: 12px;"></label>
+          <label><span>R%</span><input type="number" step="0.1" value="10.8" data-k="r" readonly style="width: 70px; padding: 6px 8px; border-radius: 10px; border: 1px solid var(--border); background: #fff; color: var(--header); font-size: 12px;"></label>
+          <label><span>B%</span><input type="number" step="0.1" value="21.3" data-k="b" readonly style="width: 70px; padding: 6px 8px; border-radius: 10px; border: 1px solid var(--border); background: #fff; color: var(--header); font-size: 12px;"></label>
+          <label><span>X Min</span><input type="number" step="0.1" value="-5.3" data-k="xmin" readonly style="width: 70px; padding: 6px 8px; border-radius: 10px; border: 1px solid var(--border); background: #fff; color: var(--header); font-size: 12px;"></label>
+          <label><span>X Max</span><input type="number" step="0.1" value="342" data-k="xmax" readonly style="width: 70px; padding: 6px 8px; border-radius: 10px; border: 1px solid var(--border); background: #fff; color: var(--header); font-size: 12px;"></label>
+          <label><span>Y Min</span><input type="number" step="0.1" value="5.4" data-k="ymin" readonly style="width: 70px; padding: 6px 8px; border-radius: 10px; border: 1px solid var(--border); background: #fff; color: var(--header); font-size: 12px;"></label>
+          <label><span>Y Max</span><input type="number" step="0.1" value="24" data-k="ymax" readonly style="width: 70px; padding: 6px 8px; border-radius: 10px; border: 1px solid var(--border); background: #fff; color: var(--header); font-size: 12px;"></label>
         </div>
-      </div>
-      
-      <div class="form-group active">
-        <label>Risk Category:</label>
-        <div class="risk-group">
-          <div class="risk-option selected" onclick="selectRisk('lower')">
-            Lower Risk
-            <div class="risk-description">≥38 wk & well</div>
-          </div>
-          <div class="risk-option" onclick="selectRisk('medium')">
-            Medium Risk
-            <div class="risk-description">≥38 wk + RF or 35–37⁶/₇ wk & well</div>
-          </div>
-          <div class="risk-option" onclick="selectRisk('higher')">
-            Higher Risk
-            <div class="risk-description">35–37⁶/₇ wk + RF</div>
-          </div>
+        <div class="canvas-wrap">
+          <img src="https://raw.githubusercontent.com/nuhadwrk/neonate/main/TSB%20levels%20for%20PT%20%26%20ET%201.png" alt="">
+          <div class="plot"><div class="crosshair-x"></div><div class="crosshair-y"></div></div>
+          <div class="readout">Click or tap to set position</div>
         </div>
+        <button class="toggle-btn" onclick="this.parentElement.querySelector('.controls').classList.toggle('show');this.textContent=this.parentElement.querySelector('.controls').classList.contains('show')?'Hide Adjustments':'Show Adjustments';">Show Adjustments</button>
       </div>
-      
-      <button class="btn" onclick="evaluatePhototherapy()">Evaluate</button>
-      
-      <div id="phototherapy-result" class="note" style="margin-top: 1rem; padding: 1rem; background: #f7f9fb; border-radius: 8px; font-weight: 500;"></div>
-      
-      <!-- Phototherapy images -->
-      <img src="PT.jpg" alt="Phototherapy Guidelines" class="chart-image">
-      <img src="ET.jpg" alt="Exchange Transfusion Guidelines" class="chart-image" style="margin-top: 1rem;">
+
+      <div class="card">
+        <div class="title">Phototherapy — With RF</div>
+        <div class="controls">
+          <label><span>L%</span><input type="number" step="0.1" value="9.1" data-k="l" readonly style="width: 70px; padding: 6px 8px; border-radius: 10px; border: 1px solid var(--border); background: #fff; color: var(--header); font-size: 12px;"></label>
+          <label><span>T%</span><input type="number" step="0.1" value="8.5" data-k="t" readonly style="width: 70px; padding: 6px 8px; border-radius: 10px; border: 1px solid var(--border); background: #fff; color: var(--header); font-size: 12px;"></label>
+          <label><span>R%</span><input type="number" step="0.1" value="11.5" data-k="r" readonly style="width: 70px; padding: 6px 8px; border-radius: 10px; border: 1px solid var(--border); background: #fff; color: var(--header); font-size: 12px;"></label>
+          <label><span>B%</span><input type="number" step="0.1" value="22.2" data-k="b" readonly style="width: 70px; padding: 6px 8px; border-radius: 10px; border: 1px solid var(--border); background: #fff; color: var(--header); font-size: 12px;"></label>
+          <label><span>X Min</span><input type="number" step="0.1" value="-5.3" data-k="xmin" readonly style="width: 70px; padding: 6px 8px; border-radius: 10px; border: 1px solid var(--border); background: #fff; color: var(--header); font-size: 12px;"></label>
+          <label><span>X Max</span><input type="number" step="0.1" value="342" data-k="xmax" readonly style="width: 70px; padding: 6px 8px; border-radius: 10px; border: 1px solid var(--border); background: #fff; color: var(--header); font-size: 12px;"></label>
+          <label><span>Y Min</span><input type="number" step="0.1" value="3.4" data-k="ymin" readonly style="width: 70px; padding: 6px 8px; border-radius: 10px; border: 1px solid var(--border); background: #fff; color: var(--header); font-size: 12px;"></label>
+          <label><span>Y Max</span><input type="number" step="0.1" value="20" data-k="ymax" readonly style="width: 70px; padding: 6px 8px; border-radius: 10px; border: 1px solid var(--border); background: #fff; color: var(--header); font-size: 12px;"></label>
+        </div>
+        <div class="canvas-wrap">
+          <img src="https://raw.githubusercontent.com/nuhadwrk/neonate/main/TSB%20levels%20for%20PT%20%26%20ET%202.png" alt="">
+          <div class="plot"><div class="crosshair-x"></div><div class="crosshair-y"></div></div>
+          <div class="readout">Click or tap to set position</div>
+        </div>
+        <button class="toggle-btn" onclick="this.parentElement.querySelector('.controls').classList.toggle('show');this.textContent=this.parentElement.querySelector('.controls').classList.contains('show')?'Hide Adjustments':'Show Adjustments';">Show Adjustments</button>
+      </div>
+
+      <div class="card">
+        <div class="title">Exchange — No RF</div>
+        <div class="controls">
+          <label><span>L%</span><input type="number" step="0.1" value="9.2" data-k="l" readonly style="width: 70px; padding: 6px 8px; border-radius: 10px; border: 1px solid var(--border); background: #fff; color: var(--header); font-size: 12px;"></label>
+          <label><span>T%</span><input type="number" step="0.1" value="8.0" data-k="t" readonly style="width: 70px; padding: 6px 8px; border-radius: 10px; border: 1px solid var(--border); background: #fff; color: var(--header); font-size: 12px;"></label>
+          <label><span>R%</span><input type="number" step="0.1" value="10.5" data-k="r" readonly style="width: 70px; padding: 6px 8px; border-radius: 10px; border: 1px solid var(--border); background: #fff; color: var(--header); font-size: 12px;"></label>
+          <label><span>B%</span><input type="number" step="0.1" value="20.2" data-k="b" readonly style="width: 70px; padding: 6px 8px; border-radius: 10px; border: 1px solid var(--border); background: #fff; color: var(--header); font-size: 12px;"></label>
+          <label><span>X Min</span><input type="number" step="0.1" value="-5" data-k="xmin" readonly style="width: 70px; padding: 6px 8px; border-radius: 10px; border: 1px solid var(--border); background: #fff; color: var(--header); font-size: 12px;"></label>
+          <label><span>X Max</span><input type="number" step="0.1" value="342" data-k="xmax" readonly style="width: 70px; padding: 6px 8px; border-radius: 10px; border: 1px solid var(--border); background: #fff; color: var(--header); font-size: 12px;"></label>
+          <label><span>Y Min</span><input type="number" step="0.1" value="13.5" data-k="ymin" readonly style="width: 70px; padding: 6px 8px; border-radius: 10px; border: 1px solid var(--border); background: #fff; color: var(--header); font-size: 12px;"></label>
+          <label><span>Y Max</span><input type="number" step="0.1" value="28" data-k="ymax" readonly style="width: 70px; padding: 6px 8px; border-radius: 10px; border: 1px solid var(--border); background: #fff; color: var(--header); font-size: 12px;"></label>
+        </div>
+        <div class="canvas-wrap">
+          <img src="https://raw.githubusercontent.com/nuhadwrk/neonate/main/TSB%20levels%20for%20PT%20%26%20ET%203.png" alt="">
+          <div class="plot"><div class="crosshair-x"></div><div class="crosshair-y"></div></div>
+          <div class="readout">Click or tap to set position</div>
+        </div>
+        <button class="toggle-btn" onclick="this.parentElement.querySelector('.controls').classList.toggle('show');this.textContent=this.parentElement.querySelector('.controls').classList.contains('show')?'Hide Adjustments':'Show Adjustments';">Show Adjustments</button>
+      </div>
+
+      <div class="card">
+        <div class="title">Exchange — With RF</div>
+        <div class="controls">
+          <label><span>L%</span><input type="number" step="0.1" value="8.9" data-k="l" readonly style="width: 70px; padding: 6px 8px; border-radius: 10px; border: 1px solid var(--border); background: #fff; color: var(--header); font-size: 12px;"></label>
+          <label><span>T%</span><input type="number" step="0.1" value="7.2" data-k="t" readonly style="width: 70px; padding: 6px 8px; border-radius: 10px; border: 1px solid var(--border); background: #fff; color: var(--header); font-size: 12px;"></label>
+          <label><span>R%</span><input type="number" step="0.1" value="10.4" data-k="r" readonly style="width: 70px; padding: 6px 8px; border-radius: 10px; border: 1px solid var(--border); background: #fff; color: var(--header); font-size: 12px;"></label>
+          <label><span>B%</span><input type="number" step="0.1" value="21.2" data-k="b" readonly style="width: 70px; padding: 6px 8px; border-radius: 10px; border: 1px solid var(--border); background: #fff; color: var(--header); font-size: 12px;"></label>
+          <label><span>X Min</span><input type="number" step="0.1" value="-5" data-k="xmin" readonly style="width: 70px; padding: 6px 8px; border-radius: 10px; border: 1px solid var(--border); background: #fff; color: var(--header); font-size: 12px;"></label>
+          <label><span>X Max</span><input type="number" step="0.1" value="342" data-k="xmax" readonly style="width: 70px; padding: 6px 8px; border-radius: 10px; border: 1px solid var(--border); background: #fff; color: var(--header); font-size: 12px;"></label>
+          <label><span>Y Min</span><input type="number" step="0.1" value="11.5" data-k="ymin" readonly style="width: 70px; padding: 6px 8px; border-radius: 10px; border: 1px solid var(--border); background: #fff; color: var(--header); font-size: 12px;"></label>
+          <label><span>Y Max</span><input type="number" step="0.1" value="24" data-k="ymax" readonly style="width: 70px; padding: 6px 8px; border-radius: 10px; border: 1px solid var(--border); background: #fff; color: var(--header); font-size: 12px;"></label>
+        </div>
+        <div class="canvas-wrap">
+          <img src="https://raw.githubusercontent.com/nuhadwrk/neonate/main/TSB%20levels%20for%20PT%20%26%20ET%204.png" alt="">
+          <div class="plot"><div class="crosshair-x"></div><div class="crosshair-y"></div></div>
+          <div class="readout">Click or tap to set position</div>
+        </div>
+        <button class="toggle-btn" onclick="this.parentElement.querySelector('.controls').classList.toggle('show');this.textContent=this.parentElement.querySelector('.controls').classList.contains('show')?'Hide Adjustments':'Show Adjustments';">Show Adjustments</button>
+      </div>
     </div>
   </div>
 
   <script>
-function calculateWeightLoss() {
-  const birthWeight = parseFloat(document.getElementById('birth-weight-wl').value);
-  const currentWeight = parseFloat(document.getElementById('current-weight-wl').value);
-  const result = document.getElementById('weight-loss-result');
-
-  if (!birthWeight || !currentWeight || birthWeight <= 0 || currentWeight <= 0) {
-    result.innerHTML = '<span style="color: #e63946;">Please enter valid weights.</span>';
-    return;
-  }
-
-  const lossPercent = ((birthWeight - currentWeight) / birthWeight) * 100;
-  const rounded = lossPercent.toFixed(1);
-  let message = `Weight loss: <strong>${rounded}%</strong>`;
-
-  if (lossPercent > 10) {
-    message += ` <span style="color: #e76f51;">(Exceeds 10%)</span>`;
-  }
-
-  result.innerHTML = message;
-}
-function calculateFeedVolume() {
-  const weight = parseFloat(document.getElementById('feed-weight').value);
-  const kcal = parseFloat(document.getElementById('feed-kcal').value);
-  const kcalPerMl = parseFloat(document.querySelector('input[name="feed-type"]:checked').value);
-  const result = document.getElementById('feed-result');
-
-  if (!weight || !kcal || weight <= 0 || kcal <= 0) {
-    result.innerHTML = '<span style="color: #e63946;">Please enter valid weight and kcal/kg/day.</span>';
-    return;
-  }
-
-  const totalDailyMl = (kcal * weight) / kcalPerMl;
-  const perFeedMl = totalDailyMl / 8;
-
-  result.innerHTML = `
-    <strong>Feed Volume:</strong><br>
-    Total daily: <strong>${totalDailyMl.toFixed(1)} ml</strong><br>
-    Every 3 hours (8 feeds/day): <strong>${perFeedMl.toFixed(1)} ml</strong>
-  `;
-}
-
-   // Drug database
-const drugData = [
-  {
-    name: "Ampicillin",
-    dose: [
-      { condition: "Standard", mgPerKg: 50, interval: { "≤ 7 days": 12, "> 7 days": 8 } },
-      { condition: "Meningitis", mgPerKg: 100, interval: { "≤ 7 days": 12, "> 7 days": 8 } }
-    ]
-  },
-  {
-    name: "Amikacin",
-    dose: [
-      { condition: "Standard", mgPerKg: 15, interval: {
-          "≤ 7 days": { "< 2 kg": 48, "> 2 kg": 24 },
-          "> 7 days": { "< 2 kg": "24–48", "> 2 kg": "12–24" }
-        }
-      }
-    ]
-  },
-  {
-    name: "Cefotaxime",
-    dose: [
-      { condition: "Standard/Meningitis", mgPerKg: 50, interval: { "≤ 7 days": 12, "> 7 days": 8 } }
-    ]
-  },
-  {
-    name: "Ceftazidime",
-    dose: [
-      { condition: "Standard/Meningitis", mgPerKg: 50, interval: { "≤ 7 days": 12, "> 7 days": 8 } }
-    ]
-  },
-  {
-    name: "Meropenem",
-    dose: [
-      { condition: "Standard", mgPerKg: 20, interval: { "≤ 7 days": 12, "> 7 days": 8 } },
-      { condition: "Meningitis", mgPerKg: 40, interval: { "≤ 7 days": 12, "> 7 days": 8 } }
-    ]
-  },
-  {
-    name: "Metronidazole",
-    dose: [
-      { condition: "Standard", mgPerKg: 7.5, interval: {
-          "≤ 7 days": { "< 1.2 kg": 48, "1.2–2 kg": 24, "> 2 kg": 12 },
-          "> 7 days": { "< 1.2 kg": 24, "1.2–2 kg": 12, "> 2 kg": 12 }
-        }
-      },
-      { condition: "Standard (> 2 kg, > 7 days)", mgPerKg: 15, interval: { "> 7 days": { "> 2 kg": 12 } } }
-    ]
-  },
-  {
-    name: "PipTaz",
-    dose: [
-      { condition: "Standard", mgPerKg: 90, interval: { "≤ 7 days": 12, "> 7 days": 8 } }
-    ]
-  },
-  {
-    name: "Vancomycin",
-    dose: [
+    // Drug database
+    const drugData = [
       {
-        condition: "Standard",
-        mgPerKg: 15,
-        interval: {
-          "≤ 7 days": {
-            "< 1.2 kg": 24,
-            "1.2–2 kg": "12–18",
-            "> 2 kg": 12
-          },
-          "> 7 days": {
-            "< 1.2 kg": 24,
-            "1.2–2 kg": 12,
-            "> 2 kg": 8
-          }
-        }
-      }
-    ]
-  },
-  {
-    name: "Fluconazole",
-    dose: [
-      { condition: "Loading", mgPerKg: 12, interval: "once" },
-      { condition: "Maintenance (0–14 days)", mgPerKg: 6, interval: 72 },
-      { condition: "Maintenance (>14 days)", mgPerKg: 6, interval: 48 }
-    ]
-  },
-  {
-    name: "Fluconazole (Prophylaxis)",
-    dose: [
-      { condition: "Standard (3–6 mg/kg)", mgPerKg: 3, interval: 72 }
-    ]
-  },
-  {
-    name: "Caffeine",
-    dose: [
-      { condition: "Standard", mgPerKg: 5, interval: { "≤ 7 days": 24, "> 7 days": 24 } }
-    ]
-  }
-];
-
-
-  // Fenton growth chart percentiles
-  const fentonPercentiles = {
-    male: {
-      22: { p10: 400, p90: 600 },
-      24: { p10: 500, p90: 750 },
-      26: { p10: 600, p90: 900 },
-      28: { p10: 800, p90: 1200 },
-      30: { p10: 1000, p90: 1500 },
-      32: { p10: 1300, p90: 1900 },
-      34: { p10: 1700, p90: 2500 },
-      36: { p10: 2100, p90: 3100 },
-      38: { p10: 2500, p90: 3700 },
-      40: { p10: 2800, p90: 4100 },
-      42: { p10: 3000, p90: 4400 },
-      50: { p10: 3100, p90: 4600 }
-    },
-    female: {
-      22: { p10: 380, p90: 580 },
-      24: { p10: 480, p90: 720 },
-      26: { p10: 580, p90: 870 },
-      28: { p10: 760, p90: 1140 },
-      30: { p10: 950, p90: 1420 },
-      32: { p10: 1250, p90: 1800 },
-      34: { p10: 1600, p90: 2400 },
-      36: { p10: 2000, p90: 3000 },
-      38: { p10: 2400, p90: 3500 },
-      40: { p10: 2700, p90: 3900 },
-      42: { p10: 2900, p90: 4200 },
-      50: { p10: 3000, p90: 4400 }
-    }
-  };
-
-  // Phototherapy thresholds
-  const thresholds = {
-    lower: {
-      0: 7,
-      12: 9,
-      24: 11.5,
-      36: 13.5,
-      48: 15,
-      60: 16.5,
-      72: 17.5,
-      84: 19,
-      96: 20,
-      108: 20.5,
-      120: 21,
-      132: 21,
-      144: 21,
-      156: 21,
-      168: 21
-    },
-    medium: {
-      0: 5,
-      12: 7.5,
-      24: 9.5,
-      36: 11.5,
-      48: 13,
-      60: 14.5,
-      72: 15,
-      84: 16.5,
-      96: 17,
-      108: 18,
-      120: 18,
-      132: 18,
-      144: 18,
-      156: 18,
-      168: 18
-    },
-    higher: {
-      0: 4,
-      12: 6,
-      24: 8,
-      36: 9.5,
-      48: 11,
-      60: 12.5,
-      72: 13.5,
-      84: 14,
-      96: 14.5,
-      108: 15,
-      120: 15,
-      132: 15,
-      144: 15,
-      156: 15,
-      168: 15
-    }
-  };
-
-  // Tab navigation function
-  function openTab(tabName) {
-    // Hide all tab content
-    document.querySelectorAll('.tab-content').forEach(tab => {
-      tab.classList.remove('active');
-    });
-    
-    // Remove active class from all tab buttons
-    document.querySelectorAll('.tab-button').forEach(button => {
-      button.classList.remove('active');
-    });
-    
-    // Show the selected tab content
-    document.getElementById(tabName).classList.add('active');
-    
-    // Activate the selected tab button
-    document.querySelector(`.tab-button[onclick="openTab('${tabName}')"]`).classList.add('active');
-    
-    // Hide all form groups
-    document.querySelectorAll('.form-group').forEach(group => {
-      group.classList.remove('active');
-    });
-    
-    // Show form groups in active tab
-    document.querySelectorAll(`#${tabName} .form-group`).forEach(group => {
-      group.classList.add('active');
-    });
-    
-    // Show appropriate Fenton chart
-    if (tabName === 'fenton') {
-      const sex = document.querySelector('input[name="sex"]:checked').value;
-      document.getElementById('fenton-male').style.display = sex === 'male' ? 'block' : 'none';
-      document.getElementById('fenton-female').style.display = sex === 'female' ? 'block' : 'none';
-    }
-  }
-
-  // Update drug dosages based on weight and age
-  function updateDosages() {
-    const weight = parseFloat(document.getElementById('weight').value);
-    const age = document.querySelector('input[name="age"]:checked').value;
-    const table = document.getElementById('dosage-table');
-
-    // Validate input
-    if (!weight || weight <= 0) {
-      table.innerHTML = `<tr><td colspan="4">Please enter a valid weight.</td></tr>`;
-      return;
-    }
-
-    let rows = '';
-    drugData.forEach(drug => {
-      drug.dose.forEach(dose => {
-        let doseMg = (dose.mgPerKg * weight).toFixed(2);
-        let interval = dose.interval[age];
-
-                // Handle complex interval structures
-        if (typeof interval === 'object') {
-          // If it's age-based (with weight inside)
-          if (interval["≤ 7 days"] || interval["> 7 days"]) {
-            let ageInterval = interval[age];
-            if (typeof ageInterval === 'object') {
-              if (weight < 1.2) {
-                interval = ageInterval["< 1.2 kg"] || ageInterval["< 2 kg"];
-              } else if (weight <= 2) {
-                interval = ageInterval["1.2–2 kg"] || ageInterval["< 2 kg"];
-              } else {
-                interval = ageInterval["> 2 kg"];
-              }
-            } else {
-              interval = ageInterval;
-            }
-          } else {
-            if (weight < 1.2) {
-              interval = interval["< 1.2 kg"] || interval["< 2 kg"];
-            } else if (weight <= 2) {
-              interval = interval["1.2–2 kg"] || interval["< 2 kg"];
-            } else {
-              interval = interval["> 2 kg"];
-            }
-          }
-
-          // Special case for Metronidazole dose override
-          if (drug.name === "Metronidazole" && age === "> 7 days" && weight > 2 && dose.mgPerKg === 15) {
-            doseMg = (15 * weight).toFixed(2);
-          }
-        }
-
-        if (!interval) return;
-
-        // Add drug row to table
-        rows += `
-  <tr>
-    <td><div class="cell-content">${drug.name}<div class="conc">(${dose.condition})</div></div></td>
-    <td>${dose.mgPerKg}</td>
-    <td>${doseMg}</td>
-    <td>${interval}</td>
-  </tr>
-`;
-      });
-    });
-
-    table.innerHTML = rows || `<tr><td colspan="4">No matching data.</td></tr>`;
-  }
-
-  // Update Fenton chart classification
-  function updateFenton() {
-    const weight = parseFloat(document.getElementById('fenton-weight').value) || 0;
-    const sex = document.querySelector('input[name="sex"]:checked').value;
-    const ga = parseFloat(document.getElementById('gestational-age').value) || 0;
-    const resultDiv = document.getElementById('fenton-result');
-
-    // Validate input
-    if (!weight || !ga) {
-      resultDiv.innerHTML = 'Please enter both weight and gestational age.';
-      return;
-    }
-
-    if (weight < 300 || weight > 6000 || ga < 22 || ga > 50) {
-      resultDiv.innerHTML = 'Please enter valid weight (300–6000g) and gestational age (22–50 weeks).';
-      return;
-    }
-
-    // Gestational age classification
-    let gaClass;
-    if (ga > 42) gaClass = 'Post Term (>42 weeks)';
-    else if (ga >= 40) gaClass = 'Late Term (40 to <42 weeks)';
-    else if (ga >= 37) gaClass = 'Term (≥37 weeks)';
-    else if (ga >= 34) gaClass = 'Late Preterm (34 weeks to <37 weeks)';
-    else if (ga >= 32) gaClass = 'Moderate Preterm (32 weeks to <34 weeks)';
-    else gaClass = 'Very Preterm (<32 weeks)';
-
-    // Birth weight classification
-    let weightClass;
-    if (weight > 4000) weightClass = 'Macrosomia (>4000g)';
-    else if (weight < 1000) weightClass = 'Extremely Low Birth Weight (ELBW) (<1000g)';
-    else if (weight < 1500) weightClass = 'Very Low Birth Weight (VLBW) (<1500g)';
-    else if (weight < 2500) weightClass = 'Low Birth Weight (LBW) (<2500g)';
-    else weightClass = 'Normal Weight';
-
-    // Size classification (SGA, AGA, LGA)
-    let sizeClass;
-    const gaPoints = Object.keys(fentonPercentiles[sex]).map(Number).sort((a, b) => a - b);
-    let closestGa = gaPoints.find(point => point >= ga) || gaPoints[gaPoints.length - 1];
-    const percentiles = fentonPercentiles[sex][closestGa];
-
-    if (weight < percentiles.p10) {
-      sizeClass = 'SGA';
-    } else if (weight > percentiles.p90) {
-      sizeClass = 'LGA';
-    } else {
-      sizeClass = 'AGA';
-    }
-
-    // Show appropriate Fenton chart
-    document.getElementById('fenton-male').style.display = sex === 'male' ? 'block' : 'none';
-    document.getElementById('fenton-female').style.display = sex === 'female' ? 'block' : 'none';
-
-    // Display results
-    resultDiv.innerHTML = `
-      <strong>Gestational Age Classification:</strong> ${gaClass}<br>
-      <strong>Birth Weight Classification:</strong> ${weightClass}<br>
-      <strong>Size Classification:</strong> ${sizeClass}<br>
-      <em>(Based on Fenton 2025 growth charts, 10th and 90th percentiles)</em>
-    `;
-  }
-
-  // Phototherapy variables
-  let selectedRisk = 'lower';
-  let ageType = 'hours';
-  
-  // Select risk category
-  function selectRisk(risk) {
-    selectedRisk = risk;
-    document.querySelectorAll('.risk-option').forEach(el => {
-      el.classList.remove('selected');
-    });
-    document.querySelector(`.risk-option[onclick="selectRisk('${risk}')"]`).classList.add('selected');
-  }
-  
-  // Select age type (hours or days)
-  function selectAgeType(type) {
-    ageType = type;
-    document.querySelectorAll('.age-type').forEach(el => {
-      el.classList.remove('selected');
-    });
-    document.querySelector(`.age-type[onclick="selectAgeType('${type}')"]`).classList.add('selected');
-    
-    // Adjust input placeholder and max value
-    const input = document.getElementById('age-value');
-    input.placeholder = type === 'hours' ? 'Enter hours (0-168)' : 'Enter days (0-7)';
-    input.max = type === 'hours' ? 168 : 7;
-  }
-  
-  // Evaluate phototherapy needs
-  function evaluatePhototherapy() {
-    const bilirubin = parseFloat(document.getElementById('bilirubin-level').value);
-    const ageValue = parseFloat(document.getElementById('age-value').value);
-    const resultDiv = document.getElementById('phototherapy-result');
-    
-    // Validate input
-    if (isNaN(bilirubin) || bilirubin <= 0) {
-      resultDiv.innerHTML = '<strong style="color: #e63946;">Please enter a valid bilirubin level (> 0 mg/dL).</strong>';
-      return;
-    }
-    
-    if (isNaN(ageValue) || ageValue <= 0 || (ageType === 'hours' && ageValue > 168) || (ageType === 'days' && ageValue > 7)) {
-      resultDiv.innerHTML = '<strong style="color: #e63946;">Please enter a valid age (0–168 hours or 0–7 days).</strong>';
-      return;
-    }
-    
-    // Convert age to hours
-    const ageHours = ageType === 'hours' ? ageValue : ageValue * 24;
-    
-    // Find the two closest time points for interpolation
-    const timePoints = Object.keys(thresholds[selectedRisk]).map(Number).sort((a, b) => a - b);
-    let x1 = timePoints[0];
-    let x2 = timePoints[timePoints.length - 1];
-    
-    // If ageHours is exactly a defined point, use that threshold
-    if (timePoints.includes(ageHours)) {
-      const threshold = thresholds[selectedRisk][ageHours];
-      evaluateAndDisplay(bilirubin, ageValue, ageHours, threshold, resultDiv);
-      if (document.getElementById('phototherapy-chart')) {
-        renderPhototherapyChart(ageHours, bilirubin, selectedRisk);
-      }
-      return;
-    }
-    
-    // Find the two points to interpolate between
-    for (let i = 0; i < timePoints.length - 1; i++) {
-      if (ageHours > timePoints[i] && ageHours < timePoints[i + 1]) {
-        x1 = timePoints[i];
-        x2 = timePoints[i + 1];
-        break;
-      }
-    }
-    
-    // Linear interpolation
-    const y1 = thresholds[selectedRisk][x1];
-    const y2 = thresholds[selectedRisk][x2];
-    const threshold = y1 + (y2 - y1) * (ageHours - x1) / (x2 - x1);
-    
-    // Evaluate and display result
-    evaluateAndDisplay(bilirubin, ageValue, ageHours, threshold, resultDiv);
-    if (document.getElementById('phototherapy-chart')) {
-      renderPhototherapyChart(ageHours, bilirubin, selectedRisk);
-    }
-  }
-
-  function evaluateAndDisplay(bilirubin, ageValue, ageHours, threshold, resultDiv) {
-    let recommendation, color;
-    if (bilirubin >= threshold + 7) {
-      recommendation = "! Above Phototherapy range, check ET range.";
-      color = "#e63946";
-    } else if (bilirubin >= threshold) {
-      recommendation = "Above Phototherapy range.";
-      color = "#e76f51";
-    } else if (bilirubin >= threshold - 1) {
-      recommendation = "Borderline range";
-      color = "#e9c46a";
-    } else {
-      recommendation = "Below Phototherapy range.";
-      color = "#2a9d8f";
-    }
-    
-    resultDiv.innerHTML = `
-      <strong>Evaluation for ${ageValue} ${ageType} old (${ageHours.toFixed(1)} hours)</strong><br>
-      Risk: ${selectedRisk.charAt(0).toUpperCase() + selectedRisk.slice(1)} Risk<br>
-      Bilirubin: ${bilirubin.toFixed(1)} mg/dL<br>
-      Threshold: ${threshold.toFixed(1)} mg/dL<br>
-      <strong style="color: ${color}">${recommendation}</strong>
-    `;
-  }
-
-  function renderPhototherapyChart(ageHours, bilirubin, riskCategory) {
-    const timePoints = Object.keys(thresholds[riskCategory]).map(Number).sort((a, b) => a - b);
-    const thresholdData = timePoints.map(point => thresholds[riskCategory][point]);
-    
-    const ctx = document.getElementById('phototherapy-chart').getContext('2d');
-    if (window.phototherapyChart) {
-      window.phototherapyChart.destroy();
-    }
-    
-    window.phototherapyChart = new Chart(ctx, {
-      type: 'line',
-      data: {
-        labels: timePoints,
-        datasets: [
+        name: "Ampicillin",
+        dose: [
+          { condition: "Standard", mgPerKg: 50, interval: { "≤ 7 days": 12, "> 7 days": 8 } },
+          { condition: "Meningitis", mgPerKg: 100, interval: { "≤ 7 days": 12, "> 7 days": 8 } }
+        ]
+      },
+      {
+        name: "Amikacin",
+        dose: [
           {
-            label: `Phototherapy Threshold (${riskCategory.charAt(0).toUpperCase() + riskCategory.slice(1)} Risk)`,
-            data: thresholdData,
-            borderColor: '#2a9d8f',
-            backgroundColor: 'rgba(42, 157, 143, 0.2)',
-            fill: false,
-            tension: 0.1
-          },
-          {
-            label: 'Neonate TSB',
-            data: [{ x: ageHours, y: bilirubin }],
-            type: 'scatter',
-            pointBackgroundColor: '#e63946',
-            pointRadius: 6,
-            pointHoverRadius: 8
+            condition: "Standard",
+            mgPerKg: 15,
+            interval: {
+              "≤ 7 days": { "< 2 kg": 48, "> 2 kg": 24 },
+              "> 7 days": { "< 2 kg": "24–48", "> 2 kg": "12–24" }
+            }
           }
         ]
       },
-      options: {
-        responsive: true,
-        plugins: {
-          title: {
-            display: true,
-            text: `Phototherapy Thresholds (${riskCategory.charAt(0).toUpperCase() + riskCategory.slice(1)} Risk)`
-          }
-        },
-        scales: {
-          x: {
-            title: {
-              display: true,
-              text: 'Age (Hours)'
+      {
+        name: "Cefotaxime",
+        dose: [
+          { condition: "Standard/Meningitis", mgPerKg: 50, interval: { "≤ 7 days": 12, "> 7 days": 8 } }
+        ]
+      },
+      {
+        name: "Ceftazidime",
+        dose: [
+          { condition: "Standard/Meningitis", mgPerKg: 50, interval: { "≤ 7 days": 12, "> 7 days": 8 } }
+        ]
+      },
+      {
+        name: "Meropenem",
+        dose: [
+          { condition: "Standard", mgPerKg: 20, interval: { "≤ 7 days": 12, "> 7 days": 8 } },
+          { condition: "Meningitis", mgPerKg: 40, interval: { "≤ 7 days": 12, "> 7 days": 8 } }
+        ]
+      },
+      {
+        name: "Metronidazole",
+        dose: [
+          {
+            condition: "Standard",
+            mgPerKg: 7.5,
+            interval: {
+              "≤ 7 days": { "< 1.2 kg": 48, "1.2–2 kg": 24, "> 2 kg": 12 },
+              "> 7 days": { "< 1.2 kg": 24, "1.2–2 kg": 12, "> 2 kg": 12 }
             }
           },
-          y: {
-            title: {
-              display: true,
-              text: 'Bilirubin (mg/dL)'
-            },
-            beginAtZero: true
+          { condition: "Standard (> 2 kg, > 7 days)", mgPerKg: 15, interval: { "> 7 days": { "> 2 kg": 12 } } }
+        ]
+      },
+      {
+        name: "PipTaz",
+        dose: [
+          { condition: "Standard", mgPerKg: 90, interval: { "≤ 7 days": 12, "> 7 days": 8 } }
+        ]
+      },
+      {
+        name: "Vancomycin",
+        dose: [
+          {
+            condition: "Standard",
+            mgPerKg: 15,
+            interval: {
+              "≤ 7 days": {
+                "< 1.2 kg": 24,
+                "1.2–2 kg": "12–18",
+                "> 2 kg": 12
+              },
+              "> 7 days": {
+                "< 1.2 kg": 24,
+                "1.2–2 kg": 12,
+                "> 2 kg": 8
+              }
+            }
           }
-        }
+        ]
+      },
+      {
+        name: "Fluconazole",
+        dose: [
+          { condition: "Loading", mgPerKg: 12, interval: "once" },
+          { condition: "Maintenance (0–14 days)", mgPerKg: 6, interval: 72 },
+          { condition: "Maintenance (>14 days)", mgPerKg: 6, interval: 48 }
+        ]
+      },
+      {
+        name: "Fluconazole (Prophylaxis)",
+        dose: [
+          { condition: "Standard (3–6 mg/kg)", mgPerKg: 3, interval: 72 }
+        ]
+      },
+      {
+        name: "Caffeine",
+        dose: [
+          { condition: "Standard", mgPerKg: 5, interval: { "≤ 7 days": 24, "> 7 days": 24 } }
+        ]
       }
-    });
-  }
-  
-  // Initialize the application
-  function initApp() {
-    openTab('dosage'); // Explicitly open Dosage tab
-    document.querySelectorAll('#dosage .form-group').forEach(group => {
-      group.classList.add('active');
-    });
-    
-    // Initialize phototherapy options
-    selectRisk('lower');
-    selectAgeType('hours');
-    
-    // Show initial Fenton chart
-    const sex = document.querySelector('input[name="sex"]:checked').value;
-    document.getElementById('fenton-male').style.display = sex === 'male' ? 'block' : 'none';
-    document.getElementById('fenton-female').style.display = sex === 'female' ? 'block' : 'none';
-  }
-  
-  // Set up event listeners when the page loads
-  window.onload = function() {
-    initApp();
-    
-    // Dosage calculator events
-    document.getElementById('weight').addEventListener('input', updateDosages);
-    document.querySelectorAll('input[name="age"]').forEach(input => {
-      input.addEventListener('change', updateDosages);
-    });
-    
-    // Fenton chart events
-    document.getElementById('fenton-weight').addEventListener('input', updateFenton);
-    document.getElementById('gestational-age').addEventListener('input', updateFenton);
-    document.querySelectorAll('input[name="sex"]').forEach(input => {
-      input.addEventListener('change', function() {
-        updateFenton();
-        document.getElementById('fenton-male').style.display = this.value === 'male' ? 'block' : 'none';
-        document.getElementById('fenton-female').style.display = this.value === 'female' ? 'block' : 'none';
+    ];
+
+    // Fenton growth chart percentiles
+    const fentonPercentiles = {
+      male: {
+        22: { p10: 400, p90: 600 },
+        24: { p10: 500, p90: 750 },
+        26: { p10: 600, p90: 900 },
+        28: { p10: 800, p90: 1200 },
+        30: { p10: 1000, p90: 1500 },
+        32: { p10: 1300, p90: 1900 },
+        34: { p10: 1700, p90: 2500 },
+        36: { p10: 2100, p90: 3100 },
+        38: { p10: 2500, p90: 3700 },
+        40: { p10: 2800, p90: 4100 },
+        42: { p10: 3000, p90: 4400 },
+        50: { p10: 3100, p90: 4600 }
+      },
+      female: {
+        22: { p10: 380, p90: 580 },
+        24: { p10: 480, p90: 720 },
+        26: { p10: 580, p90: 870 },
+        28: { p10: 760, p90: 1140 },
+        30: { p10: 950, p90: 1420 },
+        32: { p10: 1250, p90: 1800 },
+        34: { p10: 1600, p90: 2400 },
+        36: { p10: 2000, p90: 3000 },
+        38: { p10: 2400, p90: 3500 },
+        40: { p10: 2700, p90: 3900 },
+        42: { p10: 2900, p90: 4200 },
+        50: { p10: 3000, p90: 4400 }
+      }
+    };
+
+    function calculateWeightLoss() {
+      const birthWeight = parseFloat(document.getElementById('birth-weight-wl').value);
+      const currentWeight = parseFloat(document.getElementById('current-weight-wl').value);
+      const result = document.getElementById('weight-loss-result');
+
+      if (!birthWeight || !currentWeight || birthWeight <= 0 || currentWeight <= 0) {
+        result.innerHTML = '<span style="color: #e63946;">Please enter valid weights.</span>';
+        return;
+      }
+
+      const lossPercent = ((birthWeight - currentWeight) / birthWeight) * 100;
+      const rounded = lossPercent.toFixed(1);
+      let message = `Weight loss: <strong>${rounded}%</strong>`;
+
+      if (lossPercent > 10) {
+        message += ` <span style="color: #e76f51;">(Exceeds 10%)</span>`;
+      }
+
+      result.innerHTML = message;
+    }
+
+    function calculateFeedVolume() {
+      const weight = parseFloat(document.getElementById('feed-weight').value);
+      const kcal = parseFloat(document.getElementById('feed-kcal').value);
+      const kcalPerMl = parseFloat(document.querySelector('input[name="feed-type"]:checked').value);
+      const result = document.getElementById('feed-result');
+
+      if (!weight || !kcal || weight <= 0 || kcal <= 0) {
+        result.innerHTML = '<span style="color: #e63946;">Please enter valid weight and kcal/kg/day.</span>';
+        return;
+      }
+
+      const totalDailyMl = (kcal * weight) / kcalPerMl;
+      const perFeedMl = totalDailyMl / 8;
+
+      result.innerHTML = `
+        <strong>Feed Volume:</strong><br>
+        Total daily: <strong>${totalDailyMl.toFixed(1)} ml</strong><br>
+        Every 3 hours (8 feeds/day): <strong>${perFeedMl.toFixed(1)} ml</strong>
+      `;
+    }
+
+    function openTab(tabName) {
+      document.querySelectorAll('.tab-content').forEach(tab => {
+        tab.classList.remove('active');
       });
-    });
-    
-    // Phototherapy events
-    document.getElementById('bilirubin-level').addEventListener('input', function() {
-      if (this.value) {
-        evaluatePhototherapy();
-      } else {
-        document.getElementById('phototherapy-result').textContent = '';
+      document.querySelectorAll('.tab-button').forEach(button => {
+        button.classList.remove('active');
+      });
+      document.getElementById(tabName).classList.add('active');
+      document.querySelector(`.tab-button[onclick="openTab('${tabName}')"]`).classList.add('active');
+
+      // Show form groups in active tab
+      document.querySelectorAll('.form-group').forEach(group => {
+        group.classList.remove('active');
+      });
+      document.querySelectorAll(`#${tabName} .form-group`).forEach(group => {
+        group.classList.add('active');
+      });
+
+      // Show appropriate Fenton chart
+      if (tabName === 'fenton') {
+        const sex = document.querySelector('input[name="sex"]:checked').value;
+        document.getElementById('fenton-male').style.display = sex === 'male' ? 'block' : 'none';
+        document.getElementById('fenton-female').style.display = sex === 'female' ? 'block' : 'none';
       }
-    });
-    document.getElementById('age-value').addEventListener('input', function() {
-      if (this.value && document.getElementById('bilirubin-level').value) {
-        evaluatePhototherapy();
-      } else {
-        document.getElementById('phototherapy-result').textContent = '';
+    }
+
+    function updateDosages() {
+      const weight = parseFloat(document.getElementById('weight').value);
+      const age = document.querySelector('input[name="age"]:checked').value;
+      const table = document.getElementById('dosage-table');
+
+      if (!weight || weight <= 0) {
+        table.innerHTML = `<tr><td colspan="4">Please enter a valid weight.</td></tr>`;
+        return;
       }
-    });
-  };
+
+      let rows = '';
+      drugData.forEach(drug => {
+        drug.dose.forEach(dose => {
+          let doseMg = (dose.mgPerKg * weight).toFixed(2);
+          let interval = dose.interval[age];
+
+          if (typeof interval === 'object') {
+            if (interval["≤ 7 days"] || interval["> 7 days"]) {
+              let ageInterval = interval[age];
+              if (typeof ageInterval === 'object') {
+                if (weight < 1.2) {
+                  interval = ageInterval["< 1.2 kg"] || ageInterval["< 2 kg"];
+                } else if (weight <= 2) {
+                  interval = ageInterval["1.2–2 kg"] || ageInterval["< 2 kg"];
+                } else {
+                  interval = ageInterval["> 2 kg"];
+                }
+              } else {
+                interval = ageInterval;
+              }
+            } else {
+              if (weight < 1.2) {
+                interval = interval["< 1.2 kg"] || interval["< 2 kg"];
+              } else if (weight <= 2) {
+                interval = interval["1.2–2 kg"] || interval["< 2 kg"];
+              } else {
+                interval = interval["> 2 kg"];
+              }
+            }
+
+            if (drug.name === "Metronidazole" && age === "> 7 days" && weight > 2 && dose.mgPerKg === 15) {
+              doseMg = (15 * weight).toFixed(2);
+            }
+          }
+
+          if (!interval) return;
+
+          rows += `
+            <tr>
+              <td><div class="cell-content">${drug.name}<div class="conc">(${dose.condition})</div></div></td>
+              <td>${dose.mgPerKg}</td>
+              <td>${doseMg}</td>
+              <td>${interval}</td>
+            </tr>
+          `;
+        });
+      });
+
+      table.innerHTML = rows || `<tr><td colspan="4">No matching data.</td></tr>`;
+    }
+
+    function updateFenton() {
+      const weight = parseFloat(document.getElementById('fenton-weight').value) || 0;
+      const sex = document.querySelector('input[name="sex"]:checked').value;
+      const ga = parseFloat(document.getElementById('gestational-age').value) || 0;
+      const resultDiv = document.getElementById('fenton-result');
+
+      if (!weight || !ga) {
+        resultDiv.innerHTML = 'Please enter both weight and gestational age.';
+        return;
+      }
+
+      if (weight < 300 || weight > 6000 || ga < 22 || ga > 50) {
+        resultDiv.innerHTML = 'Please enter valid weight (300–6000g) and gestational age (22–50 weeks).';
+        return;
+      }
+
+      let gaClass;
+      if (ga > 42) gaClass = 'Post Term (>42 weeks)';
+      else if (ga >= 40) gaClass = 'Late Term (40 to <42 weeks)';
+      else if (ga >= 37) gaClass = 'Term (≥37 weeks)';
+      else if (ga >= 34) gaClass = 'Late Preterm (34 weeks to <37 weeks)';
+      else if (ga >= 32) gaClass = 'Moderate Preterm (32 weeks to <34 weeks)';
+      else gaClass = 'Very Preterm (<32 weeks)';
+
+      let weightClass;
+      if (weight > 4000) weightClass = 'Macrosomia (>4000g)';
+      else if (weight < 1000) weightClass = 'Extremely Low Birth Weight (ELBW) (<1000g)';
+      else if (weight < 1500) weightClass = 'Very Low Birth Weight (VLBW) (<1500g)';
+      else if (weight < 2500) weightClass = 'Low Birth Weight (LBW) (<2500g)';
+      else weightClass = 'Normal Weight';
+
+      let sizeClass;
+      const gaPoints = Object.keys(fentonPercentiles[sex]).map(Number).sort((a, b) => a - b);
+      let closestGa = gaPoints.find(point => point >= ga) || gaPoints[gaPoints.length - 1];
+      const percentiles = fentonPercentiles[sex][closestGa];
+
+      if (weight < percentiles.p10) {
+        sizeClass = 'SGA';
+      } else if (weight > percentiles.p90) {
+        sizeClass = 'LGA';
+      } else {
+        sizeClass = 'AGA';
+      }
+
+      document.getElementById('fenton-male').style.display = sex === 'male' ? 'block' : 'none';
+      document.getElementById('fenton-female').style.display = sex === 'female' ? 'block' : 'none';
+
+      resultDiv.innerHTML = `
+        <strong>Gestational Age Classification:</strong> ${gaClass}<br>
+        <strong>Birth Weight Classification:</strong> ${weightClass}<br>
+        <strong>Size Classification:</strong> ${sizeClass}<br>
+        <em>(Based on Fenton 2025 growth charts, 10th and 90th percentiles)</em>
+      `;
+    }
+
+    function setupCard(cardEl, xRange=[0,336], yRange=[0,24]) {
+      const wrap = cardEl.querySelector('.canvas-wrap');
+      const img = wrap.querySelector('img');
+      const plot = wrap.querySelector('.plot');
+      const xLine = plot.querySelector('.crosshair-x');
+      const yLine = plot.querySelector('.crosshair-y');
+      const readout = wrap.querySelector('.readout');
+      const inputs = [...cardEl.querySelectorAll('.controls input[type="number"]')];
+
+      let margins = {
+        l: Number(inputs.find(i=>i.dataset.k==='l').value) || 0,
+        t: Number(inputs.find(i=>i.dataset.k==='t').value) || 0,
+        r: Number(inputs.find(i=>i.dataset.k==='r').value) || 0,
+        b: Number(inputs.find(i=>i.dataset.k==='b').value) || 0,
+      };
+      let ranges = {
+        xmin: Number(inputs.find(i=>i.dataset.k==='xmin').value) || 0,
+        xmax: Number(inputs.find(i=>i.dataset.k==='xmax').value) || 336,
+        ymin: Number(inputs.find(i=>i.dataset.k==='ymin').value) || 0,
+        ymax: Number(inputs.find(i=>i.dataset.k==='ymax').value) || 24,
+      };
+
+      function applyPlotRect() {
+        const rImg = img.getBoundingClientRect();
+        const l = (margins.l/100)*rImg.width;
+        const t = (margins.t/100)*rImg.height;
+        const r = rImg.width - (margins.r/100)*rImg.width;
+        const b = rImg.height - (margins.b/100)*rImg.height;
+
+        plot.style.left = l + "px";
+        plot.style.top = t + "px";
+        plot.style.width = Math.max(0, r - l) + "px";
+        plot.style.height = Math.max(0, b - t) + "px";
+
+        console.log(`Plot dimensions for ${cardEl.querySelector('.title').textContent}: left=${l}, top=${t}, width=${r-l}, height=${b-t}`);
+      }
+
+      function pxToData(clientX, clientY) {
+        const rp = plot.getBoundingClientRect();
+        const relX = Math.max(0, Math.min(rp.width, clientX - rp.left));
+        const relY = Math.max(0, Math.min(rp.height, clientY - rp.top));
+        const xVal = ranges.xmin + (relX/rp.width)*(ranges.xmax - ranges.xmin);
+        const yVal = ranges.ymax - (relY/rp.height)*(ranges.ymax - ranges.ymin);
+        return {relX, relY, xVal, yVal};
+      }
+
+      function fmt(n, dp=1) { return Number(n).toFixed(dp); }
+
+      function setCrosshair(clientX, clientY) {
+        const { relX, relY, xVal, yVal } = pxToData(clientX, clientY);
+        xLine.style.top = relY + "px";
+        yLine.style.left = relX + "px";
+        readout.textContent = `Age: ${fmt(xVal,1)} h (${fmt(xVal/24,2)} d) • TSB: ${fmt(yVal,1)} mg/dL (${Math.round(yVal*17.1)} µmol/L)`;
+        console.log(`Crosshair set for ${cardEl.querySelector('.title').textContent}: x=${relX}, y=${relY}, Age=${fmt(xVal,1)}h, TSB=${fmt(yVal,1)}mg/dL`);
+      }
+
+      // Handle mouse click to set crosshair position
+      wrap.addEventListener('click', (e) => {
+        setCrosshair(e.clientX, e.clientY);
+      });
+
+      // Handle touch events for tap and move
+      wrap.addEventListener('touchstart', (e) => {
+        if (e.touches.length > 0) {
+          e.preventDefault();
+          setCrosshair(e.touches[0].clientX, e.touches[0].clientY);
+        }
+      }, {passive: false});
+
+      wrap.addEventListener('touchmove', (e) => {
+        if (e.touches.length > 0) {
+          e.preventDefault();
+          setCrosshair(e.touches[0].clientX, e.touches[0].clientY);
+        }
+      }, {passive: false});
+
+      // Handle image load and errors
+      img.addEventListener('load', () => {
+        applyPlotRect();
+        console.log(`Image loaded: ${img.src}`);
+      });
+
+      img.addEventListener('error', () => {
+        console.error(`Failed to load image: ${img.src}`);
+        readout.textContent = 'Error: Image failed to load';
+      });
+
+      // Fallback to apply plot rectangle if image is already loaded or after a delay
+      if (img.complete) {
+        applyPlotRect();
+      } else {
+        setTimeout(applyPlotRect, 1000); // Fallback after 1 second
+      }
+
+      window.addEventListener('resize', applyPlotRect);
+    }
+
+    function initApp() {
+      openTab('dosage');
+      document.querySelectorAll('#dosage .form-group').forEach(group => {
+        group.classList.add('active');
+      });
+
+      const sex = document.querySelector('input[name="sex"]:checked').value;
+      document.getElementById('fenton-male').style.display = sex === 'male' ? 'block' : 'none';
+      document.getElementById('fenton-female').style.display = sex === 'female' ? 'block' : 'none';
+
+      // Initialize phototherapy cards
+      setupCard(document.querySelectorAll('#phototherapy .card')[0], [0,336], [0,24]);
+      setupCard(document.querySelectorAll('#phototherapy .card')[1], [0,336], [0,20]);
+      setupCard(document.querySelectorAll('#phototherapy .card')[2], [0,336], [0,26]);
+      setupCard(document.querySelectorAll('#phototherapy .card')[3], [0,336], [0,24]);
+    }
+
+    window.onload = function() {
+      initApp();
+
+      document.getElementById('weight').addEventListener('input', updateDosages);
+      document.querySelectorAll('input[name="age"]').forEach(input => {
+        input.addEventListener('change', updateDosages);
+      });
+
+      document.getElementById('fenton-weight').addEventListener('input', updateFenton);
+      document.getElementById('gestational-age').addEventListener('input', updateFenton);
+      document.querySelectorAll('input[name="sex"]').forEach(input => {
+        input.addEventListener('change', function() {
+          updateFenton();
+          document.getElementById('fenton-male').style.display = this.value === 'male' ? 'block' : 'none';
+          document.getElementById('fenton-female').style.display = this.value === 'female' ? 'block' : 'none';
+        });
+      });
+    };
   </script>
 </body>
 </html>
