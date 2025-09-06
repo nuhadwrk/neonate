@@ -52,7 +52,7 @@
 
   .container {
     background: var(--card);
-    max-width: 700px;
+    max-width: 600px; /* Restored wider desktop view */
     margin: auto;
     border-radius: 16px;
     padding: 1.5rem;
@@ -201,24 +201,6 @@
     margin-top: 0.5rem;
   }
 
-  .chart-placeholder {
-    width: 100%;
-    height: 300px;
-    background-color: #f7f9fb;
-    border: 2px dashed var(--border);
-    border-radius: 12px;
-    text-align: center;
-    padding-top: 100px;
-    color: #888;
-    font-style: italic;
-    margin-top: 1rem;
-    transition: border-color 0.3s ease;
-  }
-
-  .chart-placeholder:hover {
-    border-color: var(--primary);
-  }
-
   .chart-image {
     width: 100%;
     height: auto;
@@ -227,110 +209,20 @@
     border: 1px solid var(--border);
   }
 
-  .risk-group {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
-    margin-top: 0.5rem;
-  }
-
-  .risk-option {
-    flex: 1;
-    min-width: 100px;
-    padding: 0.5rem;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    text-align: center;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    color: #1d3557;
-  }
-
-  .risk-description {
-    font-size: 0.8rem;
-    margin-top: 0.25rem;
-    color: #666;
-    transition: color 0.3s ease;
-  }
-
-  .risk-option:hover,
-  .risk-option.selected {
-    background-color: var(--primary);
-    color: white;
-    border-color: var(--primary);
-  }
-
-  .risk-option:hover .risk-description,
-  .risk-option.selected .risk-description {
-    color: white;
-  }
-
-  .age-input-group {
-    display: flex;
-    gap: 0.5rem;
-  }
-
-  .age-input-group input {
-    flex: 1;
-  }
-
-  .age-type-group {
-    display: flex;
-    gap: 0.5rem;
-    margin-top: 0.5rem;
-  }
-
-  .age-type {
-    flex: 1;
-    padding: 0.5rem;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    text-align: center;
-    cursor: pointer;
-    transition: all 0.3s ease;
-  }
-
-  .age-type:hover,
-  .age-type.selected {
-    background-color: var(--primary);
-    color: white;
-    border-color: var(--primary);
-  }
-
-  .card {
-    background: var(--card);
-    border-radius: 14px;
-    padding: 10px;
-    box-shadow: var(--shadow);
-    margin-bottom: 1rem;
-  }
-
   .title {
     font-weight: 600;
     margin-bottom: 6px;
+    margin-top: 1rem;
     color: var(--header);
-  }
-
-  .controls {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-bottom: 6px;
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.3s ease;
-  }
-
-  .controls.show {
-    max-height: 200px;
   }
 
   .canvas-wrap {
     position: relative;
-    border-radius: 10px;
     overflow: hidden;
     background: #f7f9fb;
     border: 1px solid var(--border);
+    margin-bottom: 1rem;
+    width: 100%;
   }
 
   .canvas-wrap img {
@@ -342,104 +234,127 @@
   .plot {
     position: absolute;
     pointer-events: none;
-    border: 1px dashed rgba(255,255,255,0.5);
     background: transparent;
     z-index: 5;
   }
 
-  .crosshair-x, .crosshair-y {
-    position: absolute;
-    pointer-events: none;
-    opacity: 1;
-    background: #ff0000;
-    box-shadow: 0 0 6px rgba(255,0,0,0.45), 0 0 1px rgba(255,0,0,0.85);
-    display: block;
-    z-index: 10;
-  }
-
   .crosshair-x {
+    position: absolute;
+    height: 1px;
+    background: red;
     left: 0;
     right: 0;
-    height: 1px;
+    display: block;
+    opacity: 1;
+    z-index: 10;
+    cursor: row-resize;
+    pointer-events: auto;
+    touch-action: none;
   }
 
   .crosshair-y {
+    position: absolute;
+    width: 1px;
+    background: red;
     top: 0;
     bottom: 0;
-    width: 1px;
+    display: block;
+    opacity: 1;
+    z-index: 10;
+    cursor: col-resize;
+    pointer-events: auto;
+    touch-action: none;
   }
 
   .readout {
     position: absolute;
     right: 8px;
-    top: 8px;
+    bottom: 8px;
     background: rgba(13,19,32,0.85);
     border: 1px solid #243147;
     border-radius: 10px;
     padding: 8px 10px;
     font-size: 12px;
     color: white;
-    z-index: 15;
+    z-index: 20;
   }
 
-  .toggle-btn {
-    width: 100%;
-    padding: 0.5rem;
-    background-color: var(--primary);
-    color: white;
-    font-size: 0.9rem;
-    font-weight: 500;
-    border: none;
-    border-radius: 12px;
-    cursor: pointer;
-    margin-top: 0.5rem;
-    transition: background-color 0.3s ease;
+  .inputs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
   }
 
-  .toggle-btn:hover {
-    background-color: #21867a;
+  .inputs label {
+    flex-basis: 100%;
+    margin-bottom: 0;
+  }
+
+  .inputs input {
+    flex: 1;
+    min-width: 100px;
+  }
+
+  .inputs button {
+    flex: 1;
+    min-width: 100px;
+    margin: 0;
   }
 
   @media (max-width: 600px) {
     body {
       font-size: 0.95rem;
+      padding: 0;
     }
 
     .container {
-      padding: 1rem;
+      max-width: 100%;
+      padding: 0;
+      border-radius: 0;
     }
 
-    h1 {
-      font-size: 1.5rem;
+    .tabs {
+      padding: 0.5rem;
     }
 
     .radio-group {
       flex-direction: column;
     }
 
-    .tabs {
-      flex-wrap: wrap;
-      justify-content: center;
-      padding: 0.5rem 0;
-    }
-
     .tab-button {
-      width: auto;
-      text-align: center;
       font-size: 0.95rem;
     }
 
-    .risk-group,
-    .age-type-group {
+    .inputs {
       flex-direction: column;
     }
 
-    .age-input-group {
-      flex-direction: column;
+    .inputs input, .inputs button {
+      width: 100%;
     }
 
-    .age-input-group input {
-      width: 100% !important;
+    .canvas-wrap {
+      margin-left: 0;
+      margin-right: 0;
+      padding: 0;
+      border-left: none;
+      border-right: none;
+      border-radius: 0;
+    }
+
+    .title, .inputs, .form-group, .section-title {
+      padding: 0 1rem;
+    }
+
+    .table-wrapper {
+      padding: 0 2px;
+      font-size: 0.95rem;
+    }
+
+    th, td {
+      font-size: 0.9rem;
+      padding: 6px 4px;
     }
   }
 
@@ -449,7 +364,7 @@
     border-radius: 8px;
     box-shadow: var(--shadow);
     padding: 0 2px;
-    margin: 0 auto;
+    margin: 0 auto 1rem;
     display: block;
     width: fit-content;
     max-width: 100%;
@@ -490,17 +405,6 @@
   .conc {
     font-size: 0.75rem;
     color: gray;
-  }
-
-  @media (max-width: 480px) {
-    .table-wrapper {
-      padding: 0 2px;
-      font-size: 0.95rem;
-    }
-    th, td {
-      font-size: 0.9rem;
-      padding: 6px 4px;
-    }
   }
 </style>
 </head>
@@ -608,84 +512,44 @@
     </div>
 
     <div id="phototherapy" class="tab-content">
-      <div class="card">
-        <div class="title">Phototherapy — No RF</div>
-        <div class="controls">
-          <label><span>L%</span><input type="number" step="0.1" value="9.1" data-k="l" readonly style="width: 70px; padding: 6px 8px; border-radius: 10px; border: 1px solid var(--border); background: #fff; color: var(--header); font-size: 12px;"></label>
-          <label><span>T%</span><input type="number" step="0.1" value="8.5" data-k="t" readonly style="width: 70px; padding: 6px 8px; border-radius: 10px; border: 1px solid var(--border); background: #fff; color: var(--header); font-size: 12px;"></label>
-          <label><span>R%</span><input type="number" step="0.1" value="10.8" data-k="r" readonly style="width: 70px; padding: 6px 8px; border-radius: 10px; border: 1px solid var(--border); background: #fff; color: var(--header); font-size: 12px;"></label>
-          <label><span>B%</span><input type="number" step="0.1" value="21.3" data-k="b" readonly style="width: 70px; padding: 6px 8px; border-radius: 10px; border: 1px solid var(--border); background: #fff; color: var(--header); font-size: 12px;"></label>
-          <label><span>X Min</span><input type="number" step="0.1" value="-5.3" data-k="xmin" readonly style="width: 70px; padding: 6px 8px; border-radius: 10px; border: 1px solid var(--border); background: #fff; color: var(--header); font-size: 12px;"></label>
-          <label><span>X Max</span><input type="number" step="0.1" value="342" data-k="xmax" readonly style="width: 70px; padding: 6px 8px; border-radius: 10px; border: 1px solid var(--border); background: #fff; color: var(--header); font-size: 12px;"></label>
-          <label><span>Y Min</span><input type="number" step="0.1" value="5.4" data-k="ymin" readonly style="width: 70px; padding: 6px 8px; border-radius: 10px; border: 1px solid var(--border); background: #fff; color: var(--header); font-size: 12px;"></label>
-          <label><span>Y Max</span><input type="number" step="0.1" value="24" data-k="ymax" readonly style="width: 70px; padding: 6px 8px; border-radius: 10px; border: 1px solid var(--border); background: #fff; color: var(--header); font-size: 12px;"></label>
-        </div>
-        <div class="canvas-wrap">
-          <img src="https://raw.githubusercontent.com/nuhadwrk/neonate/main/TSB%20levels%20for%20PT%20%26%20ET%201.png" alt="">
-          <div class="plot"><div class="crosshair-x"></div><div class="crosshair-y"></div></div>
-          <div class="readout">Click or tap to set position</div>
-        </div>
-        <button class="toggle-btn" onclick="this.parentElement.querySelector('.controls').classList.toggle('show');this.textContent=this.parentElement.querySelector('.controls').classList.contains('show')?'Hide Adjustments':'Show Adjustments';">Show Adjustments</button>
+      <div class="inputs form-group active">
+        <label>Age (hours):</label>
+        <input type="number" id="photo-age-input" step="0.1" min="0" placeholder="Enter age" aria-label="Age in hours">
+        <label>TSB (mg/dL):</label>
+        <input type="number" id="photo-tsb-input" step="0.1" min="0" placeholder="Enter TSB" aria-label="Total Serum Bilirubin in mg/dL">
+        <button class="btn" onclick="setAllCrosshairs()">Set</button>
       </div>
-
-      <div class="card">
-        <div class="title">Phototherapy — With RF</div>
-        <div class="controls">
-          <label><span>L%</span><input type="number" step="0.1" value="9.1" data-k="l" readonly style="width: 70px; padding: 6px 8px; border-radius: 10px; border: 1px solid var(--border); background: #fff; color: var(--header); font-size: 12px;"></label>
-          <label><span>T%</span><input type="number" step="0.1" value="8.5" data-k="t" readonly style="width: 70px; padding: 6px 8px; border-radius: 10px; border: 1px solid var(--border); background: #fff; color: var(--header); font-size: 12px;"></label>
-          <label><span>R%</span><input type="number" step="0.1" value="11.5" data-k="r" readonly style="width: 70px; padding: 6px 8px; border-radius: 10px; border: 1px solid var(--border); background: #fff; color: var(--header); font-size: 12px;"></label>
-          <label><span>B%</span><input type="number" step="0.1" value="22.2" data-k="b" readonly style="width: 70px; padding: 6px 8px; border-radius: 10px; border: 1px solid var(--border); background: #fff; color: var(--header); font-size: 12px;"></label>
-          <label><span>X Min</span><input type="number" step="0.1" value="-5.3" data-k="xmin" readonly style="width: 70px; padding: 6px 8px; border-radius: 10px; border: 1px solid var(--border); background: #fff; color: var(--header); font-size: 12px;"></label>
-          <label><span>X Max</span><input type="number" step="0.1" value="342" data-k="xmax" readonly style="width: 70px; padding: 6px 8px; border-radius: 10px; border: 1px solid var(--border); background: #fff; color: var(--header); font-size: 12px;"></label>
-          <label><span>Y Min</span><input type="number" step="0.1" value="3.4" data-k="ymin" readonly style="width: 70px; padding: 6px 8px; border-radius: 10px; border: 1px solid var(--border); background: #fff; color: var(--header); font-size: 12px;"></label>
-          <label><span>Y Max</span><input type="number" step="0.1" value="20" data-k="ymax" readonly style="width: 70px; padding: 6px 8px; border-radius: 10px; border: 1px solid var(--border); background: #fff; color: var(--header); font-size: 12px;"></label>
-        </div>
+      <div class="title">Phototherapy — No Risk Factors</div>
+      <div class="chart" data-xmin="-5.3" data-xmax="342" data-ymin="5.4" data-ymax="24" data-l="9.1" data-t="8.5" data-r="10.8" data-b="21.3">
         <div class="canvas-wrap">
-          <img src="https://raw.githubusercontent.com/nuhadwrk/neonate/main/TSB%20levels%20for%20PT%20%26%20ET%202.png" alt="">
+          <img src="https://raw.githubusercontent.com/nuhadwrk/neonate/main/TSB%20levels%20for%20PT%20%26%20ET%201.png" alt="Phototherapy No Risk Factors Chart">
           <div class="plot"><div class="crosshair-x"></div><div class="crosshair-y"></div></div>
-          <div class="readout">Click or tap to set position</div>
+          <div class="readout">Age: 0 h (0 d) • TSB: 0 mg/dL (0 µmol/L)</div>
         </div>
-        <button class="toggle-btn" onclick="this.parentElement.querySelector('.controls').classList.toggle('show');this.textContent=this.parentElement.querySelector('.controls').classList.contains('show')?'Hide Adjustments':'Show Adjustments';">Show Adjustments</button>
       </div>
-
-      <div class="card">
-        <div class="title">Exchange — No RF</div>
-        <div class="controls">
-          <label><span>L%</span><input type="number" step="0.1" value="9.2" data-k="l" readonly style="width: 70px; padding: 6px 8px; border-radius: 10px; border: 1px solid var(--border); background: #fff; color: var(--header); font-size: 12px;"></label>
-          <label><span>T%</span><input type="number" step="0.1" value="8.0" data-k="t" readonly style="width: 70px; padding: 6px 8px; border-radius: 10px; border: 1px solid var(--border); background: #fff; color: var(--header); font-size: 12px;"></label>
-          <label><span>R%</span><input type="number" step="0.1" value="10.5" data-k="r" readonly style="width: 70px; padding: 6px 8px; border-radius: 10px; border: 1px solid var(--border); background: #fff; color: var(--header); font-size: 12px;"></label>
-          <label><span>B%</span><input type="number" step="0.1" value="20.2" data-k="b" readonly style="width: 70px; padding: 6px 8px; border-radius: 10px; border: 1px solid var(--border); background: #fff; color: var(--header); font-size: 12px;"></label>
-          <label><span>X Min</span><input type="number" step="0.1" value="-5" data-k="xmin" readonly style="width: 70px; padding: 6px 8px; border-radius: 10px; border: 1px solid var(--border); background: #fff; color: var(--header); font-size: 12px;"></label>
-          <label><span>X Max</span><input type="number" step="0.1" value="342" data-k="xmax" readonly style="width: 70px; padding: 6px 8px; border-radius: 10px; border: 1px solid var(--border); background: #fff; color: var(--header); font-size: 12px;"></label>
-          <label><span>Y Min</span><input type="number" step="0.1" value="13.5" data-k="ymin" readonly style="width: 70px; padding: 6px 8px; border-radius: 10px; border: 1px solid var(--border); background: #fff; color: var(--header); font-size: 12px;"></label>
-          <label><span>Y Max</span><input type="number" step="0.1" value="28" data-k="ymax" readonly style="width: 70px; padding: 6px 8px; border-radius: 10px; border: 1px solid var(--border); background: #fff; color: var(--header); font-size: 12px;"></label>
-        </div>
+      <div class="title">Phototherapy — With Risk Factors</div>
+      <div class="chart" data-xmin="-5.3" data-xmax="342" data-ymin="3.4" data-ymax="20" data-l="9.1" data-t="8.5" data-r="11.5" data-b="22.2">
         <div class="canvas-wrap">
-          <img src="https://raw.githubusercontent.com/nuhadwrk/neonate/main/TSB%20levels%20for%20PT%20%26%20ET%203.png" alt="">
+          <img src="https://raw.githubusercontent.com/nuhadwrk/neonate/main/TSB%20levels%20for%20PT%20%26%20ET%202.png" alt="Phototherapy With Risk Factors Chart">
           <div class="plot"><div class="crosshair-x"></div><div class="crosshair-y"></div></div>
-          <div class="readout">Click or tap to set position</div>
+          <div class="readout">Age: 0 h (0 d) • TSB: 0 mg/dL (0 µmol/L)</div>
         </div>
-        <button class="toggle-btn" onclick="this.parentElement.querySelector('.controls').classList.toggle('show');this.textContent=this.parentElement.querySelector('.controls').classList.contains('show')?'Hide Adjustments':'Show Adjustments';">Show Adjustments</button>
       </div>
-
-      <div class="card">
-        <div class="title">Exchange — With RF</div>
-        <div class="controls">
-          <label><span>L%</span><input type="number" step="0.1" value="8.9" data-k="l" readonly style="width: 70px; padding: 6px 8px; border-radius: 10px; border: 1px solid var(--border); background: #fff; color: var(--header); font-size: 12px;"></label>
-          <label><span>T%</span><input type="number" step="0.1" value="7.2" data-k="t" readonly style="width: 70px; padding: 6px 8px; border-radius: 10px; border: 1px solid var(--border); background: #fff; color: var(--header); font-size: 12px;"></label>
-          <label><span>R%</span><input type="number" step="0.1" value="10.4" data-k="r" readonly style="width: 70px; padding: 6px 8px; border-radius: 10px; border: 1px solid var(--border); background: #fff; color: var(--header); font-size: 12px;"></label>
-          <label><span>B%</span><input type="number" step="0.1" value="21.2" data-k="b" readonly style="width: 70px; padding: 6px 8px; border-radius: 10px; border: 1px solid var(--border); background: #fff; color: var(--header); font-size: 12px;"></label>
-          <label><span>X Min</span><input type="number" step="0.1" value="-5" data-k="xmin" readonly style="width: 70px; padding: 6px 8px; border-radius: 10px; border: 1px solid var(--border); background: #fff; color: var(--header); font-size: 12px;"></label>
-          <label><span>X Max</span><input type="number" step="0.1" value="342" data-k="xmax" readonly style="width: 70px; padding: 6px 8px; border-radius: 10px; border: 1px solid var(--border); background: #fff; color: var(--header); font-size: 12px;"></label>
-          <label><span>Y Min</span><input type="number" step="0.1" value="11.5" data-k="ymin" readonly style="width: 70px; padding: 6px 8px; border-radius: 10px; border: 1px solid var(--border); background: #fff; color: var(--header); font-size: 12px;"></label>
-          <label><span>Y Max</span><input type="number" step="0.1" value="24" data-k="ymax" readonly style="width: 70px; padding: 6px 8px; border-radius: 10px; border: 1px solid var(--border); background: #fff; color: var(--header); font-size: 12px;"></label>
-        </div>
+      <div class="title">Exchange — No Risk Factors</div>
+      <div class="chart" data-xmin="-5" data-xmax="342" data-ymin="13.5" data-ymax="28" data-l="9.2" data-t="8.0" data-r="10.5" data-b="20.2">
         <div class="canvas-wrap">
-          <img src="https://raw.githubusercontent.com/nuhadwrk/neonate/main/TSB%20levels%20for%20PT%20%26%20ET%204.png" alt="">
+          <img src="https://raw.githubusercontent.com/nuhadwrk/neonate/main/TSB%20levels%20for%20PT%20%26%20ET%203.png" alt="Exchange No Risk Factors Chart">
           <div class="plot"><div class="crosshair-x"></div><div class="crosshair-y"></div></div>
-          <div class="readout">Click or tap to set position</div>
+          <div class="readout">Age: 0 h (0 d) • TSB: 0 mg/dL (0 µmol/L)</div>
         </div>
-        <button class="toggle-btn" onclick="this.parentElement.querySelector('.controls').classList.toggle('show');this.textContent=this.parentElement.querySelector('.controls').classList.contains('show')?'Hide Adjustments':'Show Adjustments';">Show Adjustments</button>
+      </div>
+      <div class="title">Exchange — With Risk Factors</div>
+      <div class="chart" data-xmin="-5" data-xmax="342" data-ymin="11.5" data-ymax="24" data-l="8.9" data-t="7.2" data-r="10.4" data-b="21.2">
+        <div class="canvas-wrap">
+          <img src="https://raw.githubusercontent.com/nuhadwrk/neonate/main/TSB%20levels%20for%20PT%20%26%20ET%204.png" alt="Exchange With Risk Factors Chart">
+          <div class="plot"><div class="crosshair-x"></div><div class="crosshair-y"></div></div>
+          <div class="readout">Age: 0 h (0 d) • TSB: 0 mg/dL (0 µmol/L)</div>
+        </div>
       </div>
     </div>
   </div>
@@ -879,7 +743,6 @@
       document.getElementById(tabName).classList.add('active');
       document.querySelector(`.tab-button[onclick="openTab('${tabName}')"]`).classList.add('active');
 
-      // Show form groups in active tab
       document.querySelectorAll('.form-group').forEach(group => {
         group.classList.remove('active');
       });
@@ -887,7 +750,6 @@
         group.classList.add('active');
       });
 
-      // Show appropriate Fenton chart
       if (tabName === 'fenton') {
         const sex = document.querySelector('input[name="sex"]:checked').value;
         document.getElementById('fenton-male').style.display = sex === 'male' ? 'block' : 'none';
@@ -1011,101 +873,116 @@
       `;
     }
 
-    function setupCard(cardEl, xRange=[0,336], yRange=[0,24]) {
-      const wrap = cardEl.querySelector('.canvas-wrap');
-      const img = wrap.querySelector('img');
-      const plot = wrap.querySelector('.plot');
-      const xLine = plot.querySelector('.crosshair-x');
-      const yLine = plot.querySelector('.crosshair-y');
-      const readout = wrap.querySelector('.readout');
-      const inputs = [...cardEl.querySelectorAll('.controls input[type="number"]')];
+    function setupChart(chart) {
+      const plot = chart.querySelector('.plot');
+      const xLine = chart.querySelector('.crosshair-x');
+      const yLine = chart.querySelector('.crosshair-y');
+      const readout = chart.querySelector('.readout');
+      const img = chart.querySelector('img');
 
-      let margins = {
-        l: Number(inputs.find(i=>i.dataset.k==='l').value) || 0,
-        t: Number(inputs.find(i=>i.dataset.k==='t').value) || 0,
-        r: Number(inputs.find(i=>i.dataset.k==='r').value) || 0,
-        b: Number(inputs.find(i=>i.dataset.k==='b').value) || 0,
+      const ranges = {
+        l: parseFloat(chart.dataset.l),
+        t: parseFloat(chart.dataset.t),
+        r: parseFloat(chart.dataset.r),
+        b: parseFloat(chart.dataset.b),
+        xMin: parseFloat(chart.dataset.xmin),
+        xMax: parseFloat(chart.dataset.xmax),
+        yMin: parseFloat(chart.dataset.ymin),
+        yMax: parseFloat(chart.dataset.ymax)
       };
-      let ranges = {
-        xmin: Number(inputs.find(i=>i.dataset.k==='xmin').value) || 0,
-        xmax: Number(inputs.find(i=>i.dataset.k==='xmax').value) || 336,
-        ymin: Number(inputs.find(i=>i.dataset.k==='ymin').value) || 0,
-        ymax: Number(inputs.find(i=>i.dataset.k==='ymax').value) || 24,
+      const margins = {
+        l: ranges.l / 100,
+        t: ranges.t / 100,
+        r: ranges.r / 100,
+        b: ranges.b / 100
       };
 
-      function applyPlotRect() {
-        const rImg = img.getBoundingClientRect();
-        const l = (margins.l/100)*rImg.width;
-        const t = (margins.t/100)*rImg.height;
-        const r = rImg.width - (margins.r/100)*rImg.width;
-        const b = rImg.height - (margins.b/100)*rImg.height;
+      function updatePlot() {
+        const imgRect = img.getBoundingClientRect();
+        const plotWidth = imgRect.width * (1 - margins.l - margins.r);
+        const plotHeight = imgRect.height * (1 - margins.t - margins.b);
+        plot.style.left = (margins.l * imgRect.width) + 'px';
+        plot.style.top = (margins.t * imgRect.height) + 'px';
+        plot.style.width = plotWidth + 'px';
+        plot.style.height = plotHeight + 'px';
 
-        plot.style.left = l + "px";
-        plot.style.top = t + "px";
-        plot.style.width = Math.max(0, r - l) + "px";
-        plot.style.height = Math.max(0, b - t) + "px";
-
-        console.log(`Plot dimensions for ${cardEl.querySelector('.title').textContent}: left=${l}, top=${t}, width=${r-l}, height=${b-t}`);
+        xLine.style.top = (plotHeight / 2) + 'px';
+        yLine.style.left = (plotWidth / 2) + 'px';
+        updateReadout();
       }
 
-      function pxToData(clientX, clientY) {
+      function updateReadout() {
         const rp = plot.getBoundingClientRect();
-        const relX = Math.max(0, Math.min(rp.width, clientX - rp.left));
-        const relY = Math.max(0, Math.min(rp.height, clientY - rp.top));
-        const xVal = ranges.xmin + (relX/rp.width)*(ranges.xmax - ranges.xmin);
-        const yVal = ranges.ymax - (relY/rp.height)*(ranges.ymax - ranges.ymin);
-        return {relX, relY, xVal, yVal};
+        const relX = parseFloat(yLine.style.left) || rp.width / 2;
+        const relY = parseFloat(xLine.style.top) || rp.height / 2;
+        const age = ranges.xMin + (relX / rp.width) * (ranges.xMax - ranges.xMin);
+        const tsb = ranges.yMax - (relY / rp.height) * (ranges.yMax - ranges.yMin);
+        const readoutText = `Age: ${age.toFixed(1)} h (${(age / 24).toFixed(2)} d) • TSB: ${tsb.toFixed(1)} mg/dL (${Math.round(tsb * 17.1)} µmol/L)`;
+        readout.textContent = readoutText;
       }
 
-      function fmt(n, dp=1) { return Number(n).toFixed(dp); }
-
-      function setCrosshair(clientX, clientY) {
-        const { relX, relY, xVal, yVal } = pxToData(clientX, clientY);
-        xLine.style.top = relY + "px";
-        yLine.style.left = relX + "px";
-        readout.textContent = `Age: ${fmt(xVal,1)} h (${fmt(xVal/24,2)} d) • TSB: ${fmt(yVal,1)} mg/dL (${Math.round(yVal*17.1)} µmol/L)`;
-        console.log(`Crosshair set for ${cardEl.querySelector('.title').textContent}: x=${relX}, y=${relY}, Age=${fmt(xVal,1)}h, TSB=${fmt(yVal,1)}mg/dL`);
+      function setCrosshair(age, tsb) {
+        const rp = plot.getBoundingClientRect();
+        if (!isNaN(age)) {
+          const relX = ((age - ranges.xMin) / (ranges.xMax - ranges.xMin)) * rp.width;
+          yLine.style.left = Math.max(0, Math.min(rp.width, relX)) + 'px';
+        }
+        if (!isNaN(tsb)) {
+          const relY = ((ranges.yMax - tsb) / (ranges.yMax - ranges.yMin)) * rp.height;
+          xLine.style.top = Math.max(0, Math.min(rp.height, relY)) + 'px';
+        }
+        updateReadout();
       }
 
-      // Handle mouse click to set crosshair position
-      wrap.addEventListener('click', (e) => {
-        setCrosshair(e.clientX, e.clientY);
-      });
+      function handleDrag(type, e) {
+        e.preventDefault();
+        const rp = plot.getBoundingClientRect();
+        let isDragging = true;
 
-      // Handle touch events for tap and move
-      wrap.addEventListener('touchstart', (e) => {
-        if (e.touches.length > 0) {
-          e.preventDefault();
-          setCrosshair(e.touches[0].clientX, e.touches[0].clientY);
+        function move(e) {
+          if (!isDragging) return;
+          const touch = e.touches ? e.touches[0] : e;
+          if (type === 'x') {
+            let relY = touch.clientY - rp.top;
+            relY = Math.max(0, Math.min(rp.height, relY));
+            xLine.style.top = relY + 'px';
+          } else {
+            let relX = touch.clientX - rp.left;
+            relX = Math.max(0, Math.min(rp.width, relX));
+            yLine.style.left = relX + 'px';
+          }
+          updateReadout();
         }
-      }, {passive: false});
 
-      wrap.addEventListener('touchmove', (e) => {
-        if (e.touches.length > 0) {
-          e.preventDefault();
-          setCrosshair(e.touches[0].clientX, e.touches[0].clientY);
+        function stop() {
+          isDragging = false;
+          document.removeEventListener('pointermove', move);
+          document.removeEventListener('pointerup', stop);
         }
-      }, {passive: false});
 
-      // Handle image load and errors
-      img.addEventListener('load', () => {
-        applyPlotRect();
-        console.log(`Image loaded: ${img.src}`);
-      });
+        document.addEventListener('pointermove', move);
+        document.addEventListener('pointerup', stop);
+      }
 
+      xLine.addEventListener('pointerdown', (e) => handleDrag('x', e));
+      yLine.addEventListener('pointerdown', (e) => handleDrag('y', e));
+
+      img.addEventListener('load', updatePlot);
       img.addEventListener('error', () => {
-        console.error(`Failed to load image: ${img.src}`);
         readout.textContent = 'Error: Image failed to load';
       });
+      if (img.complete) updatePlot();
+      window.addEventListener('resize', updatePlot);
 
-      // Fallback to apply plot rectangle if image is already loaded or after a delay
-      if (img.complete) {
-        applyPlotRect();
-      } else {
-        setTimeout(applyPlotRect, 1000); // Fallback after 1 second
-      }
+      chart.setCrosshair = setCrosshair;
+    }
 
-      window.addEventListener('resize', applyPlotRect);
+    function setAllCrosshairs() {
+      const age = parseFloat(document.getElementById('photo-age-input').value);
+      const tsb = parseFloat(document.getElementById('photo-tsb-input').value);
+      document.querySelectorAll('#phototherapy .chart').forEach(chart => {
+        chart.setCrosshair(age, tsb);
+      });
     }
 
     function initApp() {
@@ -1118,11 +995,7 @@
       document.getElementById('fenton-male').style.display = sex === 'male' ? 'block' : 'none';
       document.getElementById('fenton-female').style.display = sex === 'female' ? 'block' : 'none';
 
-      // Initialize phototherapy cards
-      setupCard(document.querySelectorAll('#phototherapy .card')[0], [0,336], [0,24]);
-      setupCard(document.querySelectorAll('#phototherapy .card')[1], [0,336], [0,20]);
-      setupCard(document.querySelectorAll('#phototherapy .card')[2], [0,336], [0,26]);
-      setupCard(document.querySelectorAll('#phototherapy .card')[3], [0,336], [0,24]);
+      document.querySelectorAll('#phototherapy .chart').forEach(setupChart);
     }
 
     window.onload = function() {
