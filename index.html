@@ -4,413 +4,83 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Neonate Dosage Calculator</title>
-  
-  <!-- Required for iOS web app behavior -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="DosageCalc">
   <meta name="theme-color" content="#2a9d8f">
-
-  <!-- Icons -->
   <link rel="manifest" href="/neonate/manifest.json">
   <link rel="apple-touch-icon" sizes="180x180" href="/neonate/icon-180.png">
   <link rel="icon" type="image/png" sizes="192x192" href="/neonate/icon-192.png">
   <link rel="icon" type="image/png" sizes="512x512" href="/neonate/icon-512.png">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
-  
-<style>
-  :root {
-    --primary: #2a9d8f;
-    --header: #1d3557;
-    --bg: #f0f4f8;
-    --card: #ffffff;
-    --border: #dcdcdc;
-    --shadow: 0 4px 12px rgba(0,0,0,0.08);
-  }
-
-  * {
-    box-sizing: border-box;
-    font-family: 'Inter', sans-serif;
-    margin: 0;
-    padding: 0;
-  }
-
-  body {
-    margin: 0;
-    padding: 1.5rem;
-    background-color: var(--bg);
-    color: var(--header);
-    font-size: 1rem;
-  }
-
-  h1 {
-    text-align: center;
-    font-weight: 600;
-    font-size: 1.75rem;
-    margin-bottom: 1.5rem;
-  }
-
-  .container {
-    background: var(--card);
-    max-width: 600px;
-    margin: auto;
-    border-radius: 16px;
-    padding: 1.5rem;
-    box-shadow: var(--shadow);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-  }
-
-  .container:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 6px 18px rgba(0,0,0,0.12);
-  }
-
-  .form-group {
-    margin-bottom: 1rem;
-    display: none;
-  }
-
-  .form-group.active {
-    display: block;
-  }
-
-  label {
-    font-weight: 500;
-    display: block;
-    margin-bottom: 0.25rem;
-  }
-
-  input[type="number"] {
-    width: 100%;
-    padding: 0.6rem;
-    font-size: 16px;
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    background-color: #fff;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
-  }
-
-  input[type="number"]:focus {
-    border-color: var(--primary);
-    box-shadow: 0 0 8px rgba(42, 157, 143, 0.3);
-  }
-
-  .radio-group {
-    display: flex;
-    gap: 1rem;
-    margin-top: 0.5rem;
-  }
-
-  .radio-group label {
-    font-weight: 400;
-  }
-
-  .btn {
-    width: 100%;
-    padding: 0.75rem;
-    background-color: var(--primary);
-    color: white;
-    font-size: 1rem;
-    font-weight: 500;
-    border: none;
-    border-radius: 12px;
-    cursor: pointer;
-    margin: 1rem 0;
-    transition: background-color 0.3s ease;
-  }
-
-  .btn:hover {
-    background-color: #21867a;
-  }
-
-  .tabs {
-    display: flex;
-    gap: 0.5rem;
-    flex-wrap: wrap;
-    justify-content: center;
-    margin-bottom: 1.5rem;
-    position: sticky;
-    top: 0;
-    background: var(--card);
-    padding: 1rem 0;
-    z-index: 10;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .tab-button {
-    padding: 0.5rem 1rem;
-    background-color: #fff;
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    cursor: pointer;
-    font-weight: 500;
-    transition: all 0.3s ease;
-  }
-
-  .tab-button:hover, .tab-button.active {
-    background-color: var(--primary);
-    color: white;
-    border-color: var(--primary);
-  }
-
-  .tab-content {
-    display: none;
-  }
-
-  .tab-content.active {
-    display: block;
-  }
-
-  .section-title {
-    margin-top: 2rem;
-    font-weight: 600;
-    font-size: 1.1rem;
-    color: var(--header);
-  }
-
-  .note {
-    color: #888;
-    font-size: 0.875rem;
-    margin-top: 0.5rem;
-  }
-
-  .chart-image {
-    width: 100%;
-    height: auto;
-    border-radius: 12px;
-    margin-top: 1rem;
-    border: 1px solid var(--border);
-  }
-
-  .title {
-    font-weight: 600;
-    margin-bottom: 6px;
-    margin-top: 1rem;
-    color: var(--header);
-  }
-
-  .canvas-wrap {
-    position: relative;
-    overflow: hidden;
-    background: #f7f9fb;
-    border: 1px solid var(--border);
-    margin-bottom: 1rem;
-    width: 100%;
-  }
-
-  .canvas-wrap img {
-    display: block;
-    width: 100%;
-    height: auto;
-  }
-
-  .plot {
-    position: absolute;
-    pointer-events: none;
-    background: transparent;
-    z-index: 5;
-  }
-
-  .crosshair-x {
-    position: absolute;
-    height: 1px;
-    background: red !important;
-    left: 0;
-    right: 0;
-    display: block !important;
-    opacity: 1 !important;
-    z-index: 15;
-    cursor: row-resize;
-    touch-action: none;
-    will-change: transform;
-  }
-
-  .crosshair-y {
-    position: absolute;
-    width: 1px;
-    background: red !important;
-    top: 0;
-    bottom: 0;
-    display: block !important;
-    opacity: 1 !important;
-    z-index: 15;
-    cursor: col-resize;
-    touch-action: none;
-    will-change: transform;
-  }
-
-  .crosshair-x::before,
-  .crosshair-y::before {
-    content: '';
-    position: absolute;
-    pointer-events: auto;
-  }
-
-  .crosshair-x::before {
-    width: 100%;
-    height: 20px;
-    top: -10px;
-    left: 0;
-  }
-
-  .crosshair-y::before {
-    height: 100%;
-    width: 20px;
-    left: -10px;
-    top: 0;
-  }
-
-  .readout {
-    position: absolute;
-    right: 8px;
-    bottom: 8px;
-    background: rgba(13,19,32,0.85);
-    border: 1px solid #243147;
-    border-radius: 10px;
-    padding: 8px 10px;
-    font-size: 12px;
-    color: white;
-    z-index: 20;
-  }
-
-  .inputs {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    margin-bottom: 1rem;
-  }
-
-  .inputs label {
-    flex-basis: 100%;
-    margin-bottom: 0;
-  }
-
-  .inputs input {
-    flex: 1;
-    min-width: 100px;
-  }
-
-  .inputs button {
-    flex: 1;
-    min-width: 100px;
-    margin: 0;
-  }
-
-  @media (max-width: 600px) {
-    body {
-      font-size: 0.95rem;
-      padding: 0;
+  <style>
+    :root {
+      --primary: #2a9d8f;
+      --header: #1d3557;
+      --bg: #f0f4f8;
+      --card: #ffffff;
+      --border: #dcdcdc;
+      --shadow: 0 4px 12px rgba(0,0,0,0.08);
     }
-
-    .container {
-      max-width: 100%;
-      padding: 0;
-      border-radius: 0;
+    * { box-sizing: border-box; font-family: 'Inter', sans-serif; margin: 0; padding: 0; }
+    body { margin: 0; padding: 1.5rem; background-color: var(--bg); color: var(--header); font-size: 1rem; }
+    h1 { text-align: center; font-weight: 600; font-size: 1.75rem; margin-bottom: 1.5rem; }
+    .container { background: var(--card); max-width: 600px; margin: auto; border-radius: 16px; padding: 1.5rem; box-shadow: var(--shadow); transition: transform 0.3s ease, box-shadow 0.3s ease; }
+    .container:hover { transform: translateY(-5px); box-shadow: 0 6px 18px rgba(0,0,0,0.12); }
+    .form-group { margin-bottom: 1rem; display: none; }
+    .form-group.active { display: block; }
+    label { font-weight: 500; display: block; margin-bottom: 0.25rem; }
+    input[type="number"] { width: 100%; padding: 0.6rem; font-size: 16px; border: 1px solid var(--border); border-radius: 12px; background-color: #fff; transition: border-color 0.3s ease, box-shadow 0.3s ease; }
+    input[type="number"]:focus { border-color: var(--primary); box-shadow: 0 0 8px rgba(42, 157, 143, 0.3); }
+    .radio-group { display: flex; gap: 1rem; margin-top: 0.5rem; }
+    .radio-group label { font-weight: 400; }
+    .btn { width: 100%; padding: 0.75rem; background-color: var(--primary); color: white; font-size: 1rem; font-weight: 500; border: none; border-radius: 12px; cursor: pointer; margin: 1rem 0; transition: background-color 0.3s ease; }
+    .btn:hover { background-color: #21867a; }
+    .tabs { display: flex; gap: 0.5rem; flex-wrap: wrap; justify-content: center; margin-bottom: 1.5rem; position: sticky; top: 0; background: var(--card); padding: 1rem 0; z-index: 10; border-bottom: 1px solid var(--border); }
+    .tab-button { padding: 0.5rem 1rem; background-color: #fff; border: 1px solid var(--border); border-radius: 12px; cursor: pointer; font-weight: 500; transition: all 0.3s ease; }
+    .tab-button:hover, .tab-button.active { background-color: var(--primary); color: white; border-color: var(--primary); }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+    .section-title { margin-top: 2rem; font-weight: 600; font-size: 1.1rem; color: var(--header); }
+    .note { color: #888; font-size: 0.875rem; margin-top: 0.5rem; }
+    .chart-image { width: 100%; height: auto; border-radius: 12px; margin-top: 1rem; border: 1px solid var(--border); }
+    .title { font-weight: 600; margin-bottom: 6px; margin-top: 1rem; color: var(--header); }
+    .canvas-wrap { position: relative; overflow: hidden; background: #f7f9fb; border: 1px solid var(--border); margin-bottom: 1rem; width: 100%; }
+    .canvas-wrap img { display: block; width: 100%; height: auto; }
+    .plot { position: absolute; pointer-events: none; background: transparent; z-index: 5; }
+    .crosshair-x { position: absolute; height: 1px; background: red !important; left: 0; right: 0; display: block !important; opacity: 1 !important; z-index: 15; cursor: row-resize; touch-action: none; will-change: transform; }
+    .crosshair-y { position: absolute; width: 1px; background: red !important; top: 0; bottom: 0; display: block !important; opacity: 1 !important; z-index: 15; cursor: col-resize; touch-action: none; will-change: transform; }
+    .crosshair-x::before, .crosshair-y::before { content: ''; position: absolute; pointer-events: auto; }
+    .crosshair-x::before { width: 100%; height: 20px; top: -10px; left: 0; }
+    .crosshair-y::before { height: 100%; width: 20px; left: -10px; top: 0; }
+    .readout { position: absolute; right: 8px; bottom: 8px; background: rgba(13,19,32,0.85); border: 1px solid #243147; border-radius: 10px; padding: 8px 10px; font-size: 12px; color: white; z-index: 20; }
+    .inputs { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem; }
+    .inputs label { flex-basis: 100%; margin-bottom: 0; }
+    .inputs input { flex: 1; min-width: 100px; }
+    .inputs button { flex: 1; min-width: 100px; margin: 0; }
+    @media (max-width: 600px) {
+      body { font-size: 0.95rem; padding: 0; }
+      .container { max-width: 100%; padding: 0; border-radius: 0; }
+      .tabs { padding: 0.5rem; }
+      .radio-group { flex-direction: column; }
+      .tab-button { font-size: 0.95rem; }
+      .inputs { flex-direction: column; }
+      .inputs input, .inputs button { width: 100%; }
+      .canvas-wrap { margin-left: 0; margin-right: 0; padding: 0; border-left: none; border-right: none; border-radius: 0; }
+      .title, .inputs, .form-group, .section-title { padding: 0 1rem; }
+      .table-wrapper { padding: 0 2px; font-size: 0.95rem; }
+      th, td { font-size: 0.9rem; padding: 6px 4px; }
+      .crosshair-x::before { height: 30px; top: -15px; }
+      .crosshair-y::before { width: 30px; left: -15px; }
     }
-
-    .tabs {
-      padding: 0.5rem;
-    }
-
-    .radio-group {
-      flex-direction: column;
-    }
-
-    .tab-button {
-      font-size: 0.95rem;
-    }
-
-    .inputs {
-      flex-direction: column;
-    }
-
-    .inputs input, .inputs button {
-      width: 100%;
-    }
-
-    .canvas-wrap {
-      margin-left: 0;
-      margin-right: 0;
-      padding: 0;
-      border-left: none;
-      border-right: none;
-      border-radius: 0;
-    }
-
-    .title, .inputs, .form-group, .section-title {
-      padding: 0 1rem;
-    }
-
-    .table-wrapper {
-      padding: 0 2px;
-      font-size: 0.95rem;
-    }
-
-    th, td {
-      font-size: 0.9rem;
-      padding: 6px 4px;
-    }
-
-    .crosshair-x::before {
-      height: 30px;
-      top: -15px;
-    }
-
-    .crosshair-y::before {
-      width: 30px;
-      left: -15px;
-    }
-  }
-
-  .table-wrapper {
-    overflow-x: auto;
-    background: var(--card);
-    border-radius: 8px;
-    box-shadow: var(--shadow);
-    padding: 0 2px;
-    margin: 0 auto 1rem;
-    display: block;
-    width: fit-content;
-    max-width: 100%;
-    font-size: 0.95rem;
-  }
-
-  table {
-    border-collapse: collapse;
-    width: 100%;
-  }
-
-  th, td {
-    padding: 6px 8px;
-    text-align: left;
-    font-size: 1rem;
-    border-bottom: 1px solid var(--border);
-    white-space: nowrap;
-    vertical-align: top;
-  }
-
-  th {
-    background: #f7f9fb;
-    font-weight: 600;
-    position: sticky;
-    top: 0;
-  }
-
-  tr:last-child td {
-    border-bottom: none;
-  }
-
-  .cell-content {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-  }
-
-  .conc {
-    font-size: 0.75rem;
-    color: gray;
-  }
-</style>
+    .table-wrapper { overflow-x: auto; background: var(--card); border-radius: 8px; box-shadow: var(--shadow); padding: 0 2px; margin: 0 auto 1rem; display: block; width: fit-content; max-width: 100%; font-size: 0.95rem; }
+    table { border-collapse: collapse; width: 100%; }
+    th, td { padding: 6px 8px; text-align: left; font-size: 1rem; border-bottom: 1px solid var(--border); white-space: nowrap; vertical-align: top; }
+    th { background: #f7f9fb; font-weight: 600; position: sticky; top: 0; }
+    tr:last-child td { border-bottom: none; }
+    .cell-content { display: flex; flex-direction: column; justify-content: flex-start; }
+    .conc { font-size: 0.75rem; color: gray; }
+  </style>
 </head>
 <body>
   <h1>Neonate Dosage Calculator</h1>
@@ -422,6 +92,7 @@
       <button class="tab-button" onclick="openTab('fenton')">Fenton Chart</button>
     </div>
 
+    <!-- PHOTOTHERAPY TAB -->
     <div id="phototherapy" class="tab-content active">
       <div class="inputs form-group active">
         <label>Age (hours):</label>
@@ -430,6 +101,7 @@
         <input type="number" id="photo-tsb-input" step="0.1" min="0" placeholder="Enter TSB" aria-label="Total Serum Bilirubin in mg/dL">
         <button class="btn" onclick="setAllCrosshairs()">Set</button>
       </div>
+
       <div class="title">Phototherapy — No Risk Factors</div>
       <div class="chart" data-xmin="-5.3" data-xmax="342" data-ymin="5.4" data-ymax="24" data-l="9.1" data-t="8.5" data-r="10.8" data-b="21.3">
         <div class="canvas-wrap">
@@ -438,6 +110,7 @@
           <div class="readout">Age: 0 h (0 d) • TSB: 0 mg/dL (0 µmol/L)</div>
         </div>
       </div>
+
       <div class="title">Phototherapy — With Risk Factors</div>
       <div class="chart" data-xmin="-5.3" data-xmax="342" data-ymin="3.4" data-ymax="20" data-l="9.1" data-t="8.5" data-r="11.5" data-b="22.2">
         <div class="canvas-wrap">
@@ -446,6 +119,7 @@
           <div class="readout">Age: 0 h (0 d) • TSB: 0 mg/dL (0 µmol/L)</div>
         </div>
       </div>
+
       <div class="title">Exchange — No Risk Factors</div>
       <div class="chart" data-xmin="-5" data-xmax="342" data-ymin="13.5" data-ymax="28" data-l="9.2" data-t="8.0" data-r="10.5" data-b="20.2">
         <div class="canvas-wrap">
@@ -454,6 +128,7 @@
           <div class="readout">Age: 0 h (0 d) • TSB: 0 mg/dL (0 µmol/L)</div>
         </div>
       </div>
+
       <div class="title">Exchange — With Risk Factors</div>
       <div class="chart" data-xmin="-5" data-xmax="342" data-ymin="11.5" data-ymax="24" data-l="8.9" data-t="7.2" data-r="10.4" data-b="21.2">
         <div class="canvas-wrap">
@@ -462,12 +137,27 @@
           <div class="readout">Age: 0 h (0 d) • TSB: 0 mg/dL (0 µmol/L)</div>
         </div>
       </div>
-      <div class="title">Exchange Transfusion Guidelines</div>
-      <img src="https://raw.githubusercontent.com/nuhadwrk/neonate/main/ET.jpg" alt="Exchange Transfusion Guidelines" class="chart-image">
+
       <div class="title">Phototherapy Guidelines</div>
-      <img src="https://raw.githubusercontent.com/nuhadwrk/neonate/main/PT.jpg" alt="Phototherapy Guidelines" class="chart-image">
+      <div class="chart" id="chart-pt" data-xmin="-9.2" data-xmax="175" data-ymin="-0.77" data-ymax="25" data-l="7" data-t="1" data-r="9" data-b="32">
+        <div class="canvas-wrap">
+          <img src="https://raw.githubusercontent.com/nuhadwrk/neonate/main/PT.jpg" alt="Phototherapy Guidelines">
+          <div class="plot"><div class="crosshair-x"></div><div class="crosshair-y"></div></div>
+          <div class="readout">Age: 0 h (0 d) • TSB: 0 mg/dL (0 µmol/L)</div>
+        </div>
+      </div>
+
+      <div class="title">Exchange Transfusion Guidelines</div>
+      <div class="chart" id="chart-et" data-xmin="-8.1" data-xmax="175" data-ymin="9.55" data-ymax="25" data-l="7" data-t="16" data-r="10" data-b="37">
+        <div class="canvas-wrap">
+          <img src="https://raw.githubusercontent.com/nuhadwrk/neonate/main/ET.jpg" alt="Exchange Transfusion Guidelines">
+          <div class="plot"><div class="crosshair-x"></div><div class="crosshair-y"></div></div>
+          <div class="readout">Age: 0 h (0 d) • TSB: 0 mg/dL (0 µmol/L)</div>
+        </div>
+      </div>
     </div>
 
+    <!-- DOSAGE TAB -->
     <div id="dosage" class="tab-content">
       <div class="form-group active">
         <label for="weight">Weight (kg):</label>
@@ -500,6 +190,7 @@
       </div>
     </div>
 
+    <!-- NUTRITION TAB -->
     <div id="nutrition" class="tab-content">
       <div class="form-group active">
         <label for="birth-weight-wl">Birth Weight (kg):</label>
@@ -511,6 +202,7 @@
       </div>
       <button class="btn" onclick="calculateWeightLoss()">Calculate Weight Loss</button>
       <div id="weight-loss-result" class="note" style="margin-top: 1rem;"></div>
+
       <div class="form-group active">
         <label for="feed-weight">Weight (kg):</label>
         <input type="number" id="feed-weight" placeholder="Enter weight in kg" step="0.01" min="0.1">
@@ -528,6 +220,7 @@
       </div>
       <button class="btn" onclick="calculateFeedVolume()">Calculate Feed Volume</button>
       <div id="feed-result" class="note" style="margin-top: 1rem;"></div>
+
       <h3 class="section-title">Nutrition Guidelines</h3>
       <ul>
         <li>Day 1: Term: 60–80 ml/kg/day; Preterm: 80–100 ml/kg/day (D10%)</li>
@@ -537,165 +230,60 @@
       </ul>
       <div class="note">Note: Adjust based on clinical assessment.</div>
     </div>
-
-    <div id="fenton" class="tab-content">
-      <div class="form-group active">
-        <label for="fenton-weight">Birth Weight (g):</label>
-        <input type="number" id="fenton-weight" placeholder="Enter weight in grams" step="1" min="300" max="6000">
-      </div>
-      <div class="form-group active">
-        <label>Sex:</label>
-        <div class="radio-group">
-          <label><input type="radio" name="sex" value="male" checked> Male</label>
-          <label><input type="radio" name="sex" value="female"> Female</label>
-        </div>
-      </div>
-      <div class="form-group active">
-        <label for="gestational-age">Gestational Age (weeks):</label>
-        <input type="number" id="gestational-age" placeholder="Enter gestational age" step="1" min="22" max="50">
-      </div>
-      <button class="btn" onclick="updateFenton()">Calculate</button>
-      <div id="fenton-result" class="note" style="margin-top: 1rem; padding: 1rem; background: #f7f9fb; border-radius: 8px;"></div>
-      <img src="FM.jpg" alt="Fenton Chart for Boys" class="chart-image" id="fenton-male" style="display: none;">
-      <img src="FF.jpg" alt="Fenton Chart for Girls" class="chart-image" id="fenton-female" style="display: none;">
-      <div class="note" style="margin-top: 1rem; text-align: center;">Fenton Growth Charts (2025)</div>
+<!-- FENTON TAB -->
+<div id="fenton" class="tab-content">
+  <div class="form-group active">
+    <label for="fenton-weight">Birth Weight (g):</label>
+    <input type="number" id="fenton-weight" placeholder="Enter weight in grams" step="1" min="300" max="6000">
+  </div>
+  <div class="form-group active">
+    <label>Sex:</label>
+    <div class="radio-group">
+      <label><input type="radio" name="sex" value="male" checked> Male</label>
+      <label><input type="radio" name="sex" value="female"> Female</label>
     </div>
   </div>
+  <div class="form-group active">
+    <label for="gestational-age">Gestational Age (weeks):</label>
+    <input type="number" id="gestational-age" placeholder="Enter gestational age" step="1" min="22" max="50">
+  </div>
+  <button class="btn" onclick="updateFenton()">Calculate</button>
+  <div id="fenton-result" class="note" style="margin-top: 1rem; padding: 1rem; background: #f7f9fb; border-radius: 8px;"></div>
+  
+  <!-- FIXED: Public URLs from GitHub -->
+  <img src="https://raw.githubusercontent.com/nuhadwrk/neonate/main/FM.jpg" alt="Fenton Chart for Boys" class="chart-image" id="fenton-male" style="display: none;">
+  <img src="https://raw.githubusercontent.com/nuhadwrk/neonate/main/FF.jpg" alt="Fenton Chart for Girls" class="chart-image" id="fenton-female" style="display: none;">
+  
+  <div class="note" style="margin-top: 1rem; text-align: center;">Fenton Growth Charts (2025)</div>
+</div>
 
   <script>
     // Drug database
     const drugData = [
-      {
-        name: "Ampicillin",
-        dose: [
-          { condition: "Standard", mgPerKg: 50, interval: { "≤ 7 days": 12, "> 7 days": 8 } },
-          { condition: "Meningitis", mgPerKg: 100, interval: { "≤ 7 days": 12, "> 7 days": 8 } }
-        ]
-      },
-      {
-        name: "Amikacin",
-        dose: [
-          {
-            condition: "Standard",
-            mgPerKg: 15,
-            interval: {
-              "≤ 7 days": { "< 2 kg": 48, "> 2 kg": 24 },
-              "> 7 days": { "< 2 kg": "24–48", "> 2 kg": "12–24" }
-            }
-          }
-        ]
-      },
-      {
-        name: "Cefotaxime",
-        dose: [
-          { condition: "Standard/Meningitis", mgPerKg: 50, interval: { "≤ 7 days": 12, "> 7 days": 8 } }
-        ]
-      },
-      {
-        name: "Ceftazidime",
-        dose: [
-          { condition: "Standard/Meningitis", mgPerKg: 50, interval: { "≤ 7 days": 12, "> 7 days": 8 } }
-        ]
-      },
-      {
-        name: "Meropenem",
-        dose: [
-          { condition: "Standard", mgPerKg: 20, interval: { "≤ 7 days": 12, "> 7 days": 8 } },
-          { condition: "Meningitis", mgPerKg: 40, interval: { "≤ 7 days": 12, "> 7 days": 8 } }
-        ]
-      },
-      {
-        name: "Metronidazole",
-        dose: [
-          {
-            condition: "Standard",
-            mgPerKg: 7.5,
-            interval: {
-              "≤ 7 days": { "< 1.2 kg": 48, "1.2–2 kg": 24, "> 2 kg": 12 },
-              "> 7 days": { "< 1.2 kg": 24, "1.2–2 kg": 12, "> 2 kg": 12 }
-            }
-          },
-          { condition: "Standard (> 2 kg, > 7 days)", mgPerKg: 15, interval: { "> 7 days": { "> 2 kg": 12 } } }
-        ]
-      },
-      {
-        name: "PipTaz",
-        dose: [
-          { condition: "Standard", mgPerKg: 90, interval: { "≤ 7 days": 12, "> 7 days": 8 } }
-        ]
-      },
-      {
-        name: "Vancomycin",
-        dose: [
-          {
-            condition: "Standard",
-            mgPerKg: 15,
-            interval: {
-              "≤ 7 days": {
-                "< 1.2 kg": 24,
-                "1.2–2 kg": "12–18",
-                "> 2 kg": 12
-              },
-              "> 7 days": {
-                "< 1.2 kg": 24,
-                "1.2–2 kg": 12,
-                "> 2 kg": 8
-              }
-            }
-          }
-        ]
-      },
-      {
-        name: "Fluconazole",
-        dose: [
-          { condition: "Loading", mgPerKg: 12, interval: "once" },
-          { condition: "Maintenance (0–14 days)", mgPerKg: 6, interval: 72 },
-          { condition: "Maintenance (>14 days)", mgPerKg: 6, interval: 48 }
-        ]
-      },
-      {
-        name: "Fluconazole (Prophylaxis)",
-        dose: [
-          { condition: "Standard (3–6 mg/kg)", mgPerKg: 3, interval: 72 }
-        ]
-      },
-      {
-        name: "Caffeine",
-        dose: [
-          { condition: "Standard", mgPerKg: 5, interval: { "≤ 7 days": 24, "> 7 days": 24 } }
-        ]
-      }
+      { name: "Ampicillin", dose: [ { condition: "Standard", mgPerKg: 50, interval: { "≤ 7 days": 12, "> 7 days": 8 } }, { condition: "Meningitis", mgPerKg: 100, interval: { "≤ 7 days": 12, "> 7 days": 8 } } ] },
+      { name: "Amikacin", dose: [ { condition: "Standard", mgPerKg: 15, interval: { "≤ 7 days": { "< 2 kg": 48, "> 2 kg": 24 }, "> 7 days": { "< 2 kg": "24–48", "> 2 kg": "12–24" } } } ] },
+      { name: "Cefotaxime", dose: [ { condition: "Standard/Meningitis", mgPerKg: 50, interval: { "≤ 7 days": 12, "> 7 days": 8 } } ] },
+      { name: "Ceftazidime", dose: [ { condition: "Standard/Meningitis", mgPerKg: 50, interval: { "≤ 7 days": 12, "> 7 days": 8 } } ] },
+      { name: "Meropenem", dose: [ { condition: "Standard", mgPerKg: 20, interval: { "≤ 7 days": 12, "> 7 days": 8 } }, { condition: "Meningitis", mgPerKg: 40, interval: { "≤ 7 days": 12, "> 7 days": 8 } } ] },
+      { name: "Metronidazole", dose: [ { condition: "Standard", mgPerKg: 7.5, interval: { "≤ 7 days": { "< 1.2 kg": 48, "1.2–2 kg": 24, "> 2 kg": 12 }, "> 7 days": { "< 1.2 kg": 24, "1.2–2 kg": 12, "> 2 kg": 12 } } }, { condition: "Standard (> 2 kg, > 7 days)", mgPerKg: 15, interval: { "> 7 days": { "> 2 kg": 12 } } } ] },
+      { name: "PipTaz", dose: [ { condition: "Standard", mgPerKg: 90, interval: { "≤ 7 days": 12, "> 7 days": 8 } } ] },
+      { name: "Vancomycin", dose: [ { condition: "Standard", mgPerKg: 15, interval: { "≤ 7 days": { "< 1.2 kg": 24, "1.2–2 kg": "12–18", "> 2 kg": 12 }, "> 7 days": { "< 1.2 kg": 24, "1.2–2 kg": 12, "> 2 kg": 8 } } } ] },
+      { name: "Fluconazole", dose: [ { condition: "Loading", mgPerKg: 12, interval: "once" }, { condition: "Maintenance (0–14 days)", mgPerKg: 6, interval: 72 }, { condition: "Maintenance (>14 days)", mgPerKg: 6, interval: 48 } ] },
+      { name: "Fluconazole (Prophylaxis)", dose: [ { condition: "Standard (3–6 mg/kg)", mgPerKg: 3, interval: 72 } ] },
+      { name: "Caffeine", dose: [ { condition: "Standard", mgPerKg: 5, interval: { "≤ 7 days": 24, "> 7 days": 24 } } ] }
     ];
 
-    // Fenton growth chart percentiles
+    // Fenton percentiles
     const fentonPercentiles = {
       male: {
-        22: { p10: 400, p90: 600 },
-        24: { p10: 500, p90: 750 },
-        26: { p10: 600, p90: 900 },
-        28: { p10: 800, p90: 1200 },
-        30: { p10: 1000, p90: 1500 },
-        32: { p10: 1300, p90: 1900 },
-        34: { p10: 1700, p90: 2500 },
-        36: { p10: 2100, p90: 3100 },
-        38: { p10: 2500, p90: 3700 },
-        40: { p10: 2800, p90: 4100 },
-        42: { p10: 3000, p90: 4400 },
-        50: { p10: 3100, p90: 4600 }
+        22: { p10: 400, p90: 600 }, 24: { p10: 500, p90: 750 }, 26: { p10: 600, p90: 900 }, 28: { p10: 800, p90: 1200 },
+        30: { p10: 1000, p90: 1500 }, 32: { p10: 1300, p90: 1900 }, 34: { p10: 1700, p90: 2500 }, 36: { p10: 2100, p90: 3100 },
+        38: { p10: 2500, p90: 3700 }, 40: { p10: 2800, p90: 4100 }, 42: { p10: 3000, p90: 4400 }, 50: { p10: 3100, p90: 4600 }
       },
       female: {
-        22: { p10: 380, p90: 580 },
-        24: { p10: 480, p90: 720 },
-        26: { p10: 580, p90: 870 },
-        28: { p10: 760, p90: 1140 },
-        30: { p10: 950, p90: 1420 },
-        32: { p10: 1250, p90: 1800 },
-        34: { p10: 1600, p90: 2400 },
-        36: { p10: 2000, p90: 3000 },
-        38: { p10: 2400, p90: 3500 },
-        40: { p10: 2700, p90: 3900 },
-        42: { p10: 2900, p90: 4200 },
-        50: { p10: 3000, p90: 4400 }
+        22: { p10: 380, p90: 580 }, 24: { p10: 480, p90: 720 }, 26: { p10: 580, p90: 870 }, 28: { p10: 760, p90: 1140 },
+        30: { p10: 950, p90: 1420 }, 32: { p10: 1250, p90: 1800 }, 34: { p10: 1600, p90: 2400 }, 36: { p10: 2000, p90: 3000 },
+        38: { p10: 2400, p90: 3500 }, 40: { p10: 2700, p90: 3900 }, 42: { p10: 2900, p90: 4200 }, 50: { p10: 3000, p90: 4400 }
       }
     };
 
@@ -703,20 +291,16 @@
       const birthWeight = parseFloat(document.getElementById('birth-weight-wl').value);
       const currentWeight = parseFloat(document.getElementById('current-weight-wl').value);
       const result = document.getElementById('weight-loss-result');
-
       if (!birthWeight || !currentWeight || birthWeight <= 0 || currentWeight <= 0) {
         result.innerHTML = '<span style="color: #e63946;">Please enter valid weights.</span>';
         return;
       }
-
       const lossPercent = ((birthWeight - currentWeight) / birthWeight) * 100;
       const rounded = lossPercent.toFixed(1);
       let message = `Weight loss: <strong>${rounded}%</strong>`;
-
       if (lossPercent > 10) {
         message += ` <span style="color: #e76f51;">(Exceeds 10%)</span>`;
       }
-
       result.innerHTML = message;
     }
 
@@ -725,15 +309,12 @@
       const kcal = parseFloat(document.getElementById('feed-kcal').value);
       const kcalPerMl = parseFloat(document.querySelector('input[name="feed-type"]:checked').value);
       const result = document.getElementById('feed-result');
-
       if (!weight || !kcal || weight <= 0 || kcal <= 0) {
         result.innerHTML = '<span style="color: #e63946;">Please enter valid weight and kcal/kg/day.</span>';
         return;
       }
-
       const totalDailyMl = (kcal * weight) / kcalPerMl;
       const perFeedMl = totalDailyMl / 8;
-
       result.innerHTML = `
         <strong>Feed Volume:</strong><br>
         Total daily: <strong>${totalDailyMl.toFixed(1)} ml</strong><br>
@@ -742,22 +323,12 @@
     }
 
     function openTab(tabName) {
-      document.querySelectorAll('.tab-content').forEach(tab => {
-        tab.classList.remove('active');
-      });
-      document.querySelectorAll('.tab-button').forEach(button => {
-        button.classList.remove('active');
-      });
+      document.querySelectorAll('.tab-content').forEach(tab => { tab.classList.remove('active'); });
+      document.querySelectorAll('.tab-button').forEach(button => { button.classList.remove('active'); });
       document.getElementById(tabName).classList.add('active');
       document.querySelector(`.tab-button[onclick="openTab('${tabName}')"]`).classList.add('active');
-
-      document.querySelectorAll('.form-group').forEach(group => {
-        group.classList.remove('active');
-      });
-      document.querySelectorAll(`#${tabName} .form-group`).forEach(group => {
-        group.classList.add('active');
-      });
-
+      document.querySelectorAll('.form-group').forEach(group => { group.classList.remove('active'); });
+      document.querySelectorAll(`#${tabName} .form-group`).forEach(group => { group.classList.add('active'); });
       if (tabName === 'fenton') {
         const sex = document.querySelector('input[name="sex"]:checked').value;
         document.getElementById('fenton-male').style.display = sex === 'male' ? 'block' : 'none';
@@ -769,18 +340,15 @@
       const weight = parseFloat(document.getElementById('weight').value);
       const age = document.querySelector('input[name="age"]:checked').value;
       const table = document.getElementById('dosage-table');
-
       if (!weight || weight <= 0) {
         table.innerHTML = `<tr><td colspan="4">Please enter a valid weight.</td></tr>`;
         return;
       }
-
       let rows = '';
       drugData.forEach(drug => {
         drug.dose.forEach(dose => {
           let doseMg = (dose.mgPerKg * weight).toFixed(2);
           let interval = dose.interval[age];
-
           if (typeof interval === 'object') {
             if (interval["≤ 7 days"] || interval["> 7 days"]) {
               let ageInterval = interval[age];
@@ -804,14 +372,11 @@
                 interval = interval["> 2 kg"];
               }
             }
-
             if (drug.name === "Metronidazole" && age === "> 7 days" && weight > 2 && dose.mgPerKg === 15) {
               doseMg = (15 * weight).toFixed(2);
             }
           }
-
           if (!interval) return;
-
           rows += `
             <tr>
               <td><div class="cell-content">${drug.name}<div class="conc">(${dose.condition})</div></div></td>
@@ -822,7 +387,6 @@
           `;
         });
       });
-
       table.innerHTML = rows || `<tr><td colspan="4">No matching data.</td></tr>`;
     }
 
@@ -831,17 +395,14 @@
       const sex = document.querySelector('input[name="sex"]:checked').value;
       const ga = parseFloat(document.getElementById('gestational-age').value) || 0;
       const resultDiv = document.getElementById('fenton-result');
-
       if (!weight || !ga) {
         resultDiv.innerHTML = 'Please enter both weight and gestational age.';
         return;
       }
-
       if (weight < 300 || weight > 6000 || ga < 22 || ga > 50) {
         resultDiv.innerHTML = 'Please enter valid weight (300–6000g) and gestational age (22–50 weeks).';
         return;
       }
-
       let gaClass;
       if (ga > 42) gaClass = 'Post Term (>42 weeks)';
       else if (ga >= 40) gaClass = 'Late Term (40 to <42 weeks)';
@@ -861,7 +422,6 @@
       const gaPoints = Object.keys(fentonPercentiles[sex]).map(Number).sort((a, b) => a - b);
       let closestGa = gaPoints.find(point => point >= ga) || gaPoints[gaPoints.length - 1];
       const percentiles = fentonPercentiles[sex][closestGa];
-
       if (weight < percentiles.p10) {
         sizeClass = 'SGA';
       } else if (weight > percentiles.p90) {
@@ -887,7 +447,6 @@
       const yLine = chart.querySelector('.crosshair-y');
       const readout = chart.querySelector('.readout');
       const img = chart.querySelector('img');
-
       const ranges = {
         l: parseFloat(chart.dataset.l),
         t: parseFloat(chart.dataset.t),
@@ -898,12 +457,7 @@
         yMin: parseFloat(chart.dataset.ymin),
         yMax: parseFloat(chart.dataset.ymax)
       };
-      const margins = {
-        l: ranges.l / 100,
-        t: ranges.t / 100,
-        r: ranges.r / 100,
-        b: ranges.b / 100
-      };
+      const margins = { l: ranges.l / 100, t: ranges.t / 100, r: ranges.r / 100, b: ranges.b / 100 };
 
       function updatePlot() {
         const imgRect = img.getBoundingClientRect();
@@ -913,7 +467,6 @@
         plot.style.top = (margins.t * imgRect.height) + 'px';
         plot.style.width = plotWidth + 'px';
         plot.style.height = plotHeight + 'px';
-
         xLine.style.top = (plotHeight / 2) + 'px';
         yLine.style.left = (plotWidth / 2) + 'px';
         updateReadout();
@@ -946,7 +499,6 @@
         e.preventDefault();
         const rp = plot.getBoundingClientRect();
         let isDragging = true;
-
         function move(e) {
           if (!isDragging) return;
           const touch = e.touches ? e.touches[0] : e;
@@ -961,27 +513,21 @@
           }
           updateReadout();
         }
-
         function stop() {
           isDragging = false;
           document.removeEventListener('pointermove', move);
           document.removeEventListener('pointerup', stop);
         }
-
         document.addEventListener('pointermove', move);
         document.addEventListener('pointerup', stop);
       }
 
       xLine.addEventListener('pointerdown', (e) => handleDrag('x', e));
       yLine.addEventListener('pointerdown', (e) => handleDrag('y', e));
-
       img.addEventListener('load', updatePlot);
-      img.addEventListener('error', () => {
-        readout.textContent = 'Error: Image failed to load';
-      });
+      img.addEventListener('error', () => { readout.textContent = 'Error: Image failed to load'; });
       if (img.complete) updatePlot();
       window.addEventListener('resize', updatePlot);
-
       chart.setCrosshair = setCrosshair;
     }
 
@@ -989,31 +535,23 @@
       const age = parseFloat(document.getElementById('photo-age-input').value);
       const tsb = parseFloat(document.getElementById('photo-tsb-input').value);
       document.querySelectorAll('#phototherapy .chart').forEach(chart => {
-        chart.setCrosshair(age, tsb);
+        if (chart.setCrosshair) chart.setCrosshair(age, tsb);
       });
     }
 
     function initApp() {
       openTab('phototherapy');
-      document.querySelectorAll('#phototherapy .form-group').forEach(group => {
-        group.classList.add('active');
-      });
-
+      document.querySelectorAll('#phototherapy .form-group').forEach(group => { group.classList.add('active'); });
       const sex = document.querySelector('input[name="sex"]:checked').value;
       document.getElementById('fenton-male').style.display = sex === 'male' ? 'block' : 'none';
       document.getElementById('fenton-female').style.display = sex === 'female' ? 'block' : 'none';
-
       document.querySelectorAll('#phototherapy .chart').forEach(setupChart);
     }
 
     window.onload = function() {
       initApp();
-
       document.getElementById('weight').addEventListener('input', updateDosages);
-      document.querySelectorAll('input[name="age"]').forEach(input => {
-        input.addEventListener('change', updateDosages);
-      });
-
+      document.querySelectorAll('input[name="age"]').forEach(input => { input.addEventListener('change', updateDosages); });
       document.getElementById('fenton-weight').addEventListener('input', updateFenton);
       document.getElementById('gestational-age').addEventListener('input', updateFenton);
       document.querySelectorAll('input[name="sex"]').forEach(input => {
