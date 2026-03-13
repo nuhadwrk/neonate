@@ -155,7 +155,36 @@
           <div class="readout">Age: 0 h (0 d) • TSB: 0 mg/dL (0 µmol/L)</div>
         </div>
       </div>
-    </div>
+<div class="title">NICE Dynamic Jaundice Chart</div>
+      <div class="form-group active" style="margin-bottom: 1rem;">
+        <label for="nice-ga">Gestational Age (weeks):</label>
+        <select id="nice-ga" onchange="updateNiceChart()" style="width: 100%; padding: 0.6rem; font-size: 16px; border: 1px solid var(--border); border-radius: 12px; background-color: #fff; color: var(--header);">
+          <option value="38" selected>≥ 38 weeks</option>
+          <option value="37">37 weeks</option>
+          <option value="36">36 weeks</option>
+          <option value="35">35 weeks</option>
+          <option value="34">34 weeks</option>
+          <option value="33">33 weeks</option>
+          <option value="32">32 weeks</option>
+          <option value="31">31 weeks</option>
+          <option value="30">30 weeks</option>
+          <option value="29">29 weeks</option>
+          <option value="28">28 weeks</option>
+          <option value="27">27 weeks</option>
+          <option value="26">26 weeks</option>
+          <option value="25">25 weeks</option>
+          <option value="24">24 weeks</option>
+          <option value="23">23 weeks</option>
+        </select>
+      </div>
+      <div class="chart" id="nice-chart-container" data-xmin="0" data-xmax="336" data-ymin="0" data-ymax="30" data-l="8" data-t="5" data-r="8" data-b="12">
+        <div class="canvas-wrap">
+          <img id="nice-dynamic-img" src="" alt="Dynamic NICE Chart">
+          <div class="plot"><div class="crosshair-x"></div><div class="crosshair-y"></div></div>
+          <div class="readout">Age: 0 h (0 d) • TSB: 0 mg/dL (0 µmol/L)</div>
+        </div>
+      </div>
+          </div>
 
     <!-- DOSAGE TAB -->
     <div id="dosage" class="tab-content">
@@ -547,8 +576,106 @@
       document.getElementById('fenton-female').style.display = sex === 'female' ? 'block' : 'none';
       document.querySelectorAll('#phototherapy .chart').forEach(setupChart);
     }
+function updateNiceChart() {
+      const ga = parseInt(document.getElementById('nice-ga').value);
+      const canvas = document.createElement('canvas');
+      canvas.width = 800;
+      canvas.height = 450;
+      const ctx = canvas.getContext('2d');
+      
+      // Background and plot area margins (matches HTML data attributes exactly)
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      const margins = { l: 0.08, r: 0.08, t: 0.05, b: 0.12 };
+      const plotX = canvas.width * margins.l;
+      const plotY = canvas.height * margins.t;
+      const plotW = canvas.width * (1 - margins.l - margins.r);
+      const plotH = canvas.height * (1 - margins.t - margins.b);
+      
+      ctx.strokeStyle = '#e0e0e0';
+      ctx.lineWidth = 1;
+      ctx.font = '12px Inter, sans-serif';
+      ctx.fillStyle = '#1d3557';
+      
+      // X-axis Grid (0 to 14 days)
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'top';
+      for (let x = 0; x <= 336; x += 24) {
+        let px = plotX + (x / 336) * plotW;
+        ctx.beginPath(); ctx.moveTo(px, plotY); ctx.lineTo(px, plotY + plotH); ctx.stroke();
+        ctx.fillText(x, px, plotY + plotH + 8);
+      }
+      ctx.font = 'bold 14px Inter, sans-serif';
+      ctx.fillText('Age (hours)', plotX + plotW/2, plotY + plotH + 30);
+      
+      // Y-axis Grid (mg/dL)
+      ctx.font = '12px Inter, sans-serif';
+      ctx.textBaseline = 'middle';
+      for (let y = 0; y <= 30; y += 5) {
+        let py = plotY + plotH - (y / 30) * plotH;
+        ctx.beginPath(); ctx.moveTo(plotX, py); ctx.lineTo(plotX + plotW, py); ctx.stroke();
+        
+        ctx.textAlign = 'right';
+        ctx.fillText(y, plotX - 8, py);
+        
+        // Secondary Y-axis (µmol/L)
+        let umol = Math.round(y * 17.1);
+        ctx.textAlign = 'left';
+        ctx.fillText(umol, plotX + plotW + 8, py);
+      }
+      
+      ctx.font = 'bold 14px Inter, sans-serif';
+      ctx.save(); ctx.translate(20, plotY + plotH/2); ctx.rotate(-Math.PI/2); ctx.textAlign = 'center'; ctx.fillText('TSB (mg/dL)', 0, 0); ctx.restore();
+      ctx.save(); ctx.translate(canvas.width - 20, plotY + plotH/2); ctx.rotate(-Math.PI/2); ctx.textAlign = 'center'; ctx.fillText('TSB (µmol/L)', 0, 0); ctx.restore();
+
+      // Determine NICE Formula Data Points (in umol/L)
+      let pt = [], et = [];
+      if (ga >= 38) {
+        pt = [{x: 0, y: 100}, {x: 24, y: 200}, {x: 96, y: 350}, {x: 336, y: 350}];
+        et = [{x: 0, y: 100}, {x: 42, y: 450}, {x: 336, y: 450}];
+      } else {
+        let pt0 = (ga * 10) - 260;
+        let pt72 = (ga * 10) - 100;
+        pt = [{x: 0, y: pt0}, {x: 72, y: pt72}, {x: 336, y: pt72}];
+        let et0 = (ga * 10) - 220;
+        let et72 = (ga * 10);
+        et = [{x: 0, y: et0}, {x: 72, y: et72}, {x: 336, y: et72}];
+      }
+
+      // Draw Lines
+      function drawLine(points, color, dash) {
+        ctx.beginPath(); ctx.strokeStyle = color; ctx.lineWidth = 3;
+        if (dash) ctx.setLineDash([8, 8]); else ctx.setLineDash([]);
+        for (let i = 0; i < points.length; i++) {
+          let px = plotX + (points[i].x / 336) * plotW;
+          let py = plotY + plotH - ((points[i].y / 17.1) / 30) * plotH;
+          if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+        }
+        ctx.stroke();
+      }
+
+      // Clip lines to stay within the grid area
+      ctx.save(); ctx.beginPath(); ctx.rect(plotX, plotY, plotW, plotH); ctx.clip();
+      drawLine(pt, '#3498db', false);
+      drawLine(et, '#e74c3c', true);
+      ctx.restore();
+      
+      // Draw Legend
+      ctx.fillStyle = '#ffffff'; ctx.fillRect(plotX + 15, plotY + 15, 230, 60);
+      ctx.strokeStyle = '#dcdcdc'; ctx.strokeRect(plotX + 15, plotY + 15, 230, 60);
+      ctx.font = 'bold 12px Inter, sans-serif'; ctx.fillStyle = '#1d3557'; ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+      
+      ctx.beginPath(); ctx.strokeStyle = '#3498db'; ctx.setLineDash([]); ctx.moveTo(plotX + 25, plotY + 30); ctx.lineTo(plotX + 50, plotY + 30); ctx.stroke();
+      ctx.fillText(`Phototherapy (${ga >= 38 ? '≥ 38' : ga} wks)`, plotX + 60, plotY + 30);
+      ctx.beginPath(); ctx.strokeStyle = '#e74c3c'; ctx.setLineDash([5, 5]); ctx.moveTo(plotX + 25, plotY + 55); ctx.lineTo(plotX + 50, plotY + 55); ctx.stroke();
+      ctx.fillText(`Exchange Transfusion (${ga >= 38 ? '≥ 38' : ga} wks)`, plotX + 60, plotY + 55);
+
+      // Set to img
+      document.getElementById('nice-dynamic-img').src = canvas.toDataURL('image/png');
+    }
 
     window.onload = function() {
+      updateNiceChart();
       initApp();
       document.getElementById('weight').addEventListener('input', updateDosages);
       document.querySelectorAll('input[name="age"]').forEach(input => { input.addEventListener('change', updateDosages); });
