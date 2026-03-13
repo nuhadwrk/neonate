@@ -602,29 +602,50 @@ function updateNiceChart() {
       ctx.textBaseline = 'top';
       for (let x = 0; x <= 336; x += 24) {
         let px = plotX + (x / 336) * plotW;
-        ctx.beginPath(); ctx.moveTo(px, plotY); ctx.lineTo(px, plotY + plotH); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(px, plotY); ctx.lineTo(px, plotY + plotH); 
+        ctx.lineWidth = 1; ctx.strokeStyle = '#e0e0e0'; ctx.stroke();
+        
+        ctx.fillStyle = '#1d3557';
         ctx.fillText(x, px, plotY + plotH + 8);
       }
       ctx.font = 'bold 14px Inter, sans-serif';
       ctx.fillText('Age (hours)', plotX + plotW/2, plotY + plotH + 30);
       
-      // Y-axis Grid (mg/dL)
+      // Y-axis Grid (1 mg/dL sub-values)
       ctx.font = '12px Inter, sans-serif';
       ctx.textBaseline = 'middle';
-      for (let y = 0; y <= 30; y += 5) {
+      for (let y = 0; y <= 30; y += 1) {
         let py = plotY + plotH - (y / 30) * plotH;
-        ctx.beginPath(); ctx.moveTo(plotX, py); ctx.lineTo(plotX + plotW, py); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(plotX, py); ctx.lineTo(plotX + plotW, py);
         
-        ctx.textAlign = 'right';
-        ctx.fillText(y, plotX - 8, py);
-        
-        // Secondary Y-axis (µmol/L)
-        let umol = Math.round(y * 17.1);
-        ctx.textAlign = 'left';
-        ctx.fillText(umol, plotX + plotW + 8, py);
+        if (y % 5 === 0) {
+          // Major Line (every 5 mg/dL)
+          ctx.lineWidth = 1.5;
+          ctx.strokeStyle = '#bdc3c7'; // Distinct darker line for major intervals
+          ctx.setLineDash([]);
+          ctx.stroke();
+          
+          // Text Labels
+          ctx.fillStyle = '#1d3557';
+          ctx.textAlign = 'right';
+          ctx.fillText(y, plotX - 8, py);
+          
+          // Secondary Y-axis (µmol/L)
+          let umol = Math.round(y * 17.1);
+          ctx.textAlign = 'left';
+          ctx.fillText(umol, plotX + plotW + 8, py);
+        } else {
+          // Minor Line (1 mg/dL sub-values)
+          ctx.lineWidth = 1;           // Increased from 0.5 to 1
+          ctx.strokeStyle = '#dcdcdc'; // Darkened from #f0f4f8 for better visibility
+          ctx.setLineDash([4, 4]);     // Keeps it dashed to distinguish from major lines
+          ctx.stroke();
+          ctx.setLineDash([]);         // Reset dash for next drawing
+        }
       }
       
       ctx.font = 'bold 14px Inter, sans-serif';
+      ctx.fillStyle = '#1d3557';
       ctx.save(); ctx.translate(20, plotY + plotH/2); ctx.rotate(-Math.PI/2); ctx.textAlign = 'center'; ctx.fillText('TSB (mg/dL)', 0, 0); ctx.restore();
       ctx.save(); ctx.translate(canvas.width - 20, plotY + plotH/2); ctx.rotate(-Math.PI/2); ctx.textAlign = 'center'; ctx.fillText('TSB (µmol/L)', 0, 0); ctx.restore();
 
@@ -634,12 +655,10 @@ function updateNiceChart() {
         pt = [{x: 0, y: 100}, {x: 24, y: 200}, {x: 96, y: 350}, {x: 336, y: 350}];
         et = [{x: 0, y: 100}, {x: 42, y: 450}, {x: 336, y: 450}];
       } else {
-        // Corrected logic for preterms based on official NICE thresholds
-        let pt0 = 40;  // Starts fixed at 40 umol/L for all preterms at 0 hrs
-        let et0 = 80;  // Starts fixed at 80 umol/L for all preterms at 0 hrs
-        
-        let pt72 = (ga * 10) - 100; // Peak PT threshold at 72 hours
-        let et72 = (ga * 10);       // Peak ET threshold at 72 hours
+        let pt0 = 40;  
+        let et0 = 80;  
+        let pt72 = (ga * 10) - 100; 
+        let et72 = (ga * 10);       
         
         pt = [{x: 0, y: pt0}, {x: 72, y: pt72}, {x: 336, y: pt72}];
         et = [{x: 0, y: et0}, {x: 72, y: et72}, {x: 336, y: et72}];
