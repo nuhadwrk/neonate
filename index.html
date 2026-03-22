@@ -89,10 +89,10 @@
       <button class="tab-button active" onclick="openTab('phototherapy')">Phototherapy</button>
       <button class="tab-button" onclick="openTab('dosage')">Dosage</button>
       <button class="tab-button" onclick="openTab('nutrition')">Nutrition</button>
-      <button class="tab-button" onclick="openTab('fenton')">Fenton Chart</button>
+      <button class="tab-button" onclick="openTab('fenton')">Fenton</button>
+      <button class="tab-button" onclick="openTab('intergrowth')">Intergrowth</button>
     </div>
 
-    <!-- PHOTOTHERAPY TAB -->
     <div id="phototherapy" class="tab-content active">
       <div class="inputs form-group active">
         <label>Age (hours):</label>
@@ -155,7 +155,7 @@
           <div class="readout">Age: 0 h (0 d) • TSB: 0 mg/dL (0 µmol/L)</div>
         </div>
       </div>
-<div class="title">NICE Dynamic Jaundice Chart</div>
+      <div class="title">NICE Dynamic Jaundice Chart</div>
       <div class="form-group active" style="margin-bottom: 1rem;">
         <label for="nice-ga">Gestational Age (weeks):</label>
         <select id="nice-ga" onchange="updateNiceChart()" style="width: 100%; padding: 0.6rem; font-size: 16px; border: 1px solid var(--border); border-radius: 12px; background-color: #fff; color: var(--header);">
@@ -184,9 +184,8 @@
           <div class="readout">Age: 0 h (0 d) • TSB: 0 mg/dL (0 µmol/L)</div>
         </div>
       </div>
-          </div>
+    </div>
 
-    <!-- DOSAGE TAB -->
     <div id="dosage" class="tab-content">
       <div class="form-group active">
         <label for="weight">Weight (kg):</label>
@@ -219,7 +218,6 @@
       </div>
     </div>
 
-    <!-- NUTRITION TAB -->
     <div id="nutrition" class="tab-content">
       <div class="form-group active">
         <label for="birth-weight-wl">Birth Weight (kg):</label>
@@ -259,32 +257,68 @@
       </ul>
       <div class="note">Note: Adjust based on clinical assessment.</div>
     </div>
-<!-- FENTON TAB -->
-<div id="fenton" class="tab-content">
-  <div class="form-group active">
-    <label for="fenton-weight">Birth Weight (g):</label>
-    <input type="number" id="fenton-weight" placeholder="Enter weight in grams" step="1" min="300" max="6000">
-  </div>
-  <div class="form-group active">
-    <label>Sex:</label>
-    <div class="radio-group">
-      <label><input type="radio" name="sex" value="male" checked> Male</label>
-      <label><input type="radio" name="sex" value="female"> Female</label>
+
+    <div id="fenton" class="tab-content">
+      <div class="form-group active">
+        <label for="fenton-weight">Birth Weight (kg):</label>
+        <input type="number" id="fenton-weight" placeholder="Enter weight in kg" step="0.01" min="0.3" max="6.0">
+      </div>
+      <div class="form-group active">
+        <label>Sex:</label>
+        <div class="radio-group">
+          <label><input type="radio" name="sex" value="male" checked> Male</label>
+          <label><input type="radio" name="sex" value="female"> Female</label>
+        </div>
+      </div>
+      <div class="form-group active">
+        <label for="gestational-age">Gestational Age (weeks):</label>
+        <input type="number" id="gestational-age" placeholder="Enter gestational age" step="1" min="22" max="50">
+      </div>
+      <button class="btn" onclick="updateFenton()">Calculate</button>
+      <div id="fenton-result" class="note" style="margin-top: 1rem; padding: 1rem; background: #f7f9fb; border-radius: 8px;"></div>
+      
+      <img src="https://raw.githubusercontent.com/nuhadwrk/neonate/main/FM.jpg" alt="Fenton Chart for Boys" class="chart-image" id="fenton-male" style="display: none;">
+      <img src="https://raw.githubusercontent.com/nuhadwrk/neonate/main/FF.jpg" alt="Fenton Chart for Girls" class="chart-image" id="fenton-female" style="display: none;">
+      
+      <div class="note" style="margin-top: 1rem; text-align: center;">Fenton Growth Charts (2025)</div>
+    </div>
+
+    <div id="intergrowth" class="tab-content">
+      <div class="form-group active">
+        <label for="intergrowth-weight">Birth Weight (kg):</label>
+        <input type="number" id="intergrowth-weight" placeholder="Enter weight in kg" step="0.01" min="0.5" max="6.0">
+      </div>
+      <div class="form-group active">
+        <label>Sex:</label>
+        <div class="radio-group">
+          <label><input type="radio" name="ig-sex" value="male" checked> Male</label>
+          <label><input type="radio" name="ig-sex" value="female"> Female</label>
+        </div>
+      </div>
+      <div class="form-group active">
+        <label>Gestational Age:</label>
+        <div style="display: flex; gap: 1rem;">
+          <div style="flex: 1;">
+            <input type="number" id="ig-ga-weeks" placeholder="Weeks" step="1" min="33" max="42">
+            <div class="note" style="margin-top: 4px; text-align: center;">Weeks (33-42)</div>
+          </div>
+          <div style="flex: 1;">
+            <input type="number" id="ig-ga-days" placeholder="Days" step="1" min="0" max="6" value="0">
+            <div class="note" style="margin-top: 4px; text-align: center;">Days (0-6)</div>
+          </div>
+        </div>
+      </div>
+      <button class="btn" onclick="updateIntergrowth()">Calculate</button>
+      <div id="intergrowth-result" class="note" style="margin-top: 1rem; padding: 1rem; background: #f7f9fb; border-radius: 8px;"></div>
+      
+      <img src="https://raw.githubusercontent.com/nuhadwrk/neonate/main/IM1.jpg" alt="Intergrowth Chart 1 for Boys" class="chart-image ig-male" style="display: none;">
+      <img src="https://raw.githubusercontent.com/nuhadwrk/neonate/main/IM2.jpg" alt="Intergrowth Chart 2 for Boys" class="chart-image ig-male" style="display: none;">
+      <img src="https://raw.githubusercontent.com/nuhadwrk/neonate/main/IF1.jpg" alt="Intergrowth Chart 1 for Girls" class="chart-image ig-female" style="display: none;">
+      <img src="https://raw.githubusercontent.com/nuhadwrk/neonate/main/IF2.jpg" alt="Intergrowth Chart 2 for Girls" class="chart-image ig-female" style="display: none;">
+      
+      <div class="note" style="margin-top: 1rem; text-align: center;">INTERGROWTH-21st Size Standards</div>
     </div>
   </div>
-  <div class="form-group active">
-    <label for="gestational-age">Gestational Age (weeks):</label>
-    <input type="number" id="gestational-age" placeholder="Enter gestational age" step="1" min="22" max="50">
-  </div>
-  <button class="btn" onclick="updateFenton()">Calculate</button>
-  <div id="fenton-result" class="note" style="margin-top: 1rem; padding: 1rem; background: #f7f9fb; border-radius: 8px;"></div>
-  
-  <!-- FIXED: Public URLs from GitHub -->
-  <img src="https://raw.githubusercontent.com/nuhadwrk/neonate/main/FM.jpg" alt="Fenton Chart for Boys" class="chart-image" id="fenton-male" style="display: none;">
-  <img src="https://raw.githubusercontent.com/nuhadwrk/neonate/main/FF.jpg" alt="Fenton Chart for Girls" class="chart-image" id="fenton-female" style="display: none;">
-  
-  <div class="note" style="margin-top: 1rem; text-align: center;">Fenton Growth Charts (2025)</div>
-</div>
 
   <script>
     // Drug database
@@ -313,6 +347,34 @@
         22: { p10: 380, p90: 580 }, 24: { p10: 480, p90: 720 }, 26: { p10: 580, p90: 870 }, 28: { p10: 760, p90: 1140 },
         30: { p10: 950, p90: 1420 }, 32: { p10: 1250, p90: 1800 }, 34: { p10: 1600, p90: 2400 }, 36: { p10: 2000, p90: 3000 },
         38: { p10: 2400, p90: 3500 }, 40: { p10: 2700, p90: 3900 }, 42: { p10: 2900, p90: 4200 }, 50: { p10: 3000, p90: 4400 }
+      }
+    };
+
+    // Exact Intergrowth Percentiles (Weeks & Days)
+    const intergrowthPercentiles = {
+      male: {
+        33: { 0: {p10: 1.43, p90: 2.52}, 1: {p10: 1.47, p90: 2.56}, 2: {p10: 1.51, p90: 2.60}, 3: {p10: 1.55, p90: 2.64}, 4: {p10: 1.59, p90: 2.67}, 5: {p10: 1.63, p90: 2.71}, 6: {p10: 1.67, p90: 2.75} },
+        34: { 0: {p10: 1.71, p90: 2.79}, 1: {p10: 1.74, p90: 2.82}, 2: {p10: 1.78, p90: 2.86}, 3: {p10: 1.82, p90: 2.89}, 4: {p10: 1.85, p90: 2.93}, 5: {p10: 1.89, p90: 2.96}, 6: {p10: 1.92, p90: 3.00} },
+        35: { 0: {p10: 1.95, p90: 3.03}, 1: {p10: 1.99, p90: 3.06}, 2: {p10: 2.02, p90: 3.09}, 3: {p10: 2.05, p90: 3.13}, 4: {p10: 2.09, p90: 3.16}, 5: {p10: 2.12, p90: 3.19}, 6: {p10: 2.15, p90: 3.22} },
+        36: { 0: {p10: 2.18, p90: 3.25}, 1: {p10: 2.21, p90: 3.28}, 2: {p10: 2.24, p90: 3.31}, 3: {p10: 2.27, p90: 3.34}, 4: {p10: 2.30, p90: 3.37}, 5: {p10: 2.33, p90: 3.39}, 6: {p10: 2.36, p90: 3.42} },
+        37: { 0: {p10: 2.38, p90: 3.45}, 1: {p10: 2.41, p90: 3.48}, 2: {p10: 2.44, p90: 3.50}, 3: {p10: 2.47, p90: 3.53}, 4: {p10: 2.49, p90: 3.55}, 5: {p10: 2.52, p90: 3.58}, 6: {p10: 2.54, p90: 3.61} },
+        38: { 0: {p10: 2.57, p90: 3.63}, 1: {p10: 2.59, p90: 3.65}, 2: {p10: 2.62, p90: 3.68}, 3: {p10: 2.64, p90: 3.70}, 4: {p10: 2.67, p90: 3.72}, 5: {p10: 2.69, p90: 3.75}, 6: {p10: 2.71, p90: 3.77} },
+        39: { 0: {p10: 2.73, p90: 3.79}, 1: {p10: 2.76, p90: 3.81}, 2: {p10: 2.78, p90: 3.83}, 3: {p10: 2.80, p90: 3.86}, 4: {p10: 2.82, p90: 3.88}, 5: {p10: 2.84, p90: 3.90}, 6: {p10: 2.86, p90: 3.92} },
+        40: { 0: {p10: 2.88, p90: 3.94}, 1: {p10: 2.90, p90: 3.95}, 2: {p10: 2.92, p90: 3.97}, 3: {p10: 2.94, p90: 3.99}, 4: {p10: 2.96, p90: 4.01}, 5: {p10: 2.98, p90: 4.03}, 6: {p10: 2.99, p90: 4.04} },
+        41: { 0: {p10: 3.01, p90: 4.06}, 1: {p10: 3.03, p90: 4.08}, 2: {p10: 3.05, p90: 4.09}, 3: {p10: 3.06, p90: 4.11}, 4: {p10: 3.08, p90: 4.13}, 5: {p10: 3.09, p90: 4.14}, 6: {p10: 3.11, p90: 4.16} },
+        42: { 0: {p10: 3.12, p90: 4.17}, 1: {p10: 3.14, p90: 4.19}, 2: {p10: 3.15, p90: 4.20}, 3: {p10: 3.17, p90: 4.21}, 4: {p10: 3.18, p90: 4.23}, 5: {p10: 3.20, p90: 4.24}, 6: {p10: 3.21, p90: 4.25} }
+      },
+      female: {
+        33: { 0: {p10: 1.41, p90: 2.35}, 1: {p10: 1.45, p90: 2.40}, 2: {p10: 1.49, p90: 2.44}, 3: {p10: 1.53, p90: 2.48}, 4: {p10: 1.57, p90: 2.52}, 5: {p10: 1.61, p90: 2.56}, 6: {p10: 1.65, p90: 2.60} },
+        34: { 0: {p10: 1.68, p90: 2.64}, 1: {p10: 1.72, p90: 2.67}, 2: {p10: 1.75, p90: 2.71}, 3: {p10: 1.79, p90: 2.75}, 4: {p10: 1.82, p90: 2.79}, 5: {p10: 1.86, p90: 2.82}, 6: {p10: 1.89, p90: 2.86} },
+        35: { 0: {p10: 1.92, p90: 2.89}, 1: {p10: 1.96, p90: 2.93}, 2: {p10: 1.99, p90: 2.96}, 3: {p10: 2.02, p90: 2.99}, 4: {p10: 2.05, p90: 3.03}, 5: {p10: 2.08, p90: 3.06}, 6: {p10: 2.11, p90: 3.09} },
+        36: { 0: {p10: 2.14, p90: 3.12}, 1: {p10: 2.17, p90: 3.15}, 2: {p10: 2.20, p90: 3.18}, 3: {p10: 2.23, p90: 3.21}, 4: {p10: 2.25, p90: 3.24}, 5: {p10: 2.28, p90: 3.27}, 6: {p10: 2.31, p90: 3.30} },
+        37: { 0: {p10: 2.33, p90: 3.32}, 1: {p10: 2.36, p90: 3.35}, 2: {p10: 2.38, p90: 3.38}, 3: {p10: 2.41, p90: 3.40}, 4: {p10: 2.43, p90: 3.43}, 5: {p10: 2.46, p90: 3.46}, 6: {p10: 2.48, p90: 3.48} },
+        38: { 0: {p10: 2.50, p90: 3.51}, 1: {p10: 2.53, p90: 3.53}, 2: {p10: 2.55, p90: 3.55}, 3: {p10: 2.57, p90: 3.58}, 4: {p10: 2.59, p90: 3.60}, 5: {p10: 2.61, p90: 3.62}, 6: {p10: 2.63, p90: 3.64} },
+        39: { 0: {p10: 2.65, p90: 3.66}, 1: {p10: 2.67, p90: 3.68}, 2: {p10: 2.69, p90: 3.70}, 3: {p10: 2.71, p90: 3.72}, 4: {p10: 2.73, p90: 3.74}, 5: {p10: 2.74, p90: 3.76}, 6: {p10: 2.76, p90: 3.78} },
+        40: { 0: {p10: 2.78, p90: 3.80}, 1: {p10: 2.80, p90: 3.82}, 2: {p10: 2.81, p90: 3.84}, 3: {p10: 2.83, p90: 3.85}, 4: {p10: 2.84, p90: 3.87}, 5: {p10: 2.86, p90: 3.89}, 6: {p10: 2.87, p90: 3.90} },
+        41: { 0: {p10: 2.89, p90: 3.92}, 1: {p10: 2.90, p90: 3.93}, 2: {p10: 2.91, p90: 3.95}, 3: {p10: 2.93, p90: 3.96}, 4: {p10: 2.94, p90: 3.97}, 5: {p10: 2.95, p90: 3.99}, 6: {p10: 2.96, p90: 4.00} },
+        42: { 0: {p10: 2.98, p90: 4.01}, 1: {p10: 2.99, p90: 4.03}, 2: {p10: 3.00, p90: 4.04}, 3: {p10: 3.01, p90: 4.05}, 4: {p10: 3.02, p90: 4.06}, 5: {p10: 3.03, p90: 4.07}, 6: {p10: 3.04, p90: 4.08} }
       }
     };
 
@@ -362,6 +424,11 @@
         const sex = document.querySelector('input[name="sex"]:checked').value;
         document.getElementById('fenton-male').style.display = sex === 'male' ? 'block' : 'none';
         document.getElementById('fenton-female').style.display = sex === 'female' ? 'block' : 'none';
+      }
+      if (tabName === 'intergrowth') {
+        const igSex = document.querySelector('input[name="ig-sex"]:checked').value;
+        document.querySelectorAll('.ig-male').forEach(img => img.style.display = igSex === 'male' ? 'block' : 'none');
+        document.querySelectorAll('.ig-female').forEach(img => img.style.display = igSex === 'female' ? 'block' : 'none');
       }
     }
 
@@ -420,18 +487,21 @@
     }
 
     function updateFenton() {
-      const weight = parseFloat(document.getElementById('fenton-weight').value) || 0;
+      const weightKg = parseFloat(document.getElementById('fenton-weight').value) || 0;
+      const weight = weightKg * 1000; 
       const sex = document.querySelector('input[name="sex"]:checked').value;
       const ga = parseFloat(document.getElementById('gestational-age').value) || 0;
       const resultDiv = document.getElementById('fenton-result');
-      if (!weight || !ga) {
+      
+      if (!weightKg || !ga) {
         resultDiv.innerHTML = 'Please enter both weight and gestational age.';
         return;
       }
       if (weight < 300 || weight > 6000 || ga < 22 || ga > 50) {
-        resultDiv.innerHTML = 'Please enter valid weight (300–6000g) and gestational age (22–50 weeks).';
+        resultDiv.innerHTML = 'Please enter valid weight (0.3–6.0kg) and gestational age (22–50 weeks).';
         return;
       }
+      
       let gaClass;
       if (ga > 42) gaClass = 'Post Term (>42 weeks)';
       else if (ga >= 40) gaClass = 'Late Term (40 to <42 weeks)';
@@ -451,12 +521,13 @@
       const gaPoints = Object.keys(fentonPercentiles[sex]).map(Number).sort((a, b) => a - b);
       let closestGa = gaPoints.find(point => point >= ga) || gaPoints[gaPoints.length - 1];
       const percentiles = fentonPercentiles[sex][closestGa];
+      
       if (weight < percentiles.p10) {
-        sizeClass = 'SGA';
+        sizeClass = '<span style="color: #e74c3c; font-weight: bold;">SGA</span> (Below 10th centile)';
       } else if (weight > percentiles.p90) {
-        sizeClass = 'LGA';
+        sizeClass = '<span style="color: #e74c3c; font-weight: bold;">LGA</span> (Above 90th centile)';
       } else {
-        sizeClass = 'AGA';
+        sizeClass = '<span style="color: #2a9d8f; font-weight: bold;">AGA</span>';
       }
 
       document.getElementById('fenton-male').style.display = sex === 'male' ? 'block' : 'none';
@@ -467,6 +538,66 @@
         <strong>Birth Weight Classification:</strong> ${weightClass}<br>
         <strong>Size Classification:</strong> ${sizeClass}<br>
         <em>(Based on Fenton 2025 growth charts, 10th and 90th percentiles)</em>
+      `;
+    }
+
+    function updateIntergrowth() {
+      const weightKg = parseFloat(document.getElementById('intergrowth-weight').value) || 0;
+      const sex = document.querySelector('input[name="ig-sex"]:checked').value;
+      const weeks = parseInt(document.getElementById('ig-ga-weeks').value) || 0;
+      const days = parseInt(document.getElementById('ig-ga-days').value) || 0;
+      const resultDiv = document.getElementById('intergrowth-result');
+
+      document.querySelectorAll('.ig-male').forEach(img => img.style.display = sex === 'male' ? 'block' : 'none');
+      document.querySelectorAll('.ig-female').forEach(img => img.style.display = sex === 'female' ? 'block' : 'none');
+
+      if (!weightKg || !weeks) {
+        resultDiv.innerHTML = '<span style="color: #e63946;">Please enter both weight and gestational age (weeks).</span>';
+        return;
+      }
+      if (weeks < 33 || weeks > 42 || days < 0 || days > 6) {
+        resultDiv.innerHTML = '<span style="color: #e63946;">INTERGROWTH data is limited to 33–42 weeks (0-6 days).</span>';
+        return;
+      }
+
+      // GA Classification
+      let gaClass;
+      if (weeks > 42) gaClass = 'Post Term (>42 weeks)';
+      else if (weeks >= 40) gaClass = 'Late Term (40 to <42 weeks)';
+      else if (weeks >= 37) gaClass = 'Term (≥37 weeks)';
+      else if (weeks >= 34) gaClass = 'Late Preterm (34 weeks to <37 weeks)';
+      else if (weeks >= 32) gaClass = 'Moderate Preterm (32 weeks to <34 weeks)';
+      else gaClass = 'Very Preterm (<32 weeks)';
+
+      // Weight Classification
+      let weightClass;
+      const weightGrams = weightKg * 1000;
+      if (weightGrams > 4000) weightClass = 'Macrosomia (>4000g)';
+      else if (weightGrams < 1000) weightClass = 'Extremely Low Birth Weight (ELBW) (<1000g)';
+      else if (weightGrams < 1500) weightClass = 'Very Low Birth Weight (VLBW) (<1500g)';
+      else if (weightGrams < 2500) weightClass = 'Low Birth Weight (LBW) (<2500g)';
+      else weightClass = 'Normal Weight';
+
+      // Pull EXACT percentiles from the dataset
+      const percentiles = intergrowthPercentiles[sex][weeks][days];
+      const exactP10 = percentiles.p10;
+      const exactP90 = percentiles.p90;
+
+      // Size Classification
+      let sizeClass;
+      if (weightKg < exactP10) {
+        sizeClass = '<span style="color: #e74c3c; font-weight: bold;">SGA</span> (Below 10th centile)';
+      } else if (weightKg > exactP90) {
+        sizeClass = '<span style="color: #e74c3c; font-weight: bold;">LGA</span> (Above 90th centile)';
+      } else {
+        sizeClass = '<span style="color: #2a9d8f; font-weight: bold;">AGA</span>';
+      }
+
+      resultDiv.innerHTML = `
+        <strong>Gestational Age Classification:</strong> ${gaClass}<br>
+        <strong>Birth Weight Classification:</strong> ${weightClass}<br>
+        <strong>Size Classification:</strong> ${sizeClass}<br>
+        <em>(Based on INTERGROWTH-21st, 10th centile: ${exactP10.toFixed(2)}kg, 90th centile: ${exactP90.toFixed(2)}kg for ${weeks}w ${days}d)</em>
       `;
     }
 
@@ -574,16 +705,21 @@
       const sex = document.querySelector('input[name="sex"]:checked').value;
       document.getElementById('fenton-male').style.display = sex === 'male' ? 'block' : 'none';
       document.getElementById('fenton-female').style.display = sex === 'female' ? 'block' : 'none';
+      
+      const igSex = document.querySelector('input[name="ig-sex"]:checked').value;
+      document.querySelectorAll('.ig-male').forEach(img => img.style.display = igSex === 'male' ? 'block' : 'none');
+      document.querySelectorAll('.ig-female').forEach(img => img.style.display = igSex === 'female' ? 'block' : 'none');
+
       document.querySelectorAll('#phototherapy .chart').forEach(setupChart);
     }
-function updateNiceChart() {
+
+    function updateNiceChart() {
       const ga = parseInt(document.getElementById('nice-ga').value);
       const canvas = document.createElement('canvas');
       canvas.width = 800;
       canvas.height = 450;
       const ctx = canvas.getContext('2d');
       
-      // Background and plot area margins 
       ctx.fillStyle = '#ffffff';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
       const margins = { l: 0.08, r: 0.08, t: 0.05, b: 0.12 };
@@ -597,7 +733,6 @@ function updateNiceChart() {
       ctx.font = '12px Inter, sans-serif';
       ctx.fillStyle = '#1d3557';
       
-      // X-axis Grid (0 to 14 days)
       ctx.textAlign = 'center';
       ctx.textBaseline = 'top';
       for (let x = 0; x <= 336; x += 24) {
@@ -611,7 +746,6 @@ function updateNiceChart() {
       ctx.font = 'bold 14px Inter, sans-serif';
       ctx.fillText('Age (hours)', plotX + plotW/2, plotY + plotH + 30);
       
-      // Y-axis Grid (1 mg/dL sub-values)
       ctx.font = '12px Inter, sans-serif';
       ctx.textBaseline = 'middle';
       for (let y = 0; y <= 30; y += 1) {
@@ -619,28 +753,24 @@ function updateNiceChart() {
         ctx.beginPath(); ctx.moveTo(plotX, py); ctx.lineTo(plotX + plotW, py);
         
         if (y % 5 === 0) {
-          // Major Line (every 5 mg/dL)
           ctx.lineWidth = 1.5;
-          ctx.strokeStyle = '#bdc3c7'; // Distinct darker line for major intervals
+          ctx.strokeStyle = '#bdc3c7'; 
           ctx.setLineDash([]);
           ctx.stroke();
           
-          // Text Labels
           ctx.fillStyle = '#1d3557';
           ctx.textAlign = 'right';
           ctx.fillText(y, plotX - 8, py);
           
-          // Secondary Y-axis (µmol/L)
           let umol = Math.round(y * 17.1);
           ctx.textAlign = 'left';
           ctx.fillText(umol, plotX + plotW + 8, py);
         } else {
-          // Minor Line (1 mg/dL sub-values)
-          ctx.lineWidth = 1;           // Increased from 0.5 to 1
-          ctx.strokeStyle = '#dcdcdc'; // Darkened from #f0f4f8 for better visibility
-          ctx.setLineDash([4, 4]);     // Keeps it dashed to distinguish from major lines
+          ctx.lineWidth = 1;           
+          ctx.strokeStyle = '#dcdcdc'; 
+          ctx.setLineDash([4, 4]);     
           ctx.stroke();
-          ctx.setLineDash([]);         // Reset dash for next drawing
+          ctx.setLineDash([]);         
         }
       }
       
@@ -649,7 +779,6 @@ function updateNiceChart() {
       ctx.save(); ctx.translate(20, plotY + plotH/2); ctx.rotate(-Math.PI/2); ctx.textAlign = 'center'; ctx.fillText('TSB (mg/dL)', 0, 0); ctx.restore();
       ctx.save(); ctx.translate(canvas.width - 20, plotY + plotH/2); ctx.rotate(-Math.PI/2); ctx.textAlign = 'center'; ctx.fillText('TSB (µmol/L)', 0, 0); ctx.restore();
 
-      // EXACT NICE FORMULA (Outputs in umol/L)
       let pt = [], et = [];
       if (ga >= 38) {
         pt = [{x: 0, y: 100}, {x: 24, y: 200}, {x: 96, y: 350}, {x: 336, y: 350}];
@@ -664,7 +793,6 @@ function updateNiceChart() {
         et = [{x: 0, y: et0}, {x: 72, y: et72}, {x: 336, y: et72}];
       }
 
-      // Draw Lines
       function drawLine(points, color, dash) {
         ctx.beginPath(); ctx.strokeStyle = color; ctx.lineWidth = 3;
         if (dash) ctx.setLineDash([8, 8]); else ctx.setLineDash([]);
@@ -676,13 +804,11 @@ function updateNiceChart() {
         ctx.stroke();
       }
 
-      // Clip lines to stay within the grid area
       ctx.save(); ctx.beginPath(); ctx.rect(plotX, plotY, plotW, plotH); ctx.clip();
       drawLine(pt, '#3498db', false);
       drawLine(et, '#e74c3c', true);
       ctx.restore();
       
-      // Draw Legend
       ctx.fillStyle = '#ffffff'; ctx.fillRect(plotX + 15, plotY + 15, 230, 60);
       ctx.strokeStyle = '#dcdcdc'; ctx.strokeRect(plotX + 15, plotY + 15, 230, 60);
       ctx.font = 'bold 12px Inter, sans-serif'; ctx.fillStyle = '#1d3557'; ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
@@ -692,15 +818,16 @@ function updateNiceChart() {
       ctx.beginPath(); ctx.strokeStyle = '#e74c3c'; ctx.setLineDash([5, 5]); ctx.moveTo(plotX + 25, plotY + 55); ctx.lineTo(plotX + 50, plotY + 55); ctx.stroke();
       ctx.fillText(`Exchange Transfusion (${ga >= 38 ? '≥ 38' : ga} wks)`, plotX + 60, plotY + 55);
 
-      // Set to img
       document.getElementById('nice-dynamic-img').src = canvas.toDataURL('image/png');
     }
 
     window.onload = function() {
       updateNiceChart();
       initApp();
+      
       document.getElementById('weight').addEventListener('input', updateDosages);
       document.querySelectorAll('input[name="age"]').forEach(input => { input.addEventListener('change', updateDosages); });
+      
       document.getElementById('fenton-weight').addEventListener('input', updateFenton);
       document.getElementById('gestational-age').addEventListener('input', updateFenton);
       document.querySelectorAll('input[name="sex"]').forEach(input => {
@@ -708,6 +835,18 @@ function updateNiceChart() {
           updateFenton();
           document.getElementById('fenton-male').style.display = this.value === 'male' ? 'block' : 'none';
           document.getElementById('fenton-female').style.display = this.value === 'female' ? 'block' : 'none';
+        });
+      });
+
+      // Intergrowth event listeners
+      document.getElementById('intergrowth-weight').addEventListener('input', updateIntergrowth);
+      document.getElementById('ig-ga-weeks').addEventListener('input', updateIntergrowth);
+      document.getElementById('ig-ga-days').addEventListener('input', updateIntergrowth);
+      document.querySelectorAll('input[name="ig-sex"]').forEach(input => {
+        input.addEventListener('change', function() {
+          updateIntergrowth();
+          document.querySelectorAll('.ig-male').forEach(img => img.style.display = this.value === 'male' ? 'block' : 'none');
+          document.querySelectorAll('.ig-female').forEach(img => img.style.display = this.value === 'female' ? 'block' : 'none');
         });
       });
     };
