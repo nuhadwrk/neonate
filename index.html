@@ -43,6 +43,9 @@
     .tab-content.active { display: block; }
     .section-title { margin-top: 2rem; font-weight: 600; font-size: 1.1rem; color: var(--header); }
     .note { color: #888; font-size: 0.875rem; margin-top: 0.5rem; }
+    [hidden] { display: none !important; }
+    .et-toggle { display: flex; align-items: center; gap: 0.6rem; padding: 0.75rem; background: #eef7f6; border-radius: 12px; margin-bottom: 1rem; cursor: pointer; }
+    .chart-source { font-size: 0.875rem; margin: 0.5rem 0 1rem; line-height: 1.5; }
     .chart-image { width: 100%; height: auto; border-radius: 12px; margin-top: 1rem; border: 1px solid var(--border); }
     .title { font-weight: 600; margin-bottom: 6px; margin-top: 1rem; color: var(--header); }
     .canvas-wrap { position: relative; overflow: hidden; background: #f7f9fb; border: 1px solid var(--border); margin-bottom: 1rem; width: 100%; }
@@ -103,6 +106,44 @@
         <button class="btn" onclick="setAllCrosshairs()">Set</button>
       </div>
 
+      <label class="et-toggle"><input type="checkbox" id="show-et" onchange="toggleExchangeCharts()" aria-controls="aap-et-charts legacy-et-charts nice-chart-container"> Show exchange transfusion (ET) charts</label>
+      <div class="title">AAP 2022 Jaundice Charts · ≥35 weeks</div>
+      <div class="title">Phototherapy · No risk factors</div>
+      <div class="chart" id="aap-chart-2" data-xmin="0" data-xmax="336" data-ymin="6" data-ymax="24" data-l="4.230769" data-t="1.379310" data-r="1.923077" data-b="13.103448">
+        <div class="canvas-wrap">
+          <img src="aap-figure-2.png" alt="AAP 2022 Figure 2: Phototherapy, no additional neurotoxicity risk factors" width="520" height="290">
+          <div class="plot"><div class="crosshair-x"></div><div class="crosshair-y"></div></div>
+          <div class="readout"></div>
+        </div>
+      </div>
+      <div class="title">Phototherapy · One or more risk factors</div>
+      <div class="chart" id="aap-chart-3" data-xmin="0" data-xmax="336" data-ymin="4" data-ymax="20" data-l="4.230769" data-t="1.379310" data-r="1.923077" data-b="13.103448">
+        <div class="canvas-wrap">
+          <img src="aap-figure-3.png" alt="AAP 2022 Figure 3: Phototherapy, one or more additional neurotoxicity risk factors" width="520" height="290">
+          <div class="plot"><div class="crosshair-x"></div><div class="crosshair-y"></div></div>
+          <div class="readout"></div>
+        </div>
+      </div>
+      <div id="aap-et-charts" data-et hidden>
+      <div class="title">Exchange transfusion · No risk factors</div>
+      <div class="chart" id="aap-chart-5" data-xmin="0" data-xmax="336" data-ymin="14" data-ymax="28" data-l="4.230769" data-t="1.384083" data-r="2.115385" data-b="13.148789">
+        <div class="canvas-wrap">
+          <img src="aap-figure-5.png" alt="AAP 2022 Figure 5: Exchange transfusion, no additional neurotoxicity risk factors" width="520" height="289">
+          <div class="plot"><div class="crosshair-x"></div><div class="crosshair-y"></div></div>
+          <div class="readout"></div>
+        </div>
+      </div>
+      <div class="title">Exchange transfusion · One or more risk factors</div>
+      <div class="chart" id="aap-chart-6" data-xmin="0" data-xmax="336" data-ymin="12" data-ymax="24" data-l="4.230769" data-t="1.384083" data-r="2.115385" data-b="13.148789">
+        <div class="canvas-wrap">
+          <img src="aap-figure-6.png" alt="AAP 2022 Figure 6: Exchange transfusion, one or more additional neurotoxicity risk factors" width="520" height="289">
+          <div class="plot"><div class="crosshair-x"></div><div class="crosshair-y"></div></div>
+          <div class="readout"></div>
+        </div>
+      </div>
+      </div>
+      <p class="chart-source">Figures 2, 3, 5 and 6 © 2022 American Academy of Pediatrics.</p>
+
       <div class="title">NICE Dynamic Jaundice Chart</div>
       <div class="form-group active" style="margin-bottom: 1rem;">
         <label for="nice-ga">Gestational Age (weeks):</label>
@@ -142,6 +183,7 @@
         </div>
       </div>
 
+      <div id="legacy-et-charts" data-et hidden>
       <div class="title">Exchange Transfusion Guidelines</div>
       <div class="chart" id="chart-et" data-xmin="-8.1" data-xmax="175" data-ymin="9.55" data-ymax="25" data-l="7" data-t="16" data-r="10" data-b="37">
         <div class="canvas-wrap">
@@ -150,6 +192,8 @@
           <div class="readout">Age: 0 h (0 d) • TSB: 0 mg/dL (0 µmol/L)</div>
         </div>
       </div>
+    </div>
+
     </div>
 
     <div id="dosage" class="tab-content">
@@ -710,6 +754,7 @@
 
       function updatePlot() {
         const imgRect = img.getBoundingClientRect();
+        if (!imgRect.width || !imgRect.height) return;
         const plotWidth = imgRect.width * (1 - margins.l - margins.r);
         const plotHeight = imgRect.height * (1 - margins.t - margins.b);
         plot.style.left = (margins.l * imgRect.width) + 'px';
@@ -718,13 +763,14 @@
         plot.style.height = plotHeight + 'px';
         xLine.style.top = (plotHeight / 2) + 'px';
         yLine.style.left = (plotWidth / 2) + 'px';
-        updateReadout();
+        setCrosshair(parseFloat(document.getElementById("photo-age-input").value), parseFloat(document.getElementById("photo-tsb-input").value));
       }
 
       function updateReadout() {
         const rp = plot.getBoundingClientRect();
-        const relX = parseFloat(yLine.style.left) || rp.width / 2;
-        const relY = parseFloat(xLine.style.top) || rp.height / 2;
+        if (!rp.width || !rp.height) return;
+        const relX = parseFloat(yLine.style.left) || 0;
+        const relY = parseFloat(xLine.style.top) || 0;
         const age = ranges.xMin + (relX / rp.width) * (ranges.xMax - ranges.xMin);
         const tsb = ranges.yMax - (relY / rp.height) * (ranges.yMax - ranges.yMin);
         const readoutText = `Age: ${age.toFixed(1)} h (${(age / 24).toFixed(2)} d) • TSB: ${tsb.toFixed(1)} mg/dL (${Math.round(tsb * 17.1)} µmol/L)`;
@@ -778,6 +824,7 @@
       if (img.complete) updatePlot();
       window.addEventListener('resize', updatePlot);
       chart.setCrosshair = setCrosshair;
+      chart.refreshPlot = updatePlot;
     }
 
     function setAllCrosshairs() {
@@ -802,7 +849,18 @@
       document.querySelectorAll('#phototherapy .chart').forEach(setupChart);
     }
 
+    function toggleExchangeCharts() {
+      const show = document.getElementById('show-et').checked;
+      document.querySelectorAll('[data-et]').forEach(section => { section.hidden = !show; });
+      updateNiceChart();
+      document.querySelectorAll('#phototherapy .chart').forEach(chart => {
+        if (chart.refreshPlot) chart.refreshPlot();
+      });
+      setAllCrosshairs();
+    }
+
     function updateNiceChart() {
+      const showET = document.getElementById('show-et').checked;
       const ga = parseInt(document.getElementById('nice-ga').value);
       const canvas = document.createElement('canvas');
       canvas.width = 800;
@@ -895,17 +953,20 @@
 
       ctx.save(); ctx.beginPath(); ctx.rect(plotX, plotY, plotW, plotH); ctx.clip();
       drawLine(pt, '#3498db', false);
-      drawLine(et, '#e74c3c', true);
+      if (showET) drawLine(et, '#e74c3c', true);
       ctx.restore();
       
-      ctx.fillStyle = '#ffffff'; ctx.fillRect(plotX + 15, plotY + 15, 230, 60);
-      ctx.strokeStyle = '#dcdcdc'; ctx.strokeRect(plotX + 15, plotY + 15, 230, 60);
+      ctx.fillStyle = '#ffffff'; ctx.fillRect(plotX + 15, plotY + 15, 230, showET ? 60 : 35);
+      ctx.strokeStyle = '#dcdcdc'; ctx.strokeRect(plotX + 15, plotY + 15, 230, showET ? 60 : 35);
       ctx.font = 'bold 12px Inter, sans-serif'; ctx.fillStyle = '#1d3557'; ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
       
       ctx.beginPath(); ctx.strokeStyle = '#3498db'; ctx.setLineDash([]); ctx.moveTo(plotX + 25, plotY + 30); ctx.lineTo(plotX + 50, plotY + 30); ctx.stroke();
       ctx.fillText(`Phototherapy (${ga >= 38 ? '≥ 38' : ga} wks)`, plotX + 60, plotY + 30);
+      if (showET) {
       ctx.beginPath(); ctx.strokeStyle = '#e74c3c'; ctx.setLineDash([5, 5]); ctx.moveTo(plotX + 25, plotY + 55); ctx.lineTo(plotX + 50, plotY + 55); ctx.stroke();
       ctx.fillText(`Exchange Transfusion (${ga >= 38 ? '≥ 38' : ga} wks)`, plotX + 60, plotY + 55);
+
+      }
 
       document.getElementById('nice-dynamic-img').src = canvas.toDataURL('image/png');
     }
